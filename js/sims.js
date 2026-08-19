@@ -230,11 +230,121 @@
     };
   }
 
+  var PROJ_WORLD_X = 145;
+  var PROJ_WORLD_Y = 65;
+
+  /** Dial in launch speed & angle to clear a wall and land in a target zone. */
+  function projectileSim(args) {
+    args = args || {};
+    var wallX = args.wallX != null ? args.wallX : 40;
+    var wallHeight = args.wallHeight != null ? args.wallHeight : 6;
+    var targetXMin = args.targetXMin != null ? args.targetXMin : 70;
+    var targetXMax = args.targetXMax != null ? args.targetXMax : 85;
+
+    function result(s) { return kin.projectile(s.speed, s.angle); }
+    function clearsWall(s) {
+      if (wallX == null) return true;
+      var h = kin.projectileHeightAtX(s.speed, s.angle, wallX);
+      return h != null && h > wallHeight;
+    }
+    function inTarget(s) {
+      var r = result(s).range;
+      return r >= targetXMin && r <= targetXMax;
+    }
+
+    return {
+      aspect: 0.55,
+      state: { speed: args.speed || 20, angle: args.angle || 45 },
+
+      controls: [
+        { key: 'speed', label: 'Launch speed', type: 'range', min: 10, max: 35, step: 1, format: function (v) { return v + ' m/s'; } },
+        { key: 'angle', label: 'Launch angle', type: 'range', min: 10, max: 80, step: 1, format: function (v) { return v + '°'; } }
+      ],
+
+      readouts: [
+        { label: 'Time of flight', value: function (s) { return fmt.num(result(s).timeOfFlight, 2) + ' s'; } },
+        { label: 'Max height', value: function (s) { return fmt.num(result(s).peak, 1) + ' m'; } },
+        { label: 'Range', value: function (s) { return fmt.num(result(s).range, 1) + ' m'; }, color: 'var(--brand)' }
+      ],
+
+      goal: {
+        label: function () { return 'Clear the ' + wallHeight + ' m wall, then land between ' + targetXMin + '–' + targetXMax + ' m'; },
+        hit: function (s) { return clearsWall(s) && inTarget(s); }
+      },
+
+      draw: function (ctx, w, h, state, d) {
+        var groundY = h - 26, topY = 16;
+        var startX = 18;
+        var scaleX = (w - startX - 12) / PROJ_WORLD_X;
+        var scaleY = (groundY - topY) / PROJ_WORLD_Y;
+        function toPx(x, y) { return { x: startX + x * scaleX, y: groundY - y * scaleY }; }
+
+        d.grid(ctx, w, h, 28);
+        d.ground(ctx, w, groundY);
+
+        var hit = state && clearsWall(state) && inTarget(state);
+
+        // target zone
+        var tp0 = toPx(targetXMin, 0), tp1 = toPx(targetXMax, 0);
+        ctx.save();
+        ctx.fillStyle = hit ? 'rgba(52,211,153,.28)' : 'rgba(245,158,11,.22)';
+        ctx.fillRect(tp0.x, groundY - 6, tp1.x - tp0.x, 6);
+        ctx.restore();
+        d.label(ctx, (tp0.x + tp1.x) / 2, groundY + 16, 'target', '#9aa9cc', 'center');
+
+        // wall
+        if (wallX != null) {
+          var wp = toPx(wallX, 0);
+          var wallClear = clearsWall(state);
+          ctx.save();
+          ctx.fillStyle = wallClear ? 'rgba(255,255,255,.35)' : '#fb7185';
+          ctx.fillRect(wp.x - 2, groundY - wallHeight * scaleY, 4, wallHeight * scaleY);
+          ctx.restore();
+          d.label(ctx, wp.x, groundY - wallHeight * scaleY - 8, 'wall', '#9aa9cc', 'center');
+        }
+
+        // trajectory
+        var res = result(state);
+        var T = res.timeOfFlight;
+        ctx.save();
+        ctx.strokeStyle = hit ? '#34d399' : '#38bdf8';
+        ctx.lineWidth = 2.5;
+        ctx.beginPath();
+        var N = 40;
+        for (var i = 0; i <= N; i++) {
+          var t = (T * i) / N;
+          var p = kin.projectilePosition(state.speed, state.angle, t);
+          var px = toPx(p.x, Math.max(0, p.y));
+          if (i === 0) ctx.moveTo(px.x, px.y); else ctx.lineTo(px.x, px.y);
+        }
+        ctx.stroke();
+        ctx.restore();
+
+        // landing marker
+        var land = toPx(res.range, 0);
+        d.dashedV(ctx, land.x, topY, groundY, 'rgba(255,255,255,.18)');
+        d.label(ctx, land.x, topY - 6, fmt.num(res.range, 1) + ' m', '#c3cbe0', 'center');
+
+        // launch velocity arrow
+        var launch = toPx(0, 0);
+        var ang = state.angle * Math.PI / 180;
+        var arrowLen = 30;
+        d.arrow(ctx, launch.x, launch.y, launch.x + Math.cos(ang) * arrowLen, launch.y - Math.sin(ang) * arrowLen, '#f59e0b', 8);
+        ctx.save();
+        ctx.font = '20px system-ui, sans-serif';
+        ctx.textAlign = 'center'; ctx.textBaseline = 'alphabetic';
+        ctx.fillText('🚀', launch.x, launch.y - 2);
+        ctx.restore();
+      }
+    };
+  }
+
   root.PA = root.PA || {};
   root.PA.sims = {
     drop: dropSim,
     brake: brakeSim,
-    vectorAdd: vectorAddSim
+    vectorAdd: vectorAddSim,
+    projectile: projectileSim
   };
 
 })(typeof window !== 'undefined' ? window : globalThis);
