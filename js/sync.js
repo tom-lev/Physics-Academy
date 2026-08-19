@@ -8,10 +8,8 @@
 (function (root) {
   'use strict';
 
-  // Single point of configuration: update this once the real Render
-  // service URL is known. Placeholder until then — sync calls will
-  // fail (gracefully) against this host.
-  var API_BASE = 'https://physics-academy-api.onrender.com';
+  // Single point of configuration.
+  var API_BASE = 'https://physics-academy-nuxi.onrender.com';
 
   var CODE_KEY = 'physics-academy/sync-code';
   var CODE_RE = /^[ABCDEFGHJKMNPQRSTUVWXYZ23456789]{4}-[ABCDEFGHJKMNPQRSTUVWXYZ23456789]{4}$/;
