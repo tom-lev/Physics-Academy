@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Physics Academy — learn physics by playing with it</title>
+<meta name="description" content="An interactive, game-like physics course. Build real intuition with simulations you can grab and break.">
+<link rel="stylesheet" href="css/style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚛️</text></svg>">
+</head>
+<body>
+
+<header class="topbar" id="topbar">
+  <a class="brand" href="#/">
+    <span class="brand-mark">Φ</span>
+    <span class="brand-name">Physics Academy</span>
+  </a>
+  <div class="topbar-spacer"></div>
+  <div class="stat-chip strk" id="chip-streak" title="Day streak"><span class="ico">🔥</span><span id="streak-val">0</span></div>
+  <div class="stat-chip xp"   id="chip-xp"     title="Experience points"><span class="ico">⚡</span><span id="xp-val">0</span></div>
+</header>
+
+<main id="view"></main>
+
+<div class="toast" id="toast"></div>
+
+<script src="js/store.js"></script>
+<script src="js/fmt.js"></script>
+<script src="js/physics.js"></script>
+<script src="js/simkit.js"></script>
+<script src="js/sims.js"></script>
+<script src="js/curriculum.js"></script>
+<script src="js/lessons/toolkit.js"></script>
+<script src="js/lessons/kinematics.js"></script>
+<script src="js/engine.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
