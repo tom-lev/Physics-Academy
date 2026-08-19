@@ -166,6 +166,78 @@
       return Kin.projectilePosition(v0, angleDeg, x / vx, g).y;
     },
 
+    /* ---------- forces & Newton's laws (Ch.3) ---------- */
+
+    /** Net force needed/produced: F = ma. */
+    netForce: function (m, a) { return m * a; },
+
+    /** Acceleration from a net force: a = F/m. */
+    accelFromForce: function (Fnet, m) { return Fnet / m; },
+
+    /** Weight = mg. */
+    weight: function (m, g) { g = g == null ? G_EARTH : g; return m * g; },
+
+    /** Normal force on a flat surface with an extra vertical applied force (down positive). Never negative. */
+    normalForceFlat: function (m, g, extraDown) {
+      g = g == null ? G_EARTH : g;
+      var n = m * g + (extraDown || 0);
+      return n < 0 ? 0 : n;
+    },
+
+    /** Normal force on a frictionless incline of angle (deg): N = mg cos(theta). */
+    normalForceIncline: function (m, angleDeg, g) {
+      g = g == null ? G_EARTH : g;
+      return m * g * Math.cos(angleDeg * Math.PI / 180);
+    },
+
+    /** Component of gravity along the slope (down-slope positive): mg sin(theta). */
+    gravityAlongIncline: function (m, angleDeg, g) {
+      g = g == null ? G_EARTH : g;
+      return m * g * Math.sin(angleDeg * Math.PI / 180);
+    },
+
+    /** Maximum static friction force: mu_s * N. */
+    maxStaticFriction: function (muS, N) { return muS * N; },
+
+    /** Kinetic friction force: mu_k * N. */
+    kineticFriction: function (muK, N) { return muK * N; },
+
+    /**
+     * Does a push of magnitude Fapp overcome static friction on a flat
+     * surface? Returns true once Fapp exceeds mu_s * N.
+     */
+    overcomesStaticFriction: function (Fapp, muS, N) {
+      return Fapp > Kin.maxStaticFriction(muS, N);
+    },
+
+    /**
+     * Net acceleration of a block on an incline of angle (deg) with
+     * kinetic friction coefficient muK, sliding down-slope. Returns 0
+     * (stays put) when gravity along the slope can't beat max static
+     * friction; otherwise mg sin(theta) - muK mg cos(theta), divided by m.
+     */
+    inclineAcceleration: function (angleDeg, muK, g) {
+      g = g == null ? G_EARTH : g;
+      var th = angleDeg * Math.PI / 180;
+      var along = g * Math.sin(th);
+      var normal = g * Math.cos(th);
+      var a = along - muK * normal;
+      return a < 0 ? 0 : a;
+    },
+
+    /**
+     * Will a block at rest on an incline start sliding, given static
+     * friction coefficient muS? True when tan(theta) > muS.
+     */
+    inclineSlides: function (angleDeg, muS) {
+      return Math.tan(angleDeg * Math.PI / 180) > muS;
+    },
+
+    /** Angle of repose: the incline angle (deg) at which sliding just begins, tan(theta) = muS. */
+    angleOfRepose: function (muS) {
+      return Math.atan(muS) * 180 / Math.PI;
+    },
+
     /* ---------- numeric helpers ---------- */
 
     /** Area under a piecewise-linear v-t graph = displacement. */

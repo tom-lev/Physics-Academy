@@ -339,12 +339,136 @@
     };
   }
 
+  var INCLINE_ANGLE_MAX = 55;
+  var INCLINE_TOL = 1.5;
+  var INCLINE_SLIDE_MAX = 3;      // meters of slope the block can travel before it settles
+  var INCLINE_KINETIC_RATIO = 0.8; // kinetic friction is typically a bit less than static
+
+  /** Tune the incline angle and static friction so the block sits right on the verge of sliding. */
+  function inclineSim(args) {
+    args = args || {};
+
+    function isSliding(state) { return kin.inclineSlides(state.angle, state.muS); }
+
+    /** Friction force as a fraction of the block's weight (f / mg). */
+    function frictionRatio(state) {
+      var th = state.angle * Math.PI / 180;
+      if (isSliding(state)) return state.muS * INCLINE_KINETIC_RATIO * Math.cos(th);
+      return Math.min(Math.sin(th), state.muS * Math.cos(th));
+    }
+
+    return {
+      aspect: 0.6,
+      state: {
+        angle: args.angle != null ? args.angle : 25,
+        muS: args.muS != null ? args.muS : 0.35,
+        pos: 0, vel: 0
+      },
+
+      controls: [
+        { key: 'angle', label: 'Incline angle', type: 'range', min: 0, max: INCLINE_ANGLE_MAX, step: 1, format: function (v) { return v + '°'; } },
+        { key: 'muS', label: 'Static friction μs', type: 'range', min: 0.05, max: 1.0, step: 0.05, format: function (v) { return fmt.num(v, 2); } }
+      ],
+      buttons: [
+        { label: '↻ Reset block', run: function (state) { state.pos = 0; state.vel = 0; } }
+      ],
+
+      readouts: [
+        { label: 'Critical angle', value: function (s) { return fmt.num(kin.angleOfRepose(s.muS), 1) + '°'; }, color: 'var(--violet)' },
+        { label: 'Status', value: function (s) { return isSliding(s) ? 'Sliding ▼' : 'Holding'; } },
+        { label: 'Down-slope accel', value: function (s) { return fmt.num(isSliding(s) ? kin.inclineAcceleration(s.angle, s.muS * INCLINE_KINETIC_RATIO) : 0, 2) + ' m/s²'; }, color: 'var(--brand)' }
+      ],
+
+      goal: {
+        label: function (s) { return 'Balance on the edge: match the critical angle for μs = ' + fmt.num(s.muS, 2) + ' (~' + fmt.num(kin.angleOfRepose(s.muS), 1) + '°), within ' + INCLINE_TOL + '°'; },
+        hit: function (s) { return Math.abs(s.angle - kin.angleOfRepose(s.muS)) <= INCLINE_TOL; }
+      },
+
+      animate: function (state, dt) {
+        if (isSliding(state)) {
+          var a = kin.inclineAcceleration(state.angle, state.muS * INCLINE_KINETIC_RATIO);
+          state.vel += a * dt;
+          state.pos += state.vel * dt;
+          if (state.pos > INCLINE_SLIDE_MAX) { state.pos = INCLINE_SLIDE_MAX; state.vel = 0; }
+        } else {
+          state.vel = 0;
+        }
+      },
+
+      draw: function (ctx, w, h, state, d) {
+        var groundY = h - 26;
+        var baseX = 26;
+        var slopeLenPx = Math.min(w, h) * 0.62;
+        var th = state.angle * Math.PI / 180;
+
+        var top = { x: baseX, y: groundY - slopeLenPx * Math.sin(th) };
+        var bottom = { x: baseX + slopeLenPx * Math.cos(th), y: groundY };
+        var foot = { x: top.x, y: groundY };
+
+        d.grid(ctx, w, h, 28);
+        d.ground(ctx, w, groundY);
+
+        ctx.save();
+        ctx.fillStyle = 'rgba(255,255,255,.07)';
+        ctx.strokeStyle = 'rgba(255,255,255,.28)';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(foot.x, foot.y); ctx.lineTo(top.x, top.y); ctx.lineTo(bottom.x, bottom.y);
+        ctx.closePath(); ctx.fill(); ctx.stroke();
+        ctx.restore();
+
+        d.label(ctx, foot.x + 20, foot.y - 10, fmt.num(state.angle, 0) + '°', '#9aa9cc', 'left');
+
+        var slopeDir = { x: Math.cos(th), y: Math.sin(th) };
+        var normalDir = { x: Math.sin(th), y: -Math.cos(th) };
+
+        var t = kin.clamp(state.pos / INCLINE_SLIDE_MAX, 0, 1);
+        var onSlope = { x: kin.lerp(top.x, bottom.x, t), y: kin.lerp(top.y, bottom.y, t) };
+        var blockHalf = 9;
+        var center = { x: onSlope.x + normalDir.x * blockHalf, y: onSlope.y + normalDir.y * blockHalf };
+
+        // Neutral block color, distinct from every force-vector color, so
+        // the vectors never blend into the block they're drawn on top of.
+        ctx.save();
+        ctx.translate(center.x, center.y);
+        ctx.rotate(th);
+        ctx.fillStyle = '#c3cbe0';
+        ctx.shadowColor = 'rgba(195,203,224,.6)'; ctx.shadowBlur = 10;
+        ctx.fillRect(-blockHalf, -blockHalf, blockHalf * 2, blockHalf * 2);
+        ctx.restore();
+
+        var baseLen = 44;
+        var wEnd = { x: center.x, y: center.y + baseLen };
+        d.arrow(ctx, center.x, center.y, wEnd.x, wEnd.y, '#f59e0b', 8);
+        d.label(ctx, wEnd.x + 6, wEnd.y, 'W', '#f59e0b', 'left');
+
+        var nLen = baseLen * Math.cos(th);
+        var nEnd = { x: center.x + normalDir.x * nLen, y: center.y + normalDir.y * nLen };
+        d.arrow(ctx, center.x, center.y, nEnd.x, nEnd.y, '#38bdf8', 8);
+        d.label(ctx, nEnd.x + 6, nEnd.y, 'N', '#38bdf8', 'left');
+
+        var fRatio = frictionRatio(state);
+        if (fRatio > 0.01) {
+          // small friction forces still need to read clearly on-canvas, so
+          // floor the drawn length well clear of the block's own footprint
+          // (never drawn at all for genuine zero friction, e.g. flat ground).
+          var fLen = Math.max(baseLen * fRatio, 30);
+          var fColor = isSliding(state) ? '#fb7185' : '#34d399';
+          var fEnd = { x: center.x - slopeDir.x * fLen, y: center.y - slopeDir.y * fLen };
+          d.arrow(ctx, center.x, center.y, fEnd.x, fEnd.y, fColor, 8);
+          d.label(ctx, fEnd.x - 6, fEnd.y - 10, 'f', fColor, 'right');
+        }
+      }
+    };
+  }
+
   root.PA = root.PA || {};
   root.PA.sims = {
     drop: dropSim,
     brake: brakeSim,
     vectorAdd: vectorAddSim,
-    projectile: projectileSim
+    projectile: projectileSim,
+    incline: inclineSim
   };
 
 })(typeof window !== 'undefined' ? window : globalThis);

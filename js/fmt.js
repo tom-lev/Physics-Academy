@@ -27,7 +27,9 @@
     to: '→', rightarrow: '→', leftarrow: '←', Rightarrow: '⇒',
     infty: '∞', degree: '°', partial: '∂', nabla: '∇', sum: '∑', int: '∫',
     perp: '⊥', parallel: '∥', angle: '∠', ldots: '…', cdots: '⋯',
-    langle: '⟨', rangle: '⟩', prime: '′'
+    langle: '⟨', rangle: '⟩', prime: '′',
+    // spacing
+    quad: ' ', qquad: '  '
   };
 
   // multi-letter names that should render upright, not italic

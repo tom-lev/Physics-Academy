@@ -1,0 +1,15 @@
+{
+  "name": "physics-academy-sync-api",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Small Express + Upstash Redis API for cross-device progress sync (Physics Academy).",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "@upstash/redis": "^1.34.0",
+    "cors": "^2.8.5",
+    "express": "^4.19.2"
+  }
+}

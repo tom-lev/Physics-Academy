@@ -11,6 +11,7 @@
   var fmt = root.PA.fmt;
   var store = root.PA.store;
   var curriculum = root.PA.curriculum;
+  var sync = root.PA.sync;
 
   var view = document.getElementById('view');
   var toastEl = document.getElementById('toast');
@@ -106,6 +107,123 @@
     view.appendChild(page);
   }
 
+  /* ---------- sync: cross-device pairing ---------- */
+
+  function renderSync() {
+    var page = el('div', 'page');
+    var wrap = el('div', 'wrap');
+
+    var crumb = el('a', 'crumb', '← Course map');
+    crumb.href = '#/';
+    wrap.appendChild(crumb);
+
+    var heroEl = el('div', 'ch-hero');
+    heroEl.innerHTML =
+      '<div class="ch-icon">🔄</div>' +
+      '<div><h1>Sync progress</h1><p>Pair this browser with a permanent sync code to keep XP, streak, and lesson progress in step across your phone and computer.</p></div>';
+    wrap.appendChild(heroEl);
+
+    if (!sync) {
+      var unavailable = el('div', 'callout warn', '<span class="c-ico">⚠️</span><div>Sync isn\'t available in this build.</div>');
+      wrap.appendChild(unavailable);
+      page.appendChild(wrap);
+      view.innerHTML = '';
+      view.appendChild(page);
+      return;
+    }
+
+    var st = sync.status();
+    var code = sync.getCode();
+
+    var statusRow = el('div', 'settings-row');
+    statusRow.innerHTML =
+      '<div><div class="sr-title">This device</div><div class="sr-sub">' +
+      (code ? 'Linked to code <strong>' + fmt.esc(code) + '</strong>' + (st.syncing ? ' — syncing…' : '')
+            : 'Not linked — progress stays on this device only.') +
+      '</div></div>';
+    if (code) {
+      var unlinkBtn = el('button', 'btn btn-ghost btn-sm', 'Unlink this device');
+      unlinkBtn.type = 'button';
+      unlinkBtn.addEventListener('click', function () {
+        sync.unlink();
+        toast('Unlinked. Server data untouched.');
+        renderSync();
+      });
+      statusRow.appendChild(unlinkBtn);
+    }
+    wrap.appendChild(statusRow);
+
+    if (st.lastError) {
+      var errCallout = el('div', 'callout warn');
+      errCallout.innerHTML = '<span class="c-ico">⚠️</span><div>Couldn\'t reach the sync server: ' + fmt.esc(st.lastError) + '. Your progress is safe locally — this will retry automatically.</div>';
+      wrap.appendChild(errCallout);
+    }
+
+    var genRow = el('div', 'settings-row');
+    genRow.innerHTML = '<div><div class="sr-title">Generate a new code</div><div class="sr-sub">Creates a fresh sync code for this device to enter on your other one.</div></div>';
+    var genBtn = el('button', 'btn btn-primary btn-sm', 'Generate new code');
+    genBtn.type = 'button';
+    genBtn.disabled = st.syncing;
+    genBtn.addEventListener('click', function () {
+      genBtn.disabled = true;
+      sync.generateCode(function (err, newCode) {
+        if (err) { toast('Could not generate a code — server unreachable.'); renderSync(); return; }
+        toast('New sync code created.');
+        renderSync();
+      });
+    });
+    genRow.appendChild(genBtn);
+    wrap.appendChild(genRow);
+
+    if (code) {
+      var codeCallout = el('div', 'callout key');
+      codeCallout.innerHTML =
+        '<span class="c-ico">🔑</span><div><strong class="mathv">' + fmt.esc(code) + '</strong>' +
+        '<div style="margin-top:6px">Write this down — you\'ll need it on your other device. It never expires and isn\'t tied to any account.</div></div>';
+      var copyBtn = el('button', 'btn btn-ghost btn-sm', 'Copy code');
+      copyBtn.type = 'button';
+      copyBtn.style.marginLeft = '12px';
+      copyBtn.addEventListener('click', function () {
+        try {
+          if (root.navigator && root.navigator.clipboard && root.navigator.clipboard.writeText) {
+            root.navigator.clipboard.writeText(code);
+            toast('Code copied.');
+          }
+        } catch (e) { /* clipboard unavailable — user can still select the text */ }
+      });
+      codeCallout.appendChild(copyBtn);
+      wrap.appendChild(codeCallout);
+    }
+
+    var linkRow = el('div', 'settings-row');
+    linkRow.innerHTML = '<div><div class="sr-title">Link an existing code</div><div class="sr-sub">Already generated a code on another device? Enter it here.</div></div>';
+    wrap.appendChild(linkRow);
+
+    var linkForm = el('div', 'numrow');
+    var linkInput = el('input', 'numinput');
+    linkInput.type = 'text';
+    linkInput.placeholder = 'XXXX-XXXX';
+    linkInput.maxLength = 9;
+    var linkBtn = el('button', 'btn btn-sm', 'Link this device');
+    linkBtn.type = 'button';
+    linkBtn.disabled = st.syncing;
+    linkBtn.addEventListener('click', function () {
+      linkBtn.disabled = true;
+      sync.link(linkInput.value, function (err) {
+        if (err) { toast('Could not link: ' + err.message); renderSync(); return; }
+        toast('Linked and merged progress.');
+        renderSync();
+      });
+    });
+    linkForm.appendChild(linkInput);
+    linkForm.appendChild(linkBtn);
+    wrap.appendChild(linkForm);
+
+    page.appendChild(wrap);
+    view.innerHTML = '';
+    view.appendChild(page);
+  }
+
   /* ---------- chapter: lesson path ---------- */
 
   function renderChapter(id) {
@@ -172,6 +290,7 @@
 
   function route() {
     var hash = location.hash || '#/';
+    if (hash === '#/sync') { renderSync(); return; }
     var m = /^#\/chapter\/([^/]+)/.exec(hash);
     if (m) renderChapter(decodeURIComponent(m[1]));
     else renderHome();
