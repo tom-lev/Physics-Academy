@@ -723,18 +723,24 @@ a { color: var(--brand); text-decoration: none; }
   flex: none;
 }
 .orderitem .otext { flex: 1; }
-.ordermove { display: flex; flex-direction: column; gap: 2px; flex: none; }
-.ordermove button {
-  width: 26px; height: 19px;
-  border-radius: 6px;
-  background: var(--card-3);
-  color: var(--ink-dim);
-  font-size: 11px;
-  line-height: 1;
-  display: grid; place-items: center;
+.orderitem.dragging {
+  transition: none;
+  cursor: grabbing;
+  box-shadow: var(--shadow);
+  border-color: var(--brand);
+  background: var(--card-2);
 }
-.ordermove button:hover { background: var(--brand); color: var(--brand-ink); }
-.ordermove button[disabled] { opacity: .3; pointer-events: none; }
+.draghandle {
+  flex: none;
+  width: 26px; height: 26px;
+  display: grid; place-items: center;
+  font-size: 15px;
+  letter-spacing: -3px;
+  color: var(--ink-faint);
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+}
 .orderitem.ok { border-color: var(--good); background: rgba(52,211,153,.10); }
 .orderitem.ko { border-color: var(--bad); background: rgba(251,113,133,.09); }
 

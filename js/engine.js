@@ -22,6 +22,12 @@
        // sim:
        simId, args, note
      }
+
+   Mid-lesson progress (current step + graded answers so far) is
+   persisted via PA.store.save/load/clearStepProgress so leaving and
+   reopening a lesson resumes where you left off; Back/Continue replay
+   already-graded steps in their locked, already-answered state rather
+   than re-asking them.
    ============================================================ */
 (function (root) {
   'use strict';
@@ -88,18 +94,41 @@
     this.onExit = opts.onExit || function () {};
     this.onAdvance = opts.onAdvance || function () {};
 
-    this.idx = 0;
+    var n = this.lesson.steps.length;
+    var saved = root.PA.store.loadStepProgress(this.lesson.id);
+    if (saved && saved.idx >= 0 && saved.idx < n) {
+      this.idx = saved.idx;
+      this.stepAnswers = saved.answers.slice(0, n);
+    } else {
+      this.idx = 0;
+      this.stepAnswers = [];
+    }
+
     this.correct = 0;
     this.total = 0;
     this.answered = false;
-    this.isCorrectAnswer = false;
-    this.checkFn = null;      // set per-step; returns bool
+    this.checkFn = null;      // set per-step; returns {ok, explain, detail}
     this.gradable = false;
     this.simCtrl = null;
 
+    this._recomputeScore();
     this._build();
     this._renderStep();
   }
+
+  Engine.prototype._recomputeScore = function () {
+    var correct = 0, total = 0;
+    for (var i = 0; i < this.stepAnswers.length; i++) {
+      var a = this.stepAnswers[i];
+      if (a && a.graded) { total++; if (a.ok) correct++; }
+    }
+    this.correct = correct;
+    this.total = total;
+  };
+
+  Engine.prototype._saveProgress = function () {
+    root.PA.store.saveStepProgress(this.lesson.id, this.idx, this.stepAnswers);
+  };
 
   Engine.prototype._build = function () {
     var self = this;
@@ -109,14 +138,19 @@
     this.node.style.setProperty('--ch-color', color);
 
     var top = el('div', 'player-top');
-    var back = el('button', 'icon-btn', '✕');
+    var close = el('button', 'icon-btn', '✕');
+    close.type = 'button';
+    close.addEventListener('click', function () { self.exit(); });
+    var back = el('button', 'icon-btn', '‹');
     back.type = 'button';
-    back.addEventListener('click', function () { self.exit(); });
+    back.title = 'Previous step';
+    back.addEventListener('click', function () { self._goBack(); });
+    this.backBtn = back;
     var bar = el('div', 'player-bar');
     this.barFill = el('div', 'player-bar-fill');
     bar.appendChild(this.barFill);
     this.scoreEl = el('div', 'player-score', '0/0');
-    top.appendChild(back); top.appendChild(bar); top.appendChild(this.scoreEl);
+    top.appendChild(close); top.appendChild(back); top.appendChild(bar); top.appendChild(this.scoreEl);
 
     this.scroll = el('div', 'player-scroll');
 
@@ -143,6 +177,9 @@
     var pct = Math.round(((this.idx) / steps.length) * 100);
     this.barFill.style.width = Math.max(6, pct) + '%';
     this.scoreEl.textContent = this.correct + '/' + this.total;
+    this.backBtn.disabled = this.idx === 0;
+    this.backBtn.style.opacity = this.idx === 0 ? '.32' : '';
+    this.backBtn.style.pointerEvents = this.idx === 0 ? 'none' : '';
   };
 
   Engine.prototype._resetFoot = function (label, disabled) {
@@ -152,20 +189,34 @@
     this.actionBtn.disabled = !!disabled;
   };
 
+  Engine.prototype._showFeedback = function (ok, explain) {
+    this.footbar.classList.add(ok ? 'good' : 'bad');
+    var head = el('div', 'fb-head ' + (ok ? 'good' : 'bad'), ok ? '✅ Correct' : '❌ Not quite');
+    this.feedbackEl.innerHTML = '';
+    this.feedbackEl.appendChild(head);
+    if (explain) this.feedbackEl.appendChild(el('div', 'fb-body', fmt.inline(explain)));
+  };
+
   Engine.prototype._renderStep = function () {
     if (this.simCtrl) { this.simCtrl.destroy(); this.simCtrl = null; }
     this.scroll.innerHTML = '';
     this.scroll.scrollTop = 0;
-    this.answered = false;
-    this.isCorrectAnswer = false;
     this.checkFn = null;
 
     var step = this.lesson.steps[this.idx];
+    var saved = this.stepAnswers[this.idx] || null;
+    this.gradable = (step.kind === 'mcq' || step.kind === 'numeric' || step.kind === 'order');
+    this.answered = !!(saved && saved.graded);
+
     var wrap = el('div', 'step');
 
     var kickerText = step.kicker || ({ lesson: 'CONCEPT', mcq: 'CHECK YOUR UNDERSTANDING', numeric: 'YOUR TURN', order: 'PUT IT IN ORDER', sim: 'TRY IT' })[step.kind];
     wrap.appendChild(el('div', 'step-kicker', fmt.esc(kickerText)));
     if (step.title) wrap.appendChild(el('h2', null, fmt.inline(step.title)));
+
+    var isLast = this.idx === this.lesson.steps.length - 1;
+    var freshDisabled = (step.kind === 'mcq' || step.kind === 'numeric');
+    this._resetFoot(this.gradable ? 'Check' : (isLast ? 'Finish' : 'Continue'), !this.answered && freshDisabled);
 
     var renderers = {
       lesson: this._renderLesson,
@@ -174,13 +225,16 @@
       order: this._renderOrder,
       sim: this._renderSim
     };
-    renderers[step.kind].call(this, wrap, step);
+    renderers[step.kind].call(this, wrap, step, saved);
 
     this.scroll.appendChild(wrap);
 
-    this.gradable = (step.kind === 'mcq' || step.kind === 'numeric' || step.kind === 'order');
-    var isLast = this.idx === this.lesson.steps.length - 1;
-    this._resetFoot(this.gradable ? 'Check' : (isLast ? 'Finish' : 'Continue'), this.gradable);
+    if (this.answered) {
+      this.actionBtn.textContent = isLast ? 'Finish' : 'Continue';
+      this.actionBtn.disabled = false;
+      this._showFeedback(saved.ok, saved.explain);
+    }
+
     this._updateChrome();
   };
 
@@ -192,27 +246,34 @@
   };
 
   /* ---- multiple choice ---- */
-  Engine.prototype._renderMcq = function (wrap, step) {
+  Engine.prototype._renderMcq = function (wrap, step, saved) {
     var self = this;
     if (step.prompt) wrap.appendChild(el('p', 'prompt', fmt.inline(step.prompt)));
     renderFormula(wrap, step.formula);
 
     var order = shuffledIndices(step.options.length);
     var list = el('div', 'options');
-    var selected = -1;
+    var selected = saved ? saved.detail.selected : -1;
     var optEls = [];
 
     order.forEach(function (origIdx, pos) {
       var key = String.fromCharCode(65 + pos);
       var opt = el('button', 'opt', '<span class="opt-key">' + key + '</span><span class="opt-text">' + fmt.inline(step.options[origIdx]) + '</span>');
       opt.type = 'button';
-      opt.addEventListener('click', function () {
-        if (self.answered) return;
-        selected = origIdx;
-        optEls.forEach(function (o) { o.classList.remove('sel'); });
-        opt.classList.add('sel');
-        self.actionBtn.disabled = false;
-      });
+      if (saved) {
+        opt.classList.add('locked');
+        if (origIdx === step.correct) opt.classList.add('ok');
+        else if (origIdx === selected) opt.classList.add('ko');
+        else opt.classList.add('dim');
+      } else {
+        opt.addEventListener('click', function () {
+          if (self.answered) return;
+          selected = origIdx;
+          optEls.forEach(function (o) { o.classList.remove('sel'); });
+          opt.classList.add('sel');
+          self.actionBtn.disabled = false;
+        });
+      }
       optEls.push(opt);
       list.appendChild(opt);
     });
@@ -228,12 +289,12 @@
         else if (origIdx === selected) o.classList.add('ko');
         else o.classList.add('dim');
       });
-      return { ok: ok, explain: step.explain };
+      return { ok: ok, explain: step.explain, detail: { selected: selected } };
     };
   };
 
   /* ---- numeric answer ---- */
-  Engine.prototype._renderNumeric = function (wrap, step) {
+  Engine.prototype._renderNumeric = function (wrap, step, saved) {
     var self = this;
     if (step.prompt) wrap.appendChild(el('p', 'prompt', fmt.inline(step.prompt)));
     renderFormula(wrap, step.formula);
@@ -244,9 +305,16 @@
     input.inputMode = 'decimal';
     input.className = 'numinput';
     input.placeholder = step.placeholder || '0';
-    input.addEventListener('input', function () {
-      self.actionBtn.disabled = input.value.trim() === '';
-    });
+
+    if (saved) {
+      input.value = saved.detail.value;
+      input.disabled = true;
+      input.classList.add(saved.ok ? 'ok' : 'ko');
+    } else {
+      input.addEventListener('input', function () {
+        self.actionBtn.disabled = input.value.trim() === '';
+      });
+    }
     row.appendChild(input);
     if (step.unit) row.appendChild(el('span', 'numunit', fmt.esc(step.unit)));
     wrap.appendChild(row);
@@ -260,50 +328,116 @@
       input.disabled = true;
       var explain = (step.explain || '') +
         (ok ? '' : ' Correct answer: ' + fmt.num(step.correct, step.decimals) + (step.unit ? ' ' + step.unit : '') + '.');
-      return { ok: ok, explain: explain };
+      return { ok: ok, explain: explain, detail: { value: v } };
     };
   };
 
-  /* ---- order / ranking ---- */
-  Engine.prototype._renderOrder = function (wrap, step) {
+  /* ---- order / ranking (drag to reorder) ---- */
+  Engine.prototype._renderOrder = function (wrap, step, saved) {
     var self = this;
     if (step.prompt) wrap.appendChild(el('p', 'prompt', fmt.inline(step.prompt)));
 
     var n = step.items.length;
-    var order = shuffledIndices(n);
+    var order = saved ? saved.detail.order.slice() : shuffledIndices(n);
+    var locked = !!saved;
+    var GAP = 9;
     var list = el('div', 'orderlist');
     var rows = [];
+    var drag = null;
 
     function draw() {
       list.innerHTML = '';
       rows = [];
       order.forEach(function (origIdx, pos) {
         var row = el('div', 'orderitem');
-        row.innerHTML = '<span class="rank">' + (pos + 1) + '</span>' +
-          '<span class="otext">' + fmt.inline(step.items[origIdx]) + '</span>';
-        var move = el('div', 'ordermove');
-        var up = el('button', null, '▲'); up.type = 'button';
-        var down = el('button', null, '▼'); down.type = 'button';
-        if (pos === 0) up.disabled = true;
-        if (pos === n - 1) down.disabled = true;
-        up.addEventListener('click', function () {
-          if (self.answered) return;
-          var t = order[pos - 1]; order[pos - 1] = order[pos]; order[pos] = t; draw();
-        });
-        down.addEventListener('click', function () {
-          if (self.answered) return;
-          var t = order[pos + 1]; order[pos + 1] = order[pos]; order[pos] = t; draw();
-        });
-        move.appendChild(up); move.appendChild(down);
-        row.appendChild(move);
+        row.innerHTML =
+          '<span class="rank">' + (pos + 1) + '</span>' +
+          '<span class="otext">' + fmt.inline(step.items[origIdx]) + '</span>' +
+          (locked ? '' : '<span class="draghandle" aria-hidden="true">⠿⠿</span>');
+        if (locked) row.classList.add(order[pos] === pos ? 'ok' : 'ko');
         list.appendChild(row);
         rows.push(row);
+        if (!locked) wireDrag(row, pos);
       });
     }
+
+    function wireDrag(row, pos) {
+      var handle = row.querySelector('.draghandle');
+      handle.addEventListener('pointerdown', function (e) {
+        if (self.answered) return;
+        if (e.button != null && e.button !== 0) return;
+        startDrag(e, pos);
+      });
+    }
+
+    function measure() {
+      var heights = rows.map(function (r) { return r.offsetHeight; });
+      var tops = [], y = 0;
+      for (var i = 0; i < heights.length; i++) { tops[i] = y; y += heights[i] + GAP; }
+      var mids = tops.map(function (t, i) { return t + heights[i] / 2; });
+      return { heights: heights, tops: tops, mids: mids };
+    }
+
+    function startDrag(e, startPos) {
+      if (e.cancelable) e.preventDefault();
+      var m = measure();
+      drag = { startPos: startPos, target: startPos, startY: e.clientY, heights: m.heights, tops: m.tops, mids: m.mids };
+      var row = rows[startPos];
+      row.classList.add('dragging');
+      try { row.setPointerCapture(e.pointerId); } catch (err) {}
+      row.addEventListener('pointermove', onMove);
+      row.addEventListener('pointerup', onUp);
+      row.addEventListener('pointercancel', onUp);
+
+      function onMove(ev) {
+        if (!drag) return;
+        var dy = ev.clientY - drag.startY;
+        row.style.transform = 'translateY(' + dy + 'px)';
+
+        var center = drag.mids[drag.startPos] + dy;
+        var count = 0;
+        for (var i = 0; i < rows.length; i++) {
+          if (i === drag.startPos) continue;
+          if (drag.mids[i] < center) count++;
+        }
+        if (count !== drag.target) { drag.target = count; preview(); }
+      }
+
+      function preview() {
+        var posOrder = [];
+        for (var i = 0; i < rows.length; i++) posOrder.push(i);
+        var moved = posOrder.splice(drag.startPos, 1)[0];
+        posOrder.splice(drag.target, 0, moved);
+
+        var y = 0;
+        for (var k = 0; k < posOrder.length; k++) {
+          var p = posOrder[k];
+          if (p !== drag.startPos) {
+            rows[p].style.transition = 'transform .16s ease';
+            rows[p].style.transform = 'translateY(' + (y - drag.tops[p]) + 'px)';
+          }
+          y += drag.heights[p] + GAP;
+        }
+      }
+
+      function onUp(ev) {
+        try { row.releasePointerCapture(ev.pointerId); } catch (err) {}
+        row.removeEventListener('pointermove', onMove);
+        row.removeEventListener('pointerup', onUp);
+        row.removeEventListener('pointercancel', onUp);
+        var target = drag.target, startPosLocal = drag.startPos;
+        drag = null;
+        if (target !== startPosLocal) {
+          var moved = order.splice(startPosLocal, 1)[0];
+          order.splice(target, 0, moved);
+        }
+        draw();
+      }
+    }
+
     draw();
     wrap.appendChild(list);
     renderHint(wrap, step.hint);
-    this.actionBtn.disabled = false;
 
     this.checkFn = function () {
       var ok = true;
@@ -311,7 +445,7 @@
       rows.forEach(function (row, pos) {
         row.classList.add(order[pos] === pos ? 'ok' : 'ko');
       });
-      return { ok: ok, explain: step.explain };
+      return { ok: ok, explain: step.explain, detail: { order: order.slice() } };
     };
   };
 
@@ -322,7 +456,6 @@
     var spec = factory(step.args || {});
     this.simCtrl = root.PA.simkit.build(wrap, spec);
     if (step.note) wrap.appendChild(el('div', 'callout', '<span class="c-ico">💡</span><div>' + fmt.inline(step.note) + '</div>'));
-    this.actionBtn.disabled = false;
   };
 
   /* ---- action button: Check -> shows feedback, Continue -> next step ---- */
@@ -330,20 +463,15 @@
     if (this.gradable && !this.answered) {
       var result = this.checkFn();
       this.answered = true;
-      this.isCorrectAnswer = result.ok;
-      this.total++;
-      if (result.ok) this.correct++;
+      this.stepAnswers[this.idx] = { graded: true, ok: result.ok, explain: result.explain, detail: result.detail };
+      this._recomputeScore();
       this._updateChrome();
-
-      this.footbar.classList.add(result.ok ? 'good' : 'bad');
-      var head = el('div', 'fb-head ' + (result.ok ? 'good' : 'bad'), result.ok ? '✅ Correct' : '❌ Not quite');
-      this.feedbackEl.innerHTML = '';
-      this.feedbackEl.appendChild(head);
-      if (result.explain) this.feedbackEl.appendChild(el('div', 'fb-body', fmt.inline(result.explain)));
+      this._showFeedback(result.ok, result.explain);
 
       var isLast = this.idx === this.lesson.steps.length - 1;
       this.actionBtn.textContent = isLast ? 'Finish' : 'Continue';
       this.actionBtn.disabled = false;
+      this._saveProgress();
       return;
     }
     this._advance();
@@ -353,15 +481,24 @@
     if (this.idx < this.lesson.steps.length - 1) {
       this.idx++;
       this._renderStep();
+      this._saveProgress();
     } else {
       this._finish();
     }
+  };
+
+  Engine.prototype._goBack = function () {
+    if (this.idx === 0) return;
+    this.idx--;
+    this._renderStep();
+    this._saveProgress();
   };
 
   Engine.prototype._finish = function () {
     var self = this;
     if (this.simCtrl) { this.simCtrl.destroy(); this.simCtrl = null; }
 
+    root.PA.store.clearStepProgress(this.lesson.id);
     var result = root.PA.store.completeLesson(this.lesson.id, this.correct, this.total);
     this.onAdvance(result);
 
@@ -390,7 +527,16 @@
       nextBtn.type = 'button';
       nextBtn.addEventListener('click', function () {
         self.lesson = next;
-        self.idx = 0; self.correct = 0; self.total = 0;
+        var n = next.steps.length;
+        var savedNext = root.PA.store.loadStepProgress(next.id);
+        if (savedNext && savedNext.idx >= 0 && savedNext.idx < n) {
+          self.idx = savedNext.idx;
+          self.stepAnswers = savedNext.answers.slice(0, n);
+        } else {
+          self.idx = 0;
+          self.stepAnswers = [];
+        }
+        self._recomputeScore();
         self.footbar.style.display = '';
         self._renderStep();
       });

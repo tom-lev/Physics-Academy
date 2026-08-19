@@ -14,6 +14,7 @@
       xp: 0,
       lessons: {},                       // id -> { done, best, attempts, lastTs }
       streak: { count: 0, lastDay: null },
+      inProgress: {},                    // lessonId -> { idx, answers, ts } — mid-lesson resume, local-only
       createdAt: Date.now()
     };
   }
@@ -69,6 +70,18 @@
     if (raw.streak && typeof raw.streak === 'object') {
       d.streak.count = Math.max(0, Math.floor(raw.streak.count || 0));
       d.streak.lastDay = typeof raw.streak.lastDay === 'string' ? raw.streak.lastDay : null;
+    }
+    if (raw.inProgress && typeof raw.inProgress === 'object') {
+      for (var lid in raw.inProgress) {
+        if (!Object.prototype.hasOwnProperty.call(raw.inProgress, lid)) continue;
+        var p = raw.inProgress[lid];
+        if (!p || typeof p !== 'object' || !Array.isArray(p.answers)) continue;
+        d.inProgress[lid] = {
+          idx: Math.max(0, Math.floor(p.idx || 0)),
+          answers: p.answers,
+          ts: typeof p.ts === 'number' ? p.ts : Date.now()
+        };
+      }
     }
     if (typeof raw.createdAt === 'number') d.createdAt = raw.createdAt;
     return d;
@@ -151,6 +164,7 @@
         attempts: (prev ? prev.attempts : 0) + 1,
         lastTs: now
       };
+      delete data.inProgress[lessonId];
 
       // XP: full award the first time, a reduced award for review passes.
       var base = firstTime ? 20 : 5;
@@ -208,6 +222,21 @@
         if (lessons[i].steps && !Store.isDone(lessons[i].id)) return lessons[i];
       }
       return null;
+    },
+
+    /** Mid-lesson resume point: current step index + the answers given so far. */
+    saveStepProgress: function (lessonId, idx, answers) {
+      data.inProgress[lessonId] = { idx: Math.max(0, Math.floor(idx || 0)), answers: answers, ts: Date.now() };
+      save();
+    },
+
+    loadStepProgress: function (lessonId) {
+      return data.inProgress[lessonId] || null;
+    },
+
+    clearStepProgress: function (lessonId) {
+      delete data.inProgress[lessonId];
+      save();
     },
 
     reset: function () {
