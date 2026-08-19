@@ -46,8 +46,8 @@ before it has already populated `window.PA`:
 
 ```
 store.js → fmt.js → physics.js → simkit.js → sims.js → curriculum.js
-  → lessons/toolkit.js → lessons/kinematics.js → lessons/projectile.js → ...
-  → engine.js → app.js
+  → lessons/toolkit.js → lessons/kinematics.js → lessons/projectile.js
+  → lessons/forces.js → ... → engine.js → sync.js → app.js
 ```
 
 Adding a new lesson file means adding its `<script>` tag in that block, after
@@ -114,11 +114,13 @@ authoritative list, but in short:
 - `sim` — `prompt`, `simId` (key into `PA.sims`), `args` passed to that factory,
   optional `note`.
 
-All four chapters built so far (`toolkit`, `kinematics`, `projectile`, `forces`)
-are good reference examples for tone, step-mix, and how later chapters
-explicitly cross-reference concepts taught in earlier ones (e.g. projectile
-motion's velocity components reusing the vector-components lesson from
-`toolkit.js`).
+The four chapters built so far (`toolkit`, `kinematics`, `projectile`, `forces`
+— in that build order) are good reference examples for tone, step-mix, and how
+later chapters explicitly cross-reference concepts taught in earlier ones (e.g.
+projectile motion's velocity components reusing the vector-components lesson
+from `toolkit.js`). Next up, in order: `energy` (Work & Energy), `momentum`,
+`circular-gravity`, `rotational`, `fluids`, then Tier 2 onward — see
+`curriculum.js` for the full chapter list and ids.
 
 ### Styling
 
@@ -146,10 +148,13 @@ existing `addXp(0)` purely to reuse `store`'s own save/notify pipeline, rather t
 adding a new public method to `store.js`. It auto-pulls once on load if a code is
 saved, and auto-pushes (debounced ~2.5s) on `store.onChange` while a code is
 linked; any network failure fails silently into `PA.sync.status()`, never breaking
-local-only usage. `js/sync.js`'s `API_BASE` constant is a placeholder
-(`physics-academy-api.onrender.com`) — update it once the real Render URL exists.
-The pairing UI lives at the `#/sync` route in `app.js`, reached from the small
-🔄 icon in the topbar.
+local-only usage. `js/sync.js`'s `API_BASE` constant points at the live deployed
+backend, `https://physics-academy-nuxi.onrender.com` (Render free tier — the
+service sleeps after ~15min idle, so the first request after a lull can take
+30-50s to wake it). The pairing UI lives at the `#/sync` route in `app.js`,
+reached from the small 🔄 icon in the topbar. Redeploying `server/` only
+requires a `git push` — Render auto-deploys `main`; the Upstash credentials
+live in Render's environment variables, never in the repo.
 
 ### Curriculum scope
 
