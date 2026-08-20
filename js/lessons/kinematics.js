@@ -136,7 +136,7 @@
           kind: 'lesson',
           title: 'Instantaneous velocity: zooming all the way in',
           hook: 'A trip computer\'s "avg speed: 65 km/h" hides the fact you did 120 on the open highway and 20 crawling through a work zone — one honest number smoothing over a much messier reality.',
-          body: 'Your speedometer, by contrast, never lies like that — it reports **instantaneous velocity**, the average velocity over an interval so short it might as well be a single instant. Graphically, that\'s the slope of the tangent line on a position-vs-time graph at that exact point.',
+          body: 'Your speedometer, by contrast, never lies like that — it reports **instantaneous velocity**, the average velocity over an interval so short it might as well be a single instant.\n\nPicture that on a position-vs-time ($x$-$t$) graph: if the line curves — because the speed keeps changing — zoom in far enough on any one point and the curve starts looking almost perfectly straight. That straight line, the one that just grazes the curve at that exact point and matches its direction there without crossing through it, is called the **tangent line**. Its slope *is* your instantaneous velocity at that instant.',
           callout: { variant: 'info', text: 'Steeper slope on an $x$-$t$ graph = faster. A flat slope means the object is momentarily at rest.' }
         },
         {
