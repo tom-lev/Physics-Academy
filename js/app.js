@@ -167,8 +167,11 @@
     wrap.appendChild(statusRow);
 
     if (st.lastError) {
-      var errCallout = el('div', 'callout warn');
-      errCallout.innerHTML = '<span class="c-ico">⚠️</span><div>Couldn\'t reach the sync server: ' + fmt.esc(st.lastError) + '. Your progress is safe locally — this will retry automatically.</div>';
+      var errCallout = el('div', 'callout' + (st.retrying ? '' : ' warn'));
+      var errMsg = st.retrying
+        ? 'Waking up the sync server — Render’s free tier can take up to a minute after sitting idle. Retrying automatically…'
+        : ('Couldn’t reach the sync server: ' + fmt.esc(st.lastError) + '. Your progress is safe locally.');
+      errCallout.innerHTML = '<span class="c-ico">' + (st.retrying ? '🔄' : '⚠️') + '</span><div>' + errMsg + '</div>';
       wrap.appendChild(errCallout);
     }
 

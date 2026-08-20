@@ -167,7 +167,7 @@
 
   /* --- status (small non-blocking indicator, read by the #/sync view) --- */
 
-  var status = { syncing: false, lastError: null, lastSyncAt: null };
+  var status = { syncing: false, lastError: null, lastSyncAt: null, retrying: false };
   var statusListeners = [];
 
   function setStatus(patch) {
@@ -214,12 +214,12 @@
       setStatus({ syncing: true, lastError: null });
       request('POST', '/api/sync', null, function (err, data) {
         if (err || !data || !data.code) {
-          setStatus({ syncing: false, lastError: (err && err.message) || 'Could not generate a code.' });
+          setStatus({ syncing: false, lastError: (err && err.message) || 'Could not generate a code.', retrying: false });
           cb(err || new Error('Bad response from sync server.'));
           return;
         }
         setCode(data.code);
-        setStatus({ syncing: false, lastError: null, lastSyncAt: Date.now() });
+        setStatus({ syncing: false, lastError: null, lastSyncAt: Date.now(), retrying: false });
         cb(null, data.code);
       });
     },
@@ -231,7 +231,7 @@
       setStatus({ syncing: true, lastError: null });
       request('GET', '/api/sync/' + encodeURIComponent(norm), null, function (err, remote) {
         if (err) {
-          setStatus({ syncing: false, lastError: err.message });
+          setStatus({ syncing: false, lastError: err.message, retrying: false });
           cb(err);
           return;
         }
@@ -239,7 +239,7 @@
         resetRetry();
         var merged = mergeState(store.all(), remote);
         applyMergedToStore(merged);
-        setStatus({ syncing: false, lastError: null, lastSyncAt: Date.now() });
+        setStatus({ syncing: false, lastError: null, lastSyncAt: Date.now(), retrying: false });
         cb(null, merged);
       });
     },
@@ -251,14 +251,15 @@
       setStatus({ syncing: true, lastError: null });
       request('PUT', '/api/sync/' + encodeURIComponent(code), store.all(), function (err, merged) {
         if (err) {
-          setStatus({ syncing: false, lastError: err.message });
-          if (hasCode()) scheduleRetry(Sync.push);
+          var willRetry = hasCode();
+          setStatus({ syncing: false, lastError: err.message, retrying: willRetry });
+          if (willRetry) scheduleRetry(Sync.push);
           cb(err);
           return;
         }
         resetRetry();
         applyMergedToStore(merged);
-        setStatus({ syncing: false, lastError: null, lastSyncAt: Date.now() });
+        setStatus({ syncing: false, lastError: null, lastSyncAt: Date.now(), retrying: false });
         cb(null, merged);
       });
     },
@@ -270,15 +271,16 @@
       setStatus({ syncing: true, lastError: null });
       request('GET', '/api/sync/' + encodeURIComponent(code), null, function (err, remote) {
         if (err) {
-          setStatus({ syncing: false, lastError: err.message });
-          if (hasCode()) scheduleRetry(Sync.pull);
+          var willRetry = hasCode();
+          setStatus({ syncing: false, lastError: err.message, retrying: willRetry });
+          if (willRetry) scheduleRetry(Sync.pull);
           cb(err);
           return;
         }
         resetRetry();
         var merged = mergeState(store.all(), remote);
         applyMergedToStore(merged);
-        setStatus({ syncing: false, lastError: null, lastSyncAt: Date.now() });
+        setStatus({ syncing: false, lastError: null, lastSyncAt: Date.now(), retrying: false });
         cb(null, merged);
       });
     },
@@ -286,7 +288,7 @@
     unlink: function () {
       resetRetry();
       clearCode();
-      setStatus({ syncing: false, lastError: null, lastSyncAt: null });
+      setStatus({ syncing: false, lastError: null, lastSyncAt: null, retrying: false });
     }
   };
 
