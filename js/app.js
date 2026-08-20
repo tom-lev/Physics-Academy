@@ -142,8 +142,21 @@
             : 'Not linked — progress stays on this device only.') +
       '</div></div>';
     if (code) {
+      var syncNowBtn = el('button', 'btn btn-ghost btn-sm', 'Sync now');
+      syncNowBtn.type = 'button';
+      syncNowBtn.disabled = st.syncing;
+      syncNowBtn.addEventListener('click', function () {
+        syncNowBtn.disabled = true;
+        sync.pull(function (err) {
+          toast(err ? 'Sync failed: ' + err.message : 'Synced.');
+          renderSync();
+        });
+      });
+      statusRow.appendChild(syncNowBtn);
+
       var unlinkBtn = el('button', 'btn btn-ghost btn-sm', 'Unlink this device');
       unlinkBtn.type = 'button';
+      unlinkBtn.style.marginLeft = '8px';
       unlinkBtn.addEventListener('click', function () {
         sync.unlink();
         toast('Unlinked. Server data untouched.');

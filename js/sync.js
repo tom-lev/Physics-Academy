@@ -14,6 +14,12 @@
   var CODE_KEY = 'physics-academy/sync-code';
   var CODE_RE = /^[ABCDEFGHJKMNPQRSTUVWXYZ23456789]{4}-[ABCDEFGHJKMNPQRSTUVWXYZ23456789]{4}$/;
   var PUSH_DEBOUNCE_MS = 2500;
+  // Render's free tier can take 30-50s to wake a sleeping instance, well past
+  // any single request's timeout — so a failed pull/push (most commonly the
+  // very first one after a cold start) retries itself with backoff instead of
+  // silently stalling until the user forces a resync by hand.
+  var RETRY_BASE_MS = 5000;
+  var RETRY_MAX_MS = 60000;
 
   var store = root.PA.store;
 
@@ -169,6 +175,24 @@
     for (var i = 0; i < statusListeners.length; i++) statusListeners[i](status);
   }
 
+  /* --- retry-with-backoff for automatic pull/push (not for user-initiated
+     generateCode/link, which surface their errors directly instead) --- */
+
+  var retryTimer = null;
+  var retryDelay = RETRY_BASE_MS;
+
+  function resetRetry() {
+    clearTimeout(retryTimer);
+    retryTimer = null;
+    retryDelay = RETRY_BASE_MS;
+  }
+
+  function scheduleRetry(fn) {
+    clearTimeout(retryTimer);
+    retryTimer = setTimeout(function () { fn(function () {}); }, retryDelay);
+    retryDelay = Math.min(retryDelay * 2, RETRY_MAX_MS);
+  }
+
   /* --- public API --- */
 
   var Sync = {
@@ -212,6 +236,7 @@
           return;
         }
         setCode(norm);
+        resetRetry();
         var merged = mergeState(store.all(), remote);
         applyMergedToStore(merged);
         setStatus({ syncing: false, lastError: null, lastSyncAt: Date.now() });
@@ -227,9 +252,11 @@
       request('PUT', '/api/sync/' + encodeURIComponent(code), store.all(), function (err, merged) {
         if (err) {
           setStatus({ syncing: false, lastError: err.message });
+          if (hasCode()) scheduleRetry(Sync.push);
           cb(err);
           return;
         }
+        resetRetry();
         applyMergedToStore(merged);
         setStatus({ syncing: false, lastError: null, lastSyncAt: Date.now() });
         cb(null, merged);
@@ -244,9 +271,11 @@
       request('GET', '/api/sync/' + encodeURIComponent(code), null, function (err, remote) {
         if (err) {
           setStatus({ syncing: false, lastError: err.message });
+          if (hasCode()) scheduleRetry(Sync.pull);
           cb(err);
           return;
         }
+        resetRetry();
         var merged = mergeState(store.all(), remote);
         applyMergedToStore(merged);
         setStatus({ syncing: false, lastError: null, lastSyncAt: Date.now() });
@@ -255,6 +284,7 @@
     },
 
     unlink: function () {
+      resetRetry();
       clearCode();
       setStatus({ syncing: false, lastError: null, lastSyncAt: null });
     }

@@ -51,7 +51,7 @@
         {
           kind: 'numeric',
           difficulty: 'medium',
-          prompt: 'A capacitor is rated at 4700 µF (microfarads). Since $\\mu = 10^{-6}$, what is that value in farads (F)?',
+          prompt: 'A capacitor (an electrical component that stores charge, rated in **farads**, F, the unit of capacitance) is rated at 4700 µF (microfarads). Since $\\mu = 10^{-6}$, what is that value in farads (F)?',
           unit: 'F',
           correct: 0.0047,
           tol: 0.0001,
@@ -113,8 +113,8 @@
         {
           kind: 'lesson',
           title: 'Dimensional analysis: a built-in error checker',
-          hook: 'In 1999, NASA lost a $125 million Mars orbiter because one engineering team\'s software used pounds-force and another\'s used newtons, and nobody caught the mismatch until the spacecraft was gone.',
-          body: 'Dimensional analysis is the cheap insurance against exactly that kind of disaster: every physical equation must balance dimensionally — the units on the left must match the units on the right. It won\'t tell you if an equation is *physically* correct, but it will instantly catch typos and misremembered formulas, the kind that, in the wrong context, cost $125 million.',
+          hook: 'In 1999, NASA lost a \\$125 million Mars orbiter because one engineering team\'s software used pounds-force and another\'s used newtons, and nobody caught the mismatch until the spacecraft was gone.',
+          body: 'Dimensional analysis is the cheap insurance against exactly that kind of disaster: every physical equation must balance dimensionally — the units on the left must match the units on the right. It won\'t tell you if an equation is *physically* correct, but it will instantly catch typos and misremembered formulas, the kind that, in the wrong context, cost \\$125 million.',
           callout: { variant: 'info', text: 'Example: in $x = v t$, the units check out as $\\text{m} = (\\text{m/s})(\\text{s})$ — the seconds cancel, leaving meters on both sides. ✓' }
         },
         {
@@ -218,7 +218,7 @@
         {
           kind: 'numeric',
           difficulty: 'medium',
-          prompt: 'A resistor is rated at 2.2 kΩ. Since k = $10^3$, what is that in ohms (Ω)?',
+          prompt: 'A resistor (an electrical component rated in **ohms**, Ω, the unit of resistance) is marked 2.2 kΩ. Since k = $10^3$, what is that in ohms (Ω)?',
           unit: 'Ω',
           correct: 2200,
           tol: 20,
@@ -368,7 +368,7 @@
         {
           kind: 'numeric',
           difficulty: 'medium',
-          prompt: 'Vector A points 6 units east. Vector B points 8 units north. What is the magnitude of their resultant (east and north are perpendicular)?',
+          prompt: 'Vector A points 6 units east. Vector B points 8 units north — east and north meet at a right angle (90°), meaning they\'re **perpendicular**. What is the magnitude of their resultant?',
           correct: 10,
           tol: 0.1,
           formula: { name: 'Pythagorean theorem (right triangles only)', tex: 'c = \\sqrt{a^2+b^2}', vars: [

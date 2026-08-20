@@ -39,7 +39,7 @@
         {
           kind: 'lesson',
           title: 'Signs are directions',
-          hook: 'A bank statement doesn\'t draw arrows: "+$50" means money came in, "−$50" means it went out, and the sign alone carries all the direction anyone needs.',
+          hook: 'A bank statement doesn\'t draw arrows: "+\\$50" means money came in, "−\\$50" means it went out, and the sign alone carries all the direction anyone needs.',
           body: 'One-dimensional motion works the same way. A vector quantity like displacement or velocity, squeezed onto a single line, is fully described by a magnitude and a **sign**. Pick a positive direction once (often "right" or "up") and stick with it for the whole problem — the sign then tells you which way something points, without needing an arrow.',
           formula: { name: 'Displacement', tex: '\\Delta x = x_f - x_i', vars: [
             { sym: '\\Delta x', mean: 'displacement' },
