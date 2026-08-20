@@ -138,6 +138,22 @@ stake) over the passive, hedged tone dry reference material defaults to.
 This doesn't mean padding — keep it as tight as a drier version would be,
 just spend the words on texture instead of throat-clearing.
 
+**Notation audit — required before a chapter counts as done.** Every math
+symbol, operation, or notation convention that appears inside any `tex`
+string (exponents, $\sin$/$\cos$, $\sqrt{}$, the Pythagorean theorem,
+$\vec{}$ for vectors, subscripts, whatever's next) must have an explicit
+teaching moment at its *first appearance anywhere in the curriculum* —
+via `hook`/`body`, a `formula.vars` entry, or a `callout`. It is not
+enough for a symbol to be *used correctly* by the answer key; a first-time
+learner must be able to see where it came from before being graded on it.
+This bit repeatedly in this chapter's build: negative exponents, trig
+values, $\vec{}$ notation, and the Pythagorean theorem were all used
+before being taught, and each was only caught by a learner actually
+getting stuck mid-question — not by reading the source. Concretely: before
+marking a chapter finished, list every distinct notation/operation it
+introduces and check each one against this rule; don't rely on read-through
+review alone to catch this class of gap.
+
 **Beginner-friendliness conventions — apply these to every new chapter, not
 just the four below:**
 
