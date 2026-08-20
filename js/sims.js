@@ -472,13 +472,125 @@
     };
   }
 
+  var SLOPE_MAX = 8;
+
+  /** A straight x-t style line whose slope you drag — makes "slope = rise/run" concrete. */
+  function slopeGraphSim(args) {
+    args = args || {};
+
+    return {
+      kind: 'slopeGraph',
+      orient: { text: 'Drag the slider and watch the line\'s steepness and the slope number change together — that\'s the whole idea of "slope."' },
+      aspect: 0.55,
+      state: { slope: args.slope != null ? args.slope : 3 },
+
+      controls: [
+        { key: 'slope', label: 'Slope (rise / run)', type: 'range', min: -SLOPE_MAX, max: SLOPE_MAX, step: 1, format: function (v) { return (v > 0 ? '+' : '') + v; } }
+      ],
+
+      readouts: [
+        { label: 'Slope', value: function (s) { return (s.slope > 0 ? '+' : '') + s.slope; }, color: 'var(--brand)' }
+      ],
+
+      draw: function (ctx, w, h, state, d) {
+        var originX = 44, topPad = 20, botPad = 30;
+        var axisW = w - originX - 18;
+        var axisH = h - topPad - botPad;
+        var midY = topPad + axisH / 2;
+        var pxPerUnit = (axisH / 2 - 16) / SLOPE_MAX;
+
+        d.grid(ctx, w, h, 28);
+        ctx.save();
+        ctx.strokeStyle = 'rgba(255,255,255,.3)'; ctx.lineWidth = 1.5;
+        ctx.beginPath(); ctx.moveTo(originX, topPad); ctx.lineTo(originX, topPad + axisH); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(originX, midY); ctx.lineTo(originX + axisW, midY); ctx.stroke();
+        ctx.restore();
+        d.label(ctx, originX + axisW, midY + 18, 'time →', '#9aa9cc', 'right');
+        d.label(ctx, originX - 6, topPad + 4, 'position', '#9aa9cc', 'right');
+
+        var endX = originX + axisW;
+        var endY = midY - state.slope * pxPerUnit;
+        d.arrow(ctx, originX, midY, endX, endY, '#38bdf8', 9);
+
+        var x1 = originX + axisW * 0.45, x2 = originX + axisW * 0.88;
+        var y1 = midY - state.slope * pxPerUnit * 0.45;
+        var y2 = midY - state.slope * pxPerUnit * 0.88;
+        d.dashedH(ctx, y1, x1, x2, 'rgba(245,158,11,.75)');
+        d.dashedV(ctx, x2, y1, y2, 'rgba(245,158,11,.75)');
+        d.label(ctx, (x1 + x2) / 2, y1 + 15, 'run', '#f59e0b', 'center');
+        d.label(ctx, x2 + 8, (y1 + y2) / 2, 'rise', '#f59e0b', 'left');
+      }
+    };
+  }
+
+  var RATE_MAX = 10, DUR_MAX = 10;
+
+  /** A constant-rate v-t style line with a shaded area — makes "area = accumulated total" concrete. */
+  function areaGraphSim(args) {
+    args = args || {};
+
+    return {
+      kind: 'areaGraph',
+      orient: { text: 'Drag Rate and Time — the shaded rectangle is the area under the curve, and its value always equals rate × time.' },
+      aspect: 0.55,
+      state: { rate: args.rate != null ? args.rate : 4, dur: args.dur != null ? args.dur : 6 },
+
+      controls: [
+        { key: 'rate', label: 'Rate (height)', type: 'range', min: 1, max: RATE_MAX, step: 1, format: function (v) { return v; } },
+        { key: 'dur', label: 'Time (width)', type: 'range', min: 1, max: DUR_MAX, step: 1, format: function (v) { return v; } }
+      ],
+
+      readouts: [
+        { label: 'Area (rate × time)', value: function (s) { return fmt.num(s.rate * s.dur, 0); }, color: 'var(--brand)' }
+      ],
+
+      draw: function (ctx, w, h, state, d) {
+        var originX = 44, topPad = 20, botY = h - 30;
+        var axisW = w - originX - 18;
+        var axisH = botY - topPad;
+        var pxPerRate = axisH / RATE_MAX;
+        var pxPerTime = axisW / DUR_MAX;
+
+        d.grid(ctx, w, h, 28);
+        ctx.save();
+        ctx.strokeStyle = 'rgba(255,255,255,.3)'; ctx.lineWidth = 1.5;
+        ctx.beginPath(); ctx.moveTo(originX, topPad); ctx.lineTo(originX, botY); ctx.lineTo(originX + axisW, botY); ctx.stroke();
+        ctx.restore();
+        d.label(ctx, originX + axisW, botY + 18, 'time →', '#9aa9cc', 'right');
+        d.label(ctx, originX - 6, topPad + 4, 'rate', '#9aa9cc', 'right');
+
+        var lineY = botY - state.rate * pxPerRate;
+        var shadeX = originX + state.dur * pxPerTime;
+
+        ctx.save();
+        ctx.fillStyle = 'rgba(56,189,248,.22)';
+        ctx.fillRect(originX, lineY, shadeX - originX, botY - lineY);
+        ctx.restore();
+
+        ctx.save();
+        ctx.strokeStyle = 'rgba(255,255,255,.25)'; ctx.lineWidth = 2; ctx.setLineDash([4, 4]);
+        ctx.beginPath(); ctx.moveTo(originX, lineY); ctx.lineTo(originX + axisW, lineY); ctx.stroke();
+        ctx.restore();
+
+        ctx.save();
+        ctx.strokeStyle = '#38bdf8'; ctx.lineWidth = 2.5;
+        ctx.beginPath(); ctx.moveTo(originX, lineY); ctx.lineTo(shadeX, lineY); ctx.stroke();
+        ctx.restore();
+
+        d.label(ctx, (originX + shadeX) / 2, (lineY + botY) / 2, fmt.num(state.rate * state.dur, 0), '#c3eaff', 'center');
+      }
+    };
+  }
+
   root.PA = root.PA || {};
   root.PA.sims = {
     drop: dropSim,
     brake: brakeSim,
     vectorAdd: vectorAddSim,
     projectile: projectileSim,
-    incline: inclineSim
+    incline: inclineSim,
+    slopeGraph: slopeGraphSim,
+    areaGraph: areaGraphSim
   };
 
 })(typeof window !== 'undefined' ? window : globalThis);

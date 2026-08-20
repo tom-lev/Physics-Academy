@@ -178,7 +178,7 @@
     {
       id: 'tk-graphs',
       title: 'Reading Graphs Like a Scientist',
-      sub: '6 steps · slope and area, everywhere',
+      sub: '8 steps · slope and area, everywhere',
       steps: [
         {
           kind: 'lesson',
@@ -188,7 +188,22 @@
           callout: { variant: 'key', text: 'Slope = rise/run = how fast the *y*-quantity changes per unit of the *x*-quantity. Area = the running total of *y* accumulated as *x* increases.' }
         },
         {
+          kind: 'sim',
+          prompt: 'Drag the slope slider and watch the line get steeper or flatter — and watch the slope number match it exactly.',
+          simId: 'slopeGraph',
+          args: { slope: 3 },
+          note: 'A steeper line always means a bigger slope number, whichever direction it points.'
+        },
+        {
+          kind: 'sim',
+          prompt: 'Drag Rate and Time and watch the shaded area — and its number — grow. That\'s "area under the curve" in action.',
+          simId: 'areaGraph',
+          args: { rate: 4, dur: 6 },
+          note: 'A taller or wider shaded region always means a bigger accumulated total.'
+        },
+        {
           kind: 'mcq',
+          difficulty: 'easy',
           prompt: 'A tank\'s water level rises steadily, then the graph of level-vs-time suddenly gets steeper. What does that steeper section mean?',
           options: ['Water is draining out', 'Water is flowing in faster than before', 'The tank is full', 'Nothing changed'],
           correct: 1,
