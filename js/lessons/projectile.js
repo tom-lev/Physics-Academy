@@ -23,7 +23,7 @@
         {
           kind: 'lesson',
           title: 'The x-motion and the y-motion don\'t know about each other',
-          prereq: 'This chapter builds directly on Chapter 1 (free fall, velocity) and the toolkit\'s vector components — make sure both feel solid before diving in.',
+          prereq: 'This chapter builds directly on Chapter 1 (free fall, velocity) and the toolkit\'s vector components — including evaluating $\\sin\\theta$/$\\cos\\theta$ on a calculator, which shows up in almost every formula from here on.',
           hook: 'A basketball player releases a shot on a wild diagonal arc, and somehow it drops through the hoop anyway, over and over in practice. No one is solving equations mid-shot — but the exact math you\'re about to learn is quietly running underneath every one of those arcs.',
           body: 'Once something moves in two dimensions — a thrown ball, a kicked soccer ball, a launched rocket — its motion looks complicated. The trick that makes it simple: split it into a **horizontal story** and a **vertical story**, and handle them completely separately.\n\nHorizontally, nothing pushes the object once it leaves your hand (ignore air resistance), so it moves at **constant velocity**. Vertically, gravity pulls down the whole time, so it moves with **constant acceleration** $g$ — exactly the free fall you already know from Chapter 1.',
           callout: { variant: 'key', text: 'The only thing the x-motion and y-motion share is **time**. They tick along on the same clock, but neither one affects the other.' }
