@@ -163,7 +163,6 @@
     var targetAngle = args.targetAngle != null ? args.targetAngle : 40;
     var tolMag = args.tolMag != null ? args.tolMag : 0.5;
     var tolAngle = args.tolAngle != null ? args.tolAngle : 6;
-    var worldMax = 34;
 
     function sum(state) {
       var ar = state.aAng * Math.PI / 180, br = state.bAng * Math.PI / 180;
@@ -200,6 +199,8 @@
 
       draw: function (ctx, w, h, state, d) {
         var cx = w / 2, cy = h / 2;
+        var curSum = sum(state);
+        var worldMax = Math.max(targetMag, state.aMag, state.bMag, curSum.mag, 8) * 1.25;
         var scale = (Math.min(w, h) / 2 - 26) / worldMax;
 
         d.grid(ctx, w, h, 26);
@@ -223,15 +224,14 @@
         d.label(ctx, tgt.x + 8, tgt.y - 8, 'target', '#c3cbe0', 'left');
 
         var aTip = pt(state.aMag, state.aAng);
-        var r = sum(state);
-        var sTip = { x: cx + r.x * scale, y: cy - r.y * scale };
+        var sTip = { x: cx + curSum.x * scale, y: cy - curSum.y * scale };
 
         d.arrow(ctx, cx, cy, sTip.x, sTip.y, 'rgba(139,140,249,.55)', 11);
         d.arrow(ctx, cx, cy, aTip.x, aTip.y, '#38bdf8', 9);
         d.arrow(ctx, aTip.x, aTip.y, sTip.x, sTip.y, '#f59e0b', 9);
 
-        d.label(ctx, aTip.x, aTip.y - 12, 'A', '#38bdf8', 'center');
-        d.label(ctx, (aTip.x + sTip.x) / 2, (aTip.y + sTip.y) / 2 - 12, 'B', '#f59e0b', 'center');
+        d.labelNear(ctx, cx, cy, aTip.x, aTip.y, 'A', '#38bdf8');
+        d.labelNear(ctx, aTip.x, aTip.y, sTip.x, sTip.y, 'B', '#f59e0b');
       }
     };
   }
@@ -450,12 +450,12 @@
         var baseLen = 44;
         var wEnd = { x: center.x, y: center.y + baseLen };
         d.arrow(ctx, center.x, center.y, wEnd.x, wEnd.y, '#f59e0b', 8);
-        d.label(ctx, wEnd.x + 6, wEnd.y, 'W', '#f59e0b', 'left');
+        d.labelNear(ctx, center.x, center.y, wEnd.x, wEnd.y, 'W', '#f59e0b');
 
         var nLen = baseLen * Math.cos(th);
         var nEnd = { x: center.x + normalDir.x * nLen, y: center.y + normalDir.y * nLen };
         d.arrow(ctx, center.x, center.y, nEnd.x, nEnd.y, '#38bdf8', 8);
-        d.label(ctx, nEnd.x + 6, nEnd.y, 'N', '#38bdf8', 'left');
+        d.labelNear(ctx, center.x, center.y, nEnd.x, nEnd.y, 'N', '#38bdf8');
 
         var fRatio = frictionRatio(state);
         if (fRatio > 0.01) {
@@ -466,7 +466,7 @@
           var fColor = isSliding(state) ? '#fb7185' : '#34d399';
           var fEnd = { x: center.x - slopeDir.x * fLen, y: center.y - slopeDir.y * fLen };
           d.arrow(ctx, center.x, center.y, fEnd.x, fEnd.y, fColor, 8);
-          d.label(ctx, fEnd.x - 6, fEnd.y - 10, 'f', fColor, 'right');
+          d.labelNear(ctx, center.x, center.y, fEnd.x, fEnd.y, 'f', fColor);
         }
       }
     };

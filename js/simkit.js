@@ -141,6 +141,17 @@
       ctx.textBaseline = 'middle';
       ctx.fillText(text, x, y);
       ctx.restore();
+    },
+
+    /** Label an arrow from (x0,y0) to (x1,y1), offset perpendicular to its
+     *  own direction (not a fixed screen direction) so it stays legible
+     *  next to *that* arrow regardless of which way it points. */
+    labelNear: function (ctx, x0, y0, x1, y1, text, color, dist) {
+      dist = dist || 13;
+      var dx = x1 - x0, dy = y1 - y0;
+      var len = Math.hypot(dx, dy) || 1;
+      var px = -dy / len, py = dx / len;
+      this.label(ctx, x1 + px * dist, y1 + py * dist, text, color, 'center');
     }
   };
 
