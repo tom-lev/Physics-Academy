@@ -36,8 +36,16 @@
         {
           kind: 'lesson',
           title: 'Prefixes: shorthand for powers of ten',
-          body: 'Rather than writing 0.000000045 m, physicists use prefixes that multiply a unit by a power of ten. Learn these once and you\'ll use them in every chapter from here on.',
-          formula: { name: 'Common SI prefixes', tex: '\\text{n} = 10^{-9} \\quad \\mu = 10^{-6} \\quad \\text{m} = 10^{-3} \\quad \\text{k} = 10^{3} \\quad \\text{M} = 10^{6} \\quad \\text{G} = 10^{9}' }
+          body: 'A power of ten just tells you how many places to shift a decimal point. $10^3 = 1000$ shifts it 3 places *right* (multiply). $10^{-3} = 0.001$ shifts it 3 places *left* instead — a negative exponent means "divide by," not some harder kind of math.\n\nUnit prefixes are shorthand built on exactly this idea. Rather than writing 0.000000045 m, physicists write 45 nm. Learn these once and you\'ll use them in every chapter from here on.',
+          formula: { name: 'Common SI prefixes', tex: '1\\text{ km} = 1\\times 10^{3}\\text{ m}', vars: [
+            { sym: 'n', mean: 'nano — $10^{-9}$' },
+            { sym: '\\mu', mean: 'micro — $10^{-6}$' },
+            { sym: 'm', mean: 'milli — $10^{-3}$' },
+            { sym: 'k', mean: 'kilo — $10^{3}$' },
+            { sym: 'M', mean: 'mega — $10^{6}$' },
+            { sym: 'G', mean: 'giga — $10^{9}$' }
+          ] },
+          callout: { variant: 'info', text: 'To use one, swap the prefix for its power of ten and multiply: **5 ns** = $5 \\times 10^{-9}$ s = 0.000000005 s (decimal point shifted 9 places left).' }
         },
         {
           kind: 'numeric',
@@ -252,7 +260,8 @@
             { sym: 'A', mean: 'the vector\'s length (magnitude)' },
             { sym: '\\theta', mean: 'its angle from the positive x-axis' },
             { sym: 'A_x, A_y', mean: 'its horizontal and vertical components' }
-          ] }
+          ] },
+          callout: { variant: 'info', text: 'You don\'t need to memorize $\\cos\\theta$ and $\\sin\\theta$ — any calculator (including your phone) gives you their value for any angle instantly. Conceptually: they measure how much of a length-1 arrow pointing at angle $\\theta$ lands along the x-axis and y-axis respectively, so multiplying by $A$ splits a length-$A$ vector into its horizontal and vertical pieces. You\'ll be plugging numbers into a calculator for these from here on, not deriving them by hand.' }
         },
         {
           kind: 'sim',

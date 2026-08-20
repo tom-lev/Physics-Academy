@@ -590,6 +590,8 @@ a { color: var(--brand); text-decoration: none; }
 
 .formula {
   display: block;
+  max-width: 100%;
+  overflow-x: auto;
   text-align: center;
   padding: 20px 16px;
   margin: 20px 0;
