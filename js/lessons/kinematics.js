@@ -16,7 +16,7 @@
     {
       id: 'kin-position',
       title: 'Position, Displacement & Distance',
-      sub: '6 steps · core concept',
+      sub: '7 steps · core concept',
       steps: [
         {
           kind: 'lesson',
@@ -24,7 +24,14 @@
           prereq: 'This chapter assumes basic algebra (solving for a variable, adding and subtracting negative numbers), plus the units and vector ideas from the toolkit chapter.',
           hook: "You drive 8 km to a store, then realize you forgot your wallet and drive straight back home. Your odometer now reads 16 km more than when you left — but if someone asks how far from home you currently are, the honest answer is zero. Two completely different, both correct, answers to \"how far did you go?\"",
           body: "Everything in kinematics starts with **position** — where an object is relative to some reference point you choose. Once you have two positions, you can ask a more interesting question: how far did it *move*?\n\nThere are two different answers to that, and mixing them up is the single most common kinematics mistake.",
-          callout: { variant: 'key', text: '**Distance** is the total length of the path traveled — always positive. **Displacement** is the straight-line change in position, $\\Delta x = x_f - x_i$ — it can be positive, negative, or zero.' }
+          callout: { variant: 'key', text: '**Distance** is the total length of the path traveled — always positive. **Displacement** is the straight-line change in position: $\\Delta$ ("delta") means "change in," and $x_i$/$x_f$ mean initial/final position, so $\\Delta x = x_f - x_i$ — it can be positive, negative, or zero.' }
+        },
+        {
+          kind: 'sim',
+          prompt: 'Walk 8 m east, then turn around and walk 3 m west — drag the slider and watch distance and displacement diverge.',
+          simId: 'walkTrack',
+          args: { leg1: 8, leg2: 3 },
+          note: 'Distance (the trail) only ever grows. Displacement (the dashed arrow) grows too — until you turn around, and then it shrinks.'
         },
         {
           kind: 'mcq',

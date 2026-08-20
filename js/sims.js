@@ -523,6 +523,80 @@
     };
   }
 
+  /** Walk an out-and-back path; watch distance (the trail) only ever grow
+   *  while displacement (the dashed arrow from start) can shrink once you
+   *  turn around. */
+  function walkTrackSim(args) {
+    args = args || {};
+    var leg1 = args.leg1 != null ? args.leg1 : 8;   // outbound leg, meters
+    var leg2 = args.leg2 != null ? args.leg2 : 3;   // return leg, meters
+    var totalDist = leg1 + leg2;
+
+    function pos(state) {
+      return state.progress <= leg1 ? state.progress : leg1 - (state.progress - leg1);
+    }
+
+    return {
+      kind: 'walkTrack',
+      orient: { text: 'Drag the slider to walk the path step by step. The blue/orange trail is how far you\'ve actually walked (distance) — it only ever grows. The dashed violet arrow is displacement, your straight-line change from start — watch it shrink once you turn around.' },
+      aspect: 0.42,
+      state: { progress: 0 },
+
+      controls: [
+        { key: 'progress', label: 'Walk it out', type: 'range', min: 0, max: totalDist, step: 0.5, format: function (v) { return fmt.num(v, 1) + ' m walked'; } }
+      ],
+
+      readouts: [
+        { label: 'Distance so far', value: function (s) { return fmt.num(s.progress, 1) + ' m'; }, color: 'var(--brand)' },
+        { label: 'Displacement so far', value: function (s) { var p = pos(s); return (p > 0 ? '+' : '') + fmt.num(p, 1) + ' m'; }, color: 'var(--violet)' }
+      ],
+
+      draw: function (ctx, w, h, state, d) {
+        var lineY = h / 2;
+        var worldMin = -1, worldMax = leg1 + 1;
+        var scale = (w - 40) / (worldMax - worldMin);
+        function toPx(x) { return 20 + (x - worldMin) * scale; }
+
+        d.grid(ctx, w, h, 28);
+
+        ctx.save();
+        ctx.strokeStyle = 'rgba(255,255,255,.22)'; ctx.lineWidth = 2;
+        ctx.beginPath(); ctx.moveTo(toPx(worldMin), lineY + .5); ctx.lineTo(toPx(worldMax), lineY + .5); ctx.stroke();
+        ctx.restore();
+
+        d.dashedV(ctx, toPx(leg1), lineY - 44, lineY + 10, 'rgba(255,255,255,.18)');
+        d.label(ctx, toPx(leg1), lineY - 52, 'turn around', '#64739a', 'center');
+
+        var p = pos(state);
+        var trailY = lineY - 16;
+        var outEnd = Math.min(state.progress, leg1);
+
+        ctx.save();
+        ctx.strokeStyle = '#38bdf8'; ctx.lineWidth = 4; ctx.lineCap = 'round';
+        ctx.beginPath(); ctx.moveTo(toPx(0), trailY); ctx.lineTo(toPx(outEnd), trailY); ctx.stroke();
+        ctx.restore();
+
+        if (state.progress > leg1) {
+          ctx.save();
+          ctx.strokeStyle = '#f59e0b'; ctx.lineWidth = 4; ctx.lineCap = 'round';
+          ctx.beginPath(); ctx.moveTo(toPx(leg1), trailY); ctx.lineTo(toPx(p), trailY); ctx.stroke();
+          ctx.restore();
+        }
+
+        var dispY = lineY + 34;
+        if (Math.abs(p) > 0.05) d.arrow(ctx, toPx(0), dispY, toPx(p), dispY, 'rgba(139,140,249,.85)', 8);
+        d.label(ctx, toPx(0), dispY + 16, 'start', '#64739a', 'center');
+
+        ctx.save();
+        ctx.font = '22px system-ui, sans-serif';
+        ctx.textAlign = 'center'; ctx.textBaseline = 'alphabetic';
+        ctx.fillText('🚶', toPx(p), lineY + 6);
+        ctx.restore();
+        d.label(ctx, toPx(p), trailY - 10, fmt.num(p, 1) + ' m', '#c3cbe0', 'center');
+      }
+    };
+  }
+
   var RATE_MAX = 10, DUR_MAX = 10;
 
   /** A constant-rate v-t style line with a shaded area — makes "area = accumulated total" concrete. */
@@ -590,7 +664,8 @@
     projectile: projectileSim,
     incline: inclineSim,
     slopeGraph: slopeGraphSim,
-    areaGraph: areaGraphSim
+    areaGraph: areaGraphSim,
+    walkTrack: walkTrackSim
   };
 
 })(typeof window !== 'undefined' ? window : globalThis);
