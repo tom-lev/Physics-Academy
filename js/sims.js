@@ -523,9 +523,12 @@
     };
   }
 
-  /** Walk an out-and-back path; watch distance (the trail) only ever grow
-   *  while displacement (the dashed arrow from start) can shrink once you
-   *  turn around. */
+  var WALK_SPEED = 1.4;   // m of walked path per second — an actual human walking pace
+  var WALK_HOLD_S = 2;    // pause at the far end before looping back to the start
+
+  /** A non-interactive, looping walk along an out-and-back path: watch
+   *  distance (the trail) only ever grow while displacement (the dashed
+   *  arrow from start) can shrink once the walk turns around. */
   function walkTrackSim(args) {
     args = args || {};
     var leg1 = args.leg1 != null ? args.leg1 : 8;   // outbound leg, meters
@@ -538,13 +541,18 @@
 
     return {
       kind: 'walkTrack',
-      orient: { text: 'Drag the slider to walk the path step by step. The blue/orange trail is how far you\'ve actually walked (distance) — it only ever grows. The dashed violet arrow is displacement, your straight-line change from start — watch it shrink once you turn around.' },
+      orient: { text: 'Just watch: the blue/orange trail is how far you\'ve actually walked (distance) — it only ever grows. The dashed violet arrow is displacement, the straight-line change from start — watch it shrink once the walk turns around.' },
       aspect: 0.42,
-      state: { progress: 0 },
+      state: { progress: 0, holdT: 0 },
 
-      controls: [
-        { key: 'progress', label: 'Walk it out', type: 'range', min: 0, max: totalDist, step: 0.5, format: function (v) { return fmt.num(v, 1) + ' m walked'; } }
-      ],
+      animate: function (state, dt) {
+        if (state.progress < totalDist) {
+          state.progress = Math.min(totalDist, state.progress + WALK_SPEED * dt);
+        } else {
+          state.holdT += dt;
+          if (state.holdT >= WALK_HOLD_S) { state.progress = 0; state.holdT = 0; }
+        }
+      },
 
       readouts: [
         { label: 'Distance so far', value: function (s) { return fmt.num(s.progress, 1) + ' m'; }, color: 'var(--brand)' },
@@ -556,42 +564,95 @@
         var worldMin = -1, worldMax = leg1 + 1;
         var scale = (w - 40) / (worldMax - worldMin);
         function toPx(x) { return 20 + (x - worldMin) * scale; }
+        function emoji(text, x, y, size, alpha) {
+          ctx.save();
+          ctx.globalAlpha = alpha == null ? 1 : alpha;
+          ctx.font = size + 'px system-ui, sans-serif';
+          ctx.textAlign = 'center'; ctx.textBaseline = 'alphabetic';
+          ctx.fillText(text, x, y);
+          ctx.restore();
+        }
 
-        d.grid(ctx, w, h, 28);
+        // sky + ground scene, in place of bare grid paper
+        var sky = ctx.createLinearGradient(0, 0, 0, lineY);
+        sky.addColorStop(0, '#0a0f1e');
+        sky.addColorStop(1, '#1c2c4d');
+        ctx.fillStyle = sky;
+        ctx.fillRect(0, 0, w, lineY);
+
+        var groundFill = ctx.createLinearGradient(0, lineY, 0, h);
+        groundFill.addColorStop(0, '#1a2440');
+        groundFill.addColorStop(1, '#0a0f1e');
+        ctx.fillStyle = groundFill;
+        ctx.fillRect(0, lineY, w, h - lineY);
 
         ctx.save();
-        ctx.strokeStyle = 'rgba(255,255,255,.22)'; ctx.lineWidth = 2;
-        ctx.beginPath(); ctx.moveTo(toPx(worldMin), lineY + .5); ctx.lineTo(toPx(worldMax), lineY + .5); ctx.stroke();
+        ctx.fillStyle = '#c3cbe0';
+        [[0.08, 0.18, 1.3], [0.16, 0.42, 1], [0.29, 0.14, 1.1], [0.52, 0.5, 1], [0.61, 0.2, 1.3], [0.74, 0.4, 1], [0.86, 0.16, 1.2], [0.94, 0.46, 1]].forEach(function (s) {
+          ctx.globalAlpha = 0.35 + 0.35 * ((s[0] * 37) % 1);
+          ctx.beginPath(); ctx.arc(w * s[0], lineY * s[1], s[2], 0, Math.PI * 2); ctx.fill();
+        });
         ctx.restore();
+        emoji('🌙', w * 0.87, lineY * 0.32, 24);
+        emoji('☁️', w * 0.24, lineY * 0.3, 20, 0.7);
+        emoji('☁️', w * 0.55, lineY * 0.55, 16, 0.55);
 
-        d.dashedV(ctx, toPx(leg1), lineY - 44, lineY + 10, 'rgba(255,255,255,.18)');
-        d.label(ctx, toPx(leg1), lineY - 52, 'turn around', '#64739a', 'center');
+        d.ground(ctx, w, lineY);
+
+        emoji('🏠', toPx(0), lineY - 8, 26);
+        emoji('🌳', toPx(2.6), lineY - 6, 22, 0.9);
+        emoji('🌳', toPx(5.4), lineY - 6, 22, 0.9);
+        emoji('📍', toPx(leg1), lineY - 30, 18);
+
+        d.dashedV(ctx, toPx(leg1), lineY - 16, lineY + 10, 'rgba(255,255,255,.18)');
+        d.label(ctx, toPx(leg1), lineY - 40, 'turn around', '#9aa9cc', 'center');
 
         var p = pos(state);
         var trailY = lineY - 16;
         var outEnd = Math.min(state.progress, leg1);
 
         ctx.save();
+        ctx.shadowColor = '#38bdf8'; ctx.shadowBlur = 12;
         ctx.strokeStyle = '#38bdf8'; ctx.lineWidth = 4; ctx.lineCap = 'round';
         ctx.beginPath(); ctx.moveTo(toPx(0), trailY); ctx.lineTo(toPx(outEnd), trailY); ctx.stroke();
         ctx.restore();
 
         if (state.progress > leg1) {
           ctx.save();
+          ctx.shadowColor = '#f59e0b'; ctx.shadowBlur = 12;
           ctx.strokeStyle = '#f59e0b'; ctx.lineWidth = 4; ctx.lineCap = 'round';
           ctx.beginPath(); ctx.moveTo(toPx(leg1), trailY); ctx.lineTo(toPx(p), trailY); ctx.stroke();
           ctx.restore();
         }
 
         var dispY = lineY + 34;
-        if (Math.abs(p) > 0.05) d.arrow(ctx, toPx(0), dispY, toPx(p), dispY, 'rgba(139,140,249,.85)', 8);
+        if (Math.abs(p) > 0.05) {
+          d.arrow(ctx, toPx(0), dispY, toPx(p), dispY, 'rgba(139,140,249,.85)', 8);
+          d.circle(ctx, toPx(p), dispY, 4, '#8b8cf9');
+        }
         d.label(ctx, toPx(0), dispY + 16, 'start', '#64739a', 'center');
 
+        // walker: soft ground shadow + footstep bob + faces its direction of travel
+        // (the 🚶 glyph itself faces west/left by default, so it only needs
+        // flipping while walking the *outbound*, eastbound leg)
+        var walking = state.progress < totalDist;
+        var facingEast = state.progress <= leg1;
+        var bob = walking ? Math.abs(Math.sin(state.progress * 6)) * 3 : 0;
+        var wx = toPx(p), wy = lineY + 6 - bob;
+
         ctx.save();
-        ctx.font = '22px system-ui, sans-serif';
-        ctx.textAlign = 'center'; ctx.textBaseline = 'alphabetic';
-        ctx.fillText('🚶', toPx(p), lineY + 6);
+        ctx.fillStyle = 'rgba(0,0,0,.35)';
+        ctx.beginPath(); ctx.ellipse(wx, lineY + 11, 9, 3, 0, 0, Math.PI * 2); ctx.fill();
         ctx.restore();
+
+        ctx.save();
+        ctx.translate(wx, wy);
+        if (facingEast) ctx.scale(-1, 1);
+        ctx.font = '24px system-ui, sans-serif';
+        ctx.textAlign = 'center'; ctx.textBaseline = 'alphabetic';
+        ctx.fillText('🚶', 0, 0);
+        ctx.restore();
+
         d.label(ctx, toPx(p), trailY - 10, fmt.num(p, 1) + ' m', '#c3cbe0', 'center');
       }
     };

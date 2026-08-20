@@ -28,7 +28,7 @@
         },
         {
           kind: 'sim',
-          prompt: 'Walk 8 m east, then turn around and walk 3 m west — drag the slider and watch distance and displacement diverge.',
+          prompt: 'Watch: 8 m east, then turn around and walk 3 m west. Distance and displacement start out matching — watch where they diverge.',
           simId: 'walkTrack',
           args: { leg1: 8, leg2: 3 },
           note: 'Distance (the trail) only ever grows. Displacement (the dashed arrow) grows too — until you turn around, and then it shrinks.'

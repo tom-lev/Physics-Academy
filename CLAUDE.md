@@ -217,6 +217,18 @@ learner who's pattern-matching on words.
   (moving any slider already resets the view).
 - Reuse the emoji/character already established for a scenario (🚗, 💥, 🚀)
   rather than a generic shape, where it fits.
+- Not every concept needs an interactive, drag-it-yourself sim — a step right
+  after a definition (before the first graded question testing it) can
+  instead use a non-interactive `sim`: no `controls`/`buttons` at all, just
+  an `animate()` that plays the concept out on its own, looping forever, so
+  the learner *watches* the idea happen instead of only reading its
+  definition. Same `sim` step machinery, just without the controls; it isn't
+  a distinct step kind. Keep the visuals a genuine scene, not bare lines on
+  a grid — a gradient sky/ground, a couple of small fixed decorations (a
+  tree, a house, a landmark) reusing the scenario's own emoji read as a lot
+  more finished than an abstract plot, for little extra code. (`walkTrack`
+  in `js/sims.js`, wired into kin-position right after its distance/
+  displacement callout, is the reference example.)
 
 **Process.** Before marking any chapter "done," actually play it in a
 browser as a learner would, start to finish — every real bug found while
