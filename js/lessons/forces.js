@@ -108,7 +108,8 @@
         {
           kind: 'lesson',
           title: 'Mass vs. weight: a scalar and a force',
-          body: '**Mass** is how much matter something has — a scalar, in kilograms, that doesn\'t change no matter where the object is. **Weight** is the *force* of gravity pulling on that mass — it depends on the local gravitational field, so it\'s different on the Moon than on Earth.',
+          hook: 'Step on a bathroom scale and what it reports is a *force* — your weight — not directly your mass. That\'s why astronauts don\'t shrink in orbit: nothing about how much matter they\'re made of has changed, only how hard something is pulling on it.',
+          body: '**Mass** is how much matter something has — a scalar, in kilograms, that never changes no matter where the object is. **Weight** is the *force* of gravity pulling on that mass, and since it depends on the local gravitational field, it\'s different on the Moon than on Earth.',
           formula: { name: 'Weight', tex: 'W = mg', vars: [
             { sym: 'W', mean: 'weight (a force, in newtons)' },
             { sym: 'm', mean: 'mass' },
@@ -334,7 +335,8 @@
         {
           kind: 'lesson',
           title: 'The normal force balances the perpendicular piece',
-          body: 'As long as the block isn\'t flying off the ramp or being crushed into it, there\'s no acceleration *perpendicular* to the slope — so the normal force exactly balances $W_\\perp$. That\'s why the normal force on an incline is $mg\\cos\\theta$, not the full weight $mg$ like it would be on flat ground.',
+          hook: 'A suitcase on an airport\'s tilted baggage ramp neither sinks through the belt nor pops off the surface — something is exactly canceling the piece of gravity trying to press it through.',
+          body: 'That something is the normal force. As long as the block isn\'t flying off the ramp or being crushed into it, there\'s no acceleration *perpendicular* to the slope — so the normal force exactly balances $W_\\perp$. That\'s why the normal force on an incline is $mg\\cos\\theta$, not the full weight $mg$ like it would be on flat ground.',
           formula: { name: 'Normal force on a slope', tex: 'N = mg\\cos\\theta', vars: [
             { sym: 'N', mean: 'normal force' },
             { sym: 'm', mean: 'mass' },
@@ -355,7 +357,8 @@
         {
           kind: 'lesson',
           title: 'Adding friction back in',
-          body: 'With kinetic friction acting up the slope (opposing the sliding), it subtracts from the down-slope pull. The net acceleration is what\'s left after friction eats into gravity\'s along-slope component.',
+          hook: 'A freshly waxed ski and a beat-up, rusty one send you down the exact same slope at very different speeds — the whole difference comes down to friction eating into gravity\'s pull.',
+          body: 'With kinetic friction acting up the slope (opposing the sliding), it subtracts from the down-slope pull. The net acceleration is what\'s left after friction takes its cut.',
           formula: { name: 'Acceleration down an incline, with kinetic friction', tex: 'a = g(\\sin\\theta - \\mu_k\\cos\\theta)', vars: [
             { sym: 'a', mean: 'acceleration down the slope' },
             { sym: 'g', mean: 'gravitational acceleration' },

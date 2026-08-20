@@ -38,7 +38,8 @@
         {
           kind: 'lesson',
           title: 'Signs are directions',
-          body: 'In one dimension, a vector quantity like displacement or velocity is fully described by a magnitude and a **sign**. Pick a positive direction once (often "right" or "up") and stick with it for the whole problem — the sign then tells you which way something points, without needing an arrow.',
+          hook: 'A bank statement doesn\'t draw arrows: "+$50" means money came in, "−$50" means it went out, and the sign alone carries all the direction anyone needs.',
+          body: 'One-dimensional motion works the same way. A vector quantity like displacement or velocity, squeezed onto a single line, is fully described by a magnitude and a **sign**. Pick a positive direction once (often "right" or "up") and stick with it for the whole problem — the sign then tells you which way something points, without needing an arrow.',
           formula: { name: 'Displacement', tex: '\\Delta x = x_f - x_i', vars: [
             { sym: '\\Delta x', mean: 'displacement' },
             { sym: 'x_i, x_f', mean: 'initial and final position' }
@@ -119,7 +120,8 @@
         {
           kind: 'lesson',
           title: 'Instantaneous velocity: zooming all the way in',
-          body: 'Average velocity is fine over a long interval, but it hides everything that happened in between. **Instantaneous velocity** is the average velocity over an interval so short it might as well be a single instant — graphically, it\'s the slope of the tangent line on a position-vs-time graph at that point.',
+          hook: 'A trip computer\'s "avg speed: 65 km/h" hides the fact you did 120 on the open highway and 20 crawling through a work zone — one honest number smoothing over a much messier reality.',
+          body: 'Your speedometer, by contrast, never lies like that — it reports **instantaneous velocity**, the average velocity over an interval so short it might as well be a single instant. Graphically, that\'s the slope of the tangent line on a position-vs-time graph at that exact point.',
           callout: { variant: 'info', text: 'Steeper slope on an $x$-$t$ graph = faster. A flat slope means the object is momentarily at rest.' }
         },
         {
@@ -187,7 +189,8 @@
         {
           kind: 'lesson',
           title: 'Speeding up or slowing down: compare the signs',
-          body: 'Whether an object speeds up or slows down doesn\'t depend on the sign of $a$ alone — it depends on how $a$ compares to $v$.',
+          hook: 'Slam the brakes while driving forward and you decelerate. Shift into reverse and slam that exact same pedal, and it now speeds you up backward — the pedal never changed, only how it compares to which way you were already going.',
+          body: 'That\'s the whole rule: whether an object speeds up or slows down doesn\'t depend on the sign of $a$ alone — it depends on how $a$ compares to $v$.',
           callout: { variant: 'key', text: 'Same sign as velocity → **speeding up**. Opposite sign → **slowing down**, regardless of which direction is "positive."' }
         },
         {
@@ -353,7 +356,7 @@
           kind: 'lesson',
           title: 'Graphs are just motion, translated',
           hook: 'You\'ve watched a phone\'s live speed graph during a drive and known instantly whether you were speeding up, cruising, or braking — before glancing at a single number. This lesson turns that instinct into a precise reading of position and velocity graphs.',
-          body: 'You can read almost everything about a motion straight off its graphs, without ever writing an equation.',
+          body: 'You can read almost everything about a motion straight off its graphs — no equation required.',
           callout: { variant: 'key', text: 'On an $x$-$t$ graph: **slope = velocity**. On a $v$-$t$ graph: **slope = acceleration**, and **area under the curve = displacement**.' }
         },
         {

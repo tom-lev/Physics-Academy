@@ -22,7 +22,7 @@
           title: 'Physics runs on measurements',
           prereq: 'This chapter assumes basic arithmetic — multiplying, dividing, and recognizing powers of ten ($10^3 = 1000$, and so on). That\'s genuinely all you need to start.',
           hook: 'A phone spec sheet lists "128 GB storage" and a race car\'s top speed as "89 m/s." Neither number means anything without the label stuck to it — and physics is built entirely out of numbers with labels stuck to them.',
-          body: 'Every physics claim eventually reduces to a number with a unit attached — "9.81 m/s²" means nothing without both parts. The world standardizes on the **SI system**: meters for length, kilograms for mass, seconds for time, and a handful of others that everything else is built from.',
+          body: 'Here\'s the thing about physics: it never trusts a naked number. A roller coaster\'s speed readout flashes "30" at the bottom of the first drop — 30 what? Miles an hour, and it\'s a fun ride. Meters a second, and it\'s a genuine emergency. That gap is exactly why physicists glue a **unit** to absolutely everything, and the whole world standardizes on the same toolkit for it: the **SI system** — meters for length, kilograms for mass, seconds for time, and a handful of others everything else gets built from.',
           callout: { variant: 'info', text: 'Derived units are just combinations of these: a Newton (force) is $\\text{kg}\\cdot\\text{m/s}^2$. A Joule (energy) is $\\text{N}\\cdot\\text{m}$.' }
         },
         {
@@ -36,7 +36,7 @@
         {
           kind: 'lesson',
           title: 'Prefixes: shorthand for powers of ten',
-          body: 'A power of ten just tells you how many places to shift a decimal point. $10^3 = 1000$ shifts it 3 places *right* (multiply). $10^{-3} = 0.001$ shifts it 3 places *left* instead — a negative exponent means "divide by," not some harder kind of math.\n\nUnit prefixes are shorthand built on exactly this idea. Rather than writing 0.000000045 m, physicists write 45 nm. Learn these once and you\'ll use them in every chapter from here on.',
+          body: 'Nobody wants to write 0.000000045 seconds by hand every time, so physicists shrink it with a prefix instead. A power of ten just tells you how many places to shift a decimal point: $10^3 = 1000$ shifts it 3 places *right* (multiply). $10^{-3} = 0.001$ shifts it 3 places *left* instead — a negative exponent means "divide by," not some harder kind of math.\n\nYour phone\'s processor spec ("3.5 GHz"), a USB cable\'s transfer rate, a camera flash\'s capacitor — all of them lean on exactly this shorthand. Learn the handful below once, and you\'ll use them in every chapter from here on.',
           formula: { name: 'Common SI prefixes', tex: '1\\text{ km} = 1\\times 10^{3}\\text{ m}', vars: [
             { sym: 'n', mean: 'nano — $10^{-9}$' },
             { sym: '\\mu', mean: 'micro — $10^{-6}$' },
@@ -84,7 +84,7 @@
           kind: 'lesson',
           title: 'Multiply by a clever form of 1',
           hook: 'A recipe calls for "2 cups" of flour and your kitchen scale only reads grams. You\'ve done this kind of conversion a hundred times without thinking about it — this lesson just makes the method behind it explicit and bulletproof.',
-          body: 'To convert units, multiply by a fraction that equals 1 — like $\\frac{1000\\text{ m}}{1\\text{ km}}$ — chosen so the unit you don\'t want cancels out and the unit you do want remains.',
+          body: 'The trick is always the same: multiply by a fraction that secretly equals 1 — like $\\frac{1000\\text{ m}}{1\\text{ km}}$ — chosen so the unit you don\'t want cancels out and the unit you actually need is what\'s left standing.',
           callout: { variant: 'key', text: 'Write the units out and cancel them like algebra. If they don\'t cancel to what you expect, you used the wrong conversion factor.' }
         },
         {
@@ -107,7 +107,8 @@
         {
           kind: 'lesson',
           title: 'Dimensional analysis: a built-in error checker',
-          body: 'Every physical equation must balance dimensionally — the units on the left must match the units on the right. This won\'t tell you if an equation is *physically* correct, but it will instantly catch typos and misremembered formulas.',
+          hook: 'In 1999, NASA lost a $125 million Mars orbiter because one engineering team\'s software used pounds-force and another\'s used newtons, and nobody caught the mismatch until the spacecraft was gone.',
+          body: 'Dimensional analysis is the cheap insurance against exactly that kind of disaster: every physical equation must balance dimensionally — the units on the left must match the units on the right. It won\'t tell you if an equation is *physically* correct, but it will instantly catch typos and misremembered formulas, the kind that, in the wrong context, cost $125 million.',
           callout: { variant: 'info', text: 'Example: in $x = v t$, the units check out as $\\text{m} = (\\text{m/s})(\\text{s})$ — the seconds cancel, leaving meters on both sides. ✓' }
         },
         {
@@ -132,7 +133,7 @@
           kind: 'lesson',
           title: 'Accuracy and precision are not the same thing',
           hook: 'A weather app reports "73°F" three mornings in a row, rock steady — but the actual temperature outside was 70°F each time. The app isn\'t "wrong" in a single, simple sense: it\'s wrong in a very specific, useful-to-name way.',
-          body: '**Accuracy** is how close a measurement is to the true value. **Precision** is how consistent repeated measurements are with each other — regardless of whether they\'re right.',
+          body: '**Accuracy** is how close a measurement lands to the actual truth. **Precision** is how consistent it stays with itself, reading after reading — whether or not it\'s anywhere near right. A device can nail one of these and completely miss the other.',
           callout: { variant: 'key', text: 'A scale that reads 61.2 kg every time you step on it is *precise*. If you actually weigh 58 kg, it\'s precise but not *accurate*.' }
         },
         {
@@ -146,7 +147,8 @@
         {
           kind: 'lesson',
           title: 'Significant figures: honesty about your uncertainty',
-          body: 'The digits in a measurement that are actually known reliably are its **significant figures**. Reporting more digits than your instrument can justify overstates your precision.',
+          hook: 'Pull a tape measure with millimeter marks and you can honestly claim "182.3 cm" — but claim "182.347 cm" off that same tape and you\'re not measuring anymore, you\'re just making digits up.',
+          body: 'The digits in a measurement that are actually known reliably are its **significant figures**. Reporting more digits than your instrument can justify doesn\'t make the answer more true — it just makes it more dishonest.',
           callout: { variant: 'info', text: 'Quick rules: all non-zero digits count. Zeros between non-zero digits count. Leading zeros (0.0042) don\'t count. Trailing zeros after a decimal point (4.20) do count.' }
         },
         {
@@ -182,7 +184,7 @@
           kind: 'lesson',
           title: 'Two ideas that show up in every chapter',
           hook: 'A live chart of a phone battery percentage over the day, or a stock ticker climbing and dipping — you already read graphs like these instinctively, judging "how fast" and "how much total" without doing a single calculation. This lesson names the two instincts you\'re already using.',
-          body: 'Almost any graph in physics can be read using two ideas: the **slope** tells you a rate of change, and the **area under the curve** tells you an accumulated total. Learn to spot these once, and they\'ll apply to motion, circuits, thermodynamics — everything.',
+          body: 'Almost any graph in physics boils down to two ideas: the **slope** tells you a rate — how fast something\'s changing right now — and the **area under the curve** tells you a running total, everything that\'s piled up so far. Spot these two patterns once and they\'ll follow you through motion, circuits, thermodynamics — every graph you\'ll meet in this course.',
           callout: { variant: 'key', text: 'Slope = rise/run = how fast the *y*-quantity changes per unit of the *x*-quantity. Area = the running total of *y* accumulated as *x* increases.' }
         },
         {
@@ -241,7 +243,7 @@
           kind: 'lesson',
           title: 'Some quantities need a direction to mean anything',
           hook: 'Someone asks you for directions to the train station and you answer "500 meters." They\'ll immediately ask "which way?" — a distance alone was never a complete answer, and that missing piece is exactly what separates a vector from a scalar.',
-          body: 'A **scalar** is fully described by a single number: mass, temperature, energy, speed. A **vector** needs a magnitude *and* a direction to make sense: displacement, velocity, force. "5 kg" is complete. "5 m/s" going *which way* is not.',
+          body: 'A **scalar** is the whole story in one number — mass, temperature, energy, speed — done, nothing missing. A **vector** needs a partner fact to mean anything at all: a magnitude *and* a direction. "5 kg" is complete. "5 m/s" going *which way* just left you hanging.',
           callout: { variant: 'info', text: 'You\'ve already been using 1D vectors — the + and − signs in kinematics were direction, just squeezed onto a single line.' }
         },
         {
@@ -255,7 +257,8 @@
         {
           kind: 'lesson',
           title: 'Adding vectors: tip to tail',
-          body: 'To add two vectors graphically, place the tail of the second at the tip of the first — the sum (the **resultant**) is the arrow from the very start to the very end. Order doesn\'t matter: $\\vec{A}+\\vec{B} = \\vec{B}+\\vec{A}$.',
+          hook: 'A pilot flying due north at 200 km/h through a 40 km/h crosswind doesn\'t actually travel due north over the ground — their plane\'s velocity and the wind\'s velocity add together into a path that\'s neither one alone.',
+          body: 'The trick for finding that combined path is beautifully simple: place the tail of the second vector at the tip of the first — the sum (the **resultant**) is the arrow from the very start to the very end. Order doesn\'t matter: $\\vec{A}+\\vec{B} = \\vec{B}+\\vec{A}$.',
           formula: { name: 'Components', tex: 'A_x = A\\cos\\theta \\qquad A_y = A\\sin\\theta', vars: [
             { sym: 'A', mean: 'the vector\'s length (magnitude)' },
             { sym: '\\theta', mean: 'its angle from the positive x-axis' },

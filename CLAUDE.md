@@ -125,6 +125,19 @@ authoritative list, but in short:
   banner shown the first time that sim *type* appears anywhere in the app
   (tracked in `localStorage`), independent of which lesson step renders it.
 
+**Voice — apply this to every `body`, `hook`, and `callout` in every chapter,
+new and existing:** write like a young, enthusiastic teacher who's genuinely
+excited about the topic, not a textbook. The goal of every sentence is to
+keep the reader interested and motivated to keep going, not just to be
+technically correct. Concretely: open with (or build on) a vivid, specific
+real-world example — not "a car" but a roller coaster's speed readout, not
+"an object" but a dropped phone — and let the formal definition grow out of
+that example rather than precede it. Favor a confident, conversational
+register ("Here's the thing about...", a rhetorical question, a concrete
+stake) over the passive, hedged tone dry reference material defaults to.
+This doesn't mean padding — keep it as tight as a drier version would be,
+just spend the words on texture instead of throat-clearing.
+
 **Beginner-friendliness conventions — apply these to every new chapter, not
 just the four below:**
 

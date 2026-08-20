@@ -177,6 +177,7 @@
         {
           kind: 'lesson',
           title: 'Range: how far horizontally',
+          hook: 'A slugger\'s home-run ball and a golfer\'s drive off the tee both eventually ask the exact same question: how far does this thing actually travel before it comes back down?',
           body: 'Range is just the horizontal-motion story applied over the full time of flight: constant velocity $v_{0x}$, for a duration $T$. Substituting $T$ in gives a single formula in terms of $v_0$ and $\\theta$ alone.',
           formula: { name: 'Range', tex: 'R = v_{0x}\\,T = \\frac{v_0^2\\sin(2\\theta)}{g}', vars: [
             { sym: 'R', mean: 'horizontal range' },
