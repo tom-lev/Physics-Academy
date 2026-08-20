@@ -156,7 +156,7 @@
 
     if (spec.orient && spec.kind && !hasSeenKind(spec.kind)) {
       var orientEl = el('div', 'sim-orient', '<span class="so-ico">🧭</span><span class="so-text">' + fmt.inline(spec.orient.text) + '</span>');
-      var orientBtn = el('button', 'so-dismiss', '✕ הבנתי');
+      var orientBtn = el('button', 'so-dismiss', '✕ Got it');
       orientBtn.type = 'button';
       orientBtn.addEventListener('click', function () {
         markSeenKind(spec.kind);

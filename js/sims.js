@@ -26,7 +26,7 @@
 
     return {
       kind: 'drop',
-      orient: { text: 'בחר עולם וגובה עם המחוונים, ואז לחץ **⬇ Drop it** כדי לשחרר את הכדור ולראות כמה זמן לוקח לנחות.' },
+      orient: { text: 'Pick a world and a height with the sliders, then hit **⬇ Drop it** to release the ball and see how long it takes to land.' },
       aspect: 0.62,
       state: { planet: 'earth', height: args.height || 20, t: 0, falling: false },
 
@@ -87,7 +87,7 @@
 
     return {
       kind: 'brake',
-      orient: { text: 'גרור **Speed**, **Braking** ו-**Reaction time** ותסתכל אם המכונית נעצרת לפני הקיר.' },
+      orient: { text: 'Drag **Speed**, **Braking**, and **Reaction time**, and watch whether the car stops before the wall.' },
       aspect: 0.34,
       state: { speed: args.speed || 20, decel: args.decel || 6, reaction: args.reaction != null ? args.reaction : 0.4 },
 
@@ -174,7 +174,7 @@
 
     return {
       kind: 'vectorAdd',
-      orient: { text: 'הכחול (A) והכתום (B) הם שני הווקטורים שאתה שולט בהם; הסגול הוא הסכום שלהם. גרור את אורך/זווית A ו-B עד שהחץ הסגול חופף לחץ המקווקו (היעד).' },
+      orient: { text: 'Blue (A) and orange (B) are the two vectors you control; violet is their sum. Drag A and B\'s length/angle until the violet arrow lines up with the dashed target arrow.' },
       aspect: 0.62,
       state: { aMag: 6, aAng: 0, bMag: 6, bAng: 90 },
 
@@ -260,7 +260,7 @@
 
     return {
       kind: 'projectile',
-      orient: { text: 'החץ הכתום בנקודת השיגור הוא כיוון הירי. גרור **Speed** ו-**Angle** — המסלול הכחול/ירוק מראה איפה הכדור טס, והקו המקווקו הלבן מראה איפה הוא נוחת.' },
+      orient: { text: 'The orange arrow at launch is the firing direction. Drag **Speed** and **Angle** — the blue/green path shows where the ball flies, and the white dashed line shows where it lands.' },
       aspect: 0.55,
       state: { speed: args.speed || 20, angle: args.angle || 45 },
 
@@ -367,7 +367,7 @@
 
     return {
       kind: 'incline',
-      orient: { text: 'הכתום (W) הוא המשקל, הכחול (N) הוא הכוח הניצב, הירוק/אדום (f) הוא החיכוך — אדום כשהגוש כבר גולש. גרור את הזווית והחיכוך ותסתכל מתי הוא מחזיק ומתי מתחיל לגלוש.' },
+      orient: { text: 'Orange (W) is weight, blue (N) is the normal force, green/red (f) is friction — red once the block is actually sliding. Drag the angle and friction, and watch when it holds and when it starts to slide.' },
       aspect: 0.6,
       state: {
         angle: args.angle != null ? args.angle : 25,
