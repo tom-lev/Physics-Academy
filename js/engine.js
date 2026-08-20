@@ -210,9 +210,10 @@
     this.actionBtn.disabled = !!disabled;
   };
 
-  Engine.prototype._showFeedback = function (ok, explain) {
+  Engine.prototype._showFeedback = function (ok, explain, exact) {
     this.footbar.classList.add(ok ? 'good' : 'bad');
-    var head = el('div', 'fb-head ' + (ok ? 'good' : 'bad'), ok ? '✅ Correct' : '❌ Not quite');
+    var headText = ok ? (exact ? '🎯 Exact!' : '✅ Correct') : '❌ Not quite';
+    var head = el('div', 'fb-head ' + (ok ? 'good' : 'bad'), headText);
     this.feedbackEl.innerHTML = '';
     this.feedbackEl.appendChild(head);
     if (explain) this.feedbackEl.appendChild(el('div', 'fb-body', fmt.inline(explain)));
@@ -232,7 +233,10 @@
     var wrap = el('div', 'step');
 
     var kickerText = step.kicker || ({ lesson: 'CONCEPT', mcq: 'CHECK YOUR UNDERSTANDING', numeric: 'YOUR TURN', order: 'PUT IT IN ORDER', sim: 'TRY IT' })[step.kind];
-    wrap.appendChild(el('div', 'step-kicker', fmt.esc(kickerText)));
+    var kickerRow = el('div', 'step-kicker-row');
+    kickerRow.appendChild(el('span', 'step-kicker', fmt.esc(kickerText)));
+    if (step.difficulty) kickerRow.appendChild(el('span', 'diff-badge diff-' + step.difficulty, fmt.esc(step.difficulty)));
+    wrap.appendChild(kickerRow);
     if (step.title) wrap.appendChild(el('h2', null, fmt.inline(step.title)));
 
     var isLast = this.idx === this.lesson.steps.length - 1;
@@ -253,7 +257,7 @@
     if (this.answered) {
       this.actionBtn.textContent = isLast ? 'Finish' : 'Continue';
       this.actionBtn.disabled = false;
-      this._showFeedback(saved.ok, saved.explain);
+      this._showFeedback(saved.ok, saved.explain, saved.exact);
     }
 
     this._updateChrome();
@@ -349,11 +353,12 @@
       var v = parseFloat(input.value.replace(',', '.'));
       var tol = step.tol != null ? step.tol : Math.max(0.01, Math.abs(step.correct) * 0.03);
       var ok = isFinite(v) && root.PA.kin.near(v, step.correct, tol);
+      var exact = ok && fmt.num(v, step.decimals) === fmt.num(step.correct, step.decimals);
       input.classList.add(ok ? 'ok' : 'ko');
       input.disabled = true;
       var explain = (step.explain || '') +
         (ok ? '' : ' Correct answer: ' + fmt.num(step.correct, step.decimals) + (step.unit ? ' ' + step.unit : '') + '.');
-      return { ok: ok, explain: explain, detail: { value: v } };
+      return { ok: ok, exact: exact, explain: explain, detail: { value: v } };
     };
   };
 
@@ -488,10 +493,10 @@
     if (this.gradable && !this.answered) {
       var result = this.checkFn();
       this.answered = true;
-      this.stepAnswers[this.idx] = { graded: true, ok: result.ok, explain: result.explain, detail: result.detail };
+      this.stepAnswers[this.idx] = { graded: true, ok: result.ok, exact: result.exact, explain: result.explain, detail: result.detail };
       this._recomputeScore();
       this._updateChrome();
-      this._showFeedback(result.ok, result.explain);
+      this._showFeedback(result.ok, result.explain, result.exact);
 
       var isLast = this.idx === this.lesson.steps.length - 1;
       this.actionBtn.textContent = isLast ? 'Finish' : 'Continue';

@@ -534,14 +534,31 @@ a { color: var(--brand); text-decoration: none; }
   to   { opacity: 1; transform: none; }
 }
 
+.step-kicker-row {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin-bottom: 9px;
+}
 .step-kicker {
   font-size: 11.5px;
   font-weight: 800;
   letter-spacing: .15em;
   text-transform: uppercase;
   color: var(--brand);
-  margin-bottom: 9px;
 }
+.diff-badge {
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  padding: 2px 8px;
+  border-radius: 99px;
+  border: 1px solid;
+}
+.diff-badge.diff-easy   { color: var(--good); border-color: color-mix(in srgb, var(--good) 45%, transparent); background: rgba(52,211,153,.08); }
+.diff-badge.diff-medium { color: var(--warn); border-color: color-mix(in srgb, var(--warn) 45%, transparent); background: rgba(251,191,36,.08); }
+.diff-badge.diff-hard   { color: var(--bad); border-color: color-mix(in srgb, var(--bad) 45%, transparent); background: rgba(251,113,133,.08); }
 .step h2 {
   font-size: 27px;
   line-height: 1.22;
@@ -794,7 +811,12 @@ a { color: var(--brand); text-decoration: none; }
   border-bottom: 1px solid var(--line-soft);
   color: #cfe4f5;
 }
-.sim-goal.hit { background: var(--good-bg); color: var(--good); }
+.sim-goal.hit { background: var(--good-bg); color: var(--good); animation: goalPulse .5s ease-out 1; }
+@keyframes goalPulse {
+  0%   { box-shadow: 0 0 0 0 rgba(52,211,153,.5); }
+  60%  { box-shadow: 0 0 0 10px rgba(52,211,153,0); }
+  100% { box-shadow: 0 0 0 0 rgba(52,211,153,0); }
+}
 .sim-goal .g-ico { font-size: 15px; flex: none; }
 
 .sim-orient {
