@@ -21,6 +21,8 @@
         {
           kind: 'lesson',
           title: 'Where something is, and how far it moved',
+          prereq: 'This chapter assumes basic algebra (solving for a variable, adding and subtracting negative numbers), plus the units and vector ideas from the toolkit chapter.',
+          hook: "You drive 8 km to a store, then realize you forgot your wallet and drive straight back home. Your odometer now reads 16 km more than when you left — but if someone asks how far from home you currently are, the honest answer is zero. Two completely different, both correct, answers to \"how far did you go?\"",
           body: "Everything in kinematics starts with **position** — where an object is relative to some reference point you choose. Once you have two positions, you can ask a more interesting question: how far did it *move*?\n\nThere are two different answers to that, and mixing them up is the single most common kinematics mistake.",
           callout: { variant: 'key', text: '**Distance** is the total length of the path traveled — always positive. **Displacement** is the straight-line change in position, $\\Delta x = x_f - x_i$ — it can be positive, negative, or zero.' }
         },
@@ -30,13 +32,17 @@
           options: ['+11 m', '+5 m', '-5 m', '+8 m'],
           correct: 1,
           explain: 'Displacement only cares about start and end: $\\Delta x = 8 + (-3) = +5$ m. The total distance walked was 11 m, but that\'s a different number.',
+          wrongExplain: { 0: 'That\'s the *total distance* walked (8 + 3 = 11 m) — displacement only cares about your net change in position, not how much ground you covered getting there.' },
           hint: 'Add the two legs as signed numbers, east positive, west negative.'
         },
         {
           kind: 'lesson',
           title: 'Signs are directions',
           body: 'In one dimension, a vector quantity like displacement or velocity is fully described by a magnitude and a **sign**. Pick a positive direction once (often "right" or "up") and stick with it for the whole problem — the sign then tells you which way something points, without needing an arrow.',
-          formula: { name: 'Displacement', tex: '\\Delta x = x_f - x_i' }
+          formula: { name: 'Displacement', tex: '\\Delta x = x_f - x_i', vars: [
+            { sym: '\\Delta x', mean: 'displacement' },
+            { sym: 'x_i, x_f', mean: 'initial and final position' }
+          ] }
         },
         {
           kind: 'numeric',
@@ -57,7 +63,11 @@
             'Distance can be negative if you walk backward'
           ],
           correct: 0,
-          explain: 'The straight-line shortcut (|displacement|) can never be longer than the path you actually walked (distance). They\'re only equal when you move in a straight line without reversing.'
+          explain: 'The straight-line shortcut (|displacement|) can never be longer than the path you actually walked (distance). They\'re only equal when you move in a straight line without reversing.',
+          wrongExplain: {
+            1: 'That\'s backwards — the straight-line shortcut (displacement) can never *exceed* the actual path length (distance), since any path length is at least as long as a straight line between its endpoints.',
+            2: 'They\'re only equal for straight-line motion with no reversing. The moment you double back even slightly, distance keeps climbing while displacement doesn\'t.'
+          }
         },
         {
           kind: 'order',
@@ -81,8 +91,13 @@
         {
           kind: 'lesson',
           title: 'How fast, and which way',
+          hook: 'Your GPS reports a 30-minute drive as "40 km, average speed 80 km/h" — a single tidy number that hides ten minutes stuck in traffic followed by a fast, open highway. That one average is real, but it\'s definitely not the whole story.',
           body: 'Speed tells you how fast the odometer is spinning — always positive, no direction attached. **Velocity** is the vector version: displacement per time, direction included.',
-          formula: { name: 'Average velocity', tex: '\\bar{v} = \\frac{\\Delta x}{\\Delta t}' }
+          formula: { name: 'Average velocity', tex: '\\bar{v} = \\frac{\\Delta x}{\\Delta t}', vars: [
+            { sym: '\\bar{v}', mean: 'average velocity' },
+            { sym: '\\Delta x', mean: 'displacement over the interval' },
+            { sym: '\\Delta t', mean: 'time elapsed' }
+          ] }
         },
         {
           kind: 'numeric',
@@ -98,6 +113,7 @@
           options: ['5 m/s', '0.2 m/s', '0 m/s', 'Impossible to say without a stopwatch on each leg'],
           correct: 2,
           explain: 'Average velocity depends on **displacement**, and her displacement for a full lap is zero — start and end point are the same place. Her average *speed*, using distance instead, is 400/80 = 5 m/s.',
+          wrongExplain: { 0: 'That 5 m/s is her average *speed* (distance ÷ time). Average *velocity* uses displacement instead, and a full lap means she ends up exactly where she started.' },
           hint: 'Displacement, not distance, goes in the numerator.'
         },
         {
@@ -111,7 +127,8 @@
           prompt: 'On a position-vs-time graph, a curve bends so its slope keeps getting steeper (while staying positive). What is the object doing?',
           options: ['Moving in the positive direction and speeding up', 'Moving in the negative direction and slowing down', 'Standing still', 'Moving at constant velocity'],
           correct: 0,
-          explain: 'A positive, steepening slope means velocity is positive and increasing — the object is moving forward and speeding up.'
+          explain: 'A positive, steepening slope means velocity is positive and increasing — the object is moving forward and speeding up.',
+          wrongExplain: { 3: 'Constant velocity would look like a *straight* line on an x-t graph (unchanging slope). Here the slope keeps getting steeper, which means velocity itself is increasing, not constant.' }
         },
         {
           kind: 'numeric',
@@ -134,8 +151,13 @@
         {
           kind: 'lesson',
           title: 'Acceleration is how velocity itself changes',
+          hook: 'A rollercoaster car sits at the very top of the first hill, motionless for a split second — and everyone still screams, because they can feel what\'s coming. Being momentarily still and being unaffected by acceleration are two very different things.',
           body: 'If velocity is how fast position changes, **acceleration** is how fast velocity changes. It\'s measured in m/s² — "meters per second, per second" — and like velocity, it has a sign.',
-          formula: { name: 'Average acceleration', tex: 'a = \\frac{\\Delta v}{\\Delta t}' }
+          formula: { name: 'Average acceleration', tex: 'a = \\frac{\\Delta v}{\\Delta t}', vars: [
+            { sym: 'a', mean: 'average acceleration' },
+            { sym: '\\Delta v', mean: 'change in velocity' },
+            { sym: '\\Delta t', mean: 'time elapsed' }
+          ] }
         },
         {
           kind: 'numeric',
@@ -156,6 +178,10 @@
           ],
           correct: 0,
           explain: 'Constant velocity — same speed, same direction — means Δv = 0, so a = 0. The ball at the top of a bounce still has gravity acting on it (a = -g), and a car turning is changing direction, which is a change in the velocity *vector* even at constant speed.',
+          wrongExplain: {
+            2: 'Momentarily at rest isn\'t the same as zero acceleration — gravity never stopped pulling on the ball (a = −g the whole time), which is exactly why it doesn\'t stay at rest.',
+            3: 'Constant *speed* isn\'t the same as constant *velocity*. Turning changes the direction, so the velocity vector is still changing — meaning there IS an acceleration.'
+          },
           hint: 'Acceleration is about anything changing, including direction — not just speed.'
         },
         {
@@ -169,7 +195,8 @@
           prompt: 'A car moves in the negative direction ($v < 0$) while its acceleration is positive ($a > 0$). What is happening to its speed?',
           options: ['Increasing', 'Decreasing', 'Staying constant', 'Not enough information'],
           correct: 1,
-          explain: 'v and a have opposite signs, so the acceleration is opposing the motion — the car is braking. Its speed (the magnitude of v) is decreasing, even though a itself is positive.'
+          explain: 'v and a have opposite signs, so the acceleration is opposing the motion — the car is braking. Its speed (the magnitude of v) is decreasing, even though a itself is positive.',
+          wrongExplain: { 0: 'A positive acceleration doesn\'t automatically mean speeding up — it depends on how a\'s sign compares to v\'s. Here they\'re opposite, so the acceleration is actually opposing the motion.' }
         },
         {
           kind: 'numeric',
@@ -192,8 +219,14 @@
         {
           kind: 'lesson',
           title: 'The one acceleration everyone already knows',
+          hook: 'Drop a hammer and a feather at the same time and every instinct says the hammer wins easily. In 1971, an Apollo 15 astronaut did exactly that on the airless Moon, on live TV — and they hit the ground at the same instant.',
           body: 'Drop anything near Earth\'s surface and — ignoring air resistance — it accelerates downward at a constant $g \\approx 9.81\\text{ m/s}^2$, no matter how heavy it is. That last part surprises people every time.',
-          formula: { name: 'Free fall from rest', tex: 'h = \\frac{1}{2} g t^2 \\qquad v = g t' },
+          formula: { name: 'Free fall from rest', tex: 'h = \\frac{1}{2} g t^2 \\qquad v = g t', vars: [
+            { sym: 'h', mean: 'height fallen' },
+            { sym: 'g', mean: 'gravitational acceleration (≈9.81 m/s² on Earth)' },
+            { sym: 't', mean: 'time since release' },
+            { sym: 'v', mean: 'speed after falling for time t' }
+          ] },
           callout: { variant: 'info', text: 'This is just the constant-acceleration equations from the last lesson, with $a=g$ and $v_0=0$.' }
         },
         {
@@ -201,7 +234,8 @@
           prompt: 'You drop a bowling ball and a tennis ball from the same height at the same time, in a vacuum (no air resistance). Which hits the ground first?',
           options: ['The bowling ball, because it\'s heavier', 'The tennis ball, because it\'s lighter', 'They land at the same time', 'Depends on the exact height'],
           correct: 2,
-          explain: 'In free fall, acceleration doesn\'t depend on mass — a heavier object needs more force to accelerate it, but gravity conveniently supplies exactly that much more force. Galileo demonstrated this centuries before we had vacuum chambers to prove it cleanly.'
+          explain: 'In free fall, acceleration doesn\'t depend on mass — a heavier object needs more force to accelerate it, but gravity conveniently supplies exactly that much more force. Galileo demonstrated this centuries before we had vacuum chambers to prove it cleanly.',
+          wrongExplain: { 0: 'It feels true because a heavier object needs more force to accelerate — but gravity supplies exactly that much more force, so the extra mass cancels out and both fall at the same rate.' }
         },
         {
           kind: 'sim',
@@ -234,7 +268,8 @@
           prompt: 'The same object is dropped from the same height, but on the Moon ($g \\approx 1.62\\text{ m/s}^2$) instead of Earth. What happens to the fall time?',
           options: ['It gets much shorter', 'It gets much longer', 'It stays exactly the same', 'It becomes zero'],
           correct: 1,
-          explain: 'Fall time scales as $1/\\sqrt{g}$. Since the Moon\'s gravity is about 6× weaker, the fall takes about √6 ≈ 2.5× longer.'
+          explain: 'Fall time scales as $1/\\sqrt{g}$. Since the Moon\'s gravity is about 6× weaker, the fall takes about √6 ≈ 2.5× longer.',
+          wrongExplain: { 2: 'Mass not mattering for fall time doesn\'t mean gravity\'s *strength* doesn\'t matter too — g itself is smaller on the Moon, so the acceleration is weaker and the fall takes longer.' }
         }
       ]
     },
@@ -248,8 +283,14 @@
         {
           kind: 'lesson',
           title: 'Three equations, one underlying idea',
+          hook: 'A car safety engineer needs a vehicle\'s stopping distance without physically crashing it forty times on a test track. Given just its speed and how hard it can brake, one equation hands over the answer before a single test run happens.',
           body: 'Whenever acceleration is constant, three equations connect position, velocity, acceleration, and time. Pick whichever one already contains the variables you have — and skips the one you don\'t.',
-          formula: { name: 'The kinematics toolkit', tex: 'v = v_0 + at' },
+          formula: { name: 'The kinematics toolkit', tex: 'v = v_0 + at', vars: [
+            { sym: 'v', mean: 'final velocity' },
+            { sym: 'v_0', mean: 'initial velocity' },
+            { sym: 'a', mean: 'acceleration' },
+            { sym: 't', mean: 'time elapsed' }
+          ] },
           callout: { variant: 'key', text: 'Also: $x = x_0 + v_0 t + \\frac{1}{2}at^2$ — and, when time isn\'t given, $v^2 = v_0^2 + 2a\\Delta x$.' }
         },
         {
@@ -266,7 +307,8 @@
           prompt: 'A car\'s braking distance depends on the square of its initial speed. If the speed doubles, what happens to the braking distance (same deceleration)?',
           options: ['It doubles', 'It triples', 'It quadruples', 'It stays the same'],
           correct: 2,
-          explain: 'Since Δx ∝ v0², doubling v0 multiplies the stopping distance by 2² = 4. This is exactly why highway speed limits matter so much more than they seem to.'
+          explain: 'Since Δx ∝ v0², doubling v0 multiplies the stopping distance by 2² = 4. This is exactly why highway speed limits matter so much more than they seem to.',
+          wrongExplain: { 0: 'That\'s what would happen if distance scaled directly with speed — but it scales with speed *squared*, so doubling speed quadruples the distance instead.' }
         },
         {
           kind: 'sim',
@@ -295,7 +337,8 @@
             'They\'d all help equally'
           ],
           correct: 1,
-          explain: 'Reaction distance is linear in speed, and braking deceleration only helps linearly too — but braking distance is proportional to speed **squared**. Halving your speed cuts that term to a quarter, which usually dominates the total.'
+          explain: 'Reaction distance is linear in speed, and braking deceleration only helps linearly too — but braking distance is proportional to speed **squared**. Halving your speed cuts that term to a quarter, which usually dominates the total.',
+          wrongExplain: { 2: 'Doubling deceleration does help — it halves the braking-distance term — but that term already depends on speed *squared*, so halving speed cuts it to a quarter, a bigger win.' }
         }
       ]
     },
@@ -309,6 +352,7 @@
         {
           kind: 'lesson',
           title: 'Graphs are just motion, translated',
+          hook: 'You\'ve watched a phone\'s live speed graph during a drive and known instantly whether you were speeding up, cruising, or braking — before glancing at a single number. This lesson turns that instinct into a precise reading of position and velocity graphs.',
           body: 'You can read almost everything about a motion straight off its graphs, without ever writing an equation.',
           callout: { variant: 'key', text: 'On an $x$-$t$ graph: **slope = velocity**. On a $v$-$t$ graph: **slope = acceleration**, and **area under the curve = displacement**.' }
         },
@@ -322,7 +366,8 @@
             'An object at rest'
           ],
           correct: 0,
-          explain: 'A straight line means the slope — the velocity — never changes. A negative, unchanging slope means constant velocity in the negative direction.'
+          explain: 'A straight line means the slope — the velocity — never changes. A negative, unchanging slope means constant velocity in the negative direction.',
+          wrongExplain: { 1: 'A *constant* slope on an x-t graph means velocity isn\'t changing — that\'s constant velocity, not constant acceleration. Acceleration would show up as the slope itself curving.' }
         },
         {
           kind: 'numeric',

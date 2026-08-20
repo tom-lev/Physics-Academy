@@ -105,14 +105,47 @@ Every lesson is `{ id, title, sub, steps: [...] }`. Each step has a `kind` and
 kind-specific fields — see the header comment in `engine.js` for the full
 authoritative list, but in short:
 
-- `lesson` — pure explanation: `body` (rich text), optional `callout`, `formula`.
-- `mcq` — `prompt`, `options[]`, `correct` (index), `explain`.
+- `lesson` — pure explanation: `body` (rich text), optional `callout`, `formula`
+  (itself optionally carrying `vars: [{sym, mean}]`, rendered as a "who's who"
+  legend under the formula). Also optional `hook` (a short relatable scenario
+  rendered above `body`, before the formal definition) and `prereq` (a fixed
+  callout above everything else in the step, reserved for a chapter's opening
+  lesson, spelling out assumed background knowledge).
+- `mcq` — `prompt`, `options[]`, `correct` (index), `explain`. Optional
+  `wrongExplain: {idx: 'text'}` keyed by an option's original index (same
+  indexing as `correct`) — a misconception-specific explanation shown instead
+  of `explain` when that particular wrong option is picked.
 - `numeric` — `prompt`, `unit`, `correct`, `tol`, `decimals`, `explain`. `tol`
   should stay generous enough that reasonable learner rounding still passes.
 - `order` — `prompt`, `items[]` given **already in correct order** (the engine
   shuffles them for display and checks the learner's reordering).
 - `sim` — `prompt`, `simId` (key into `PA.sims`), `args` passed to that factory,
-  optional `note`.
+  optional `note`. Each factory in `sims.js` may also declare `kind` (its own
+  stable type name) and `orient: {text}` — a one-time, dismissible orientation
+  banner shown the first time that sim *type* appears anywhere in the app
+  (tracked in `localStorage`), independent of which lesson step renders it.
+
+**Beginner-friendliness conventions — apply these to every new chapter, not
+just the four below:**
+
+- Every lesson's *first* step (`kind: 'lesson'`) gets a `hook`: one or two
+  sentences grounding the concept in a concrete, everyday scenario, before
+  the formal definition in `body`. Write the formal definition second, not
+  first — the hook exists so a total beginner has something to picture
+  before the abstraction lands.
+- The *first* lesson of a chapter also gets `prereq` on that same opening
+  step: one sentence naming the background the chapter assumes (specific
+  math skills, or which earlier chapters/lessons it leans on).
+- Any `formula` a learner will need to *use* (not just admire) should carry
+  `vars`, spelling out what each symbol means — skip it only for formulas
+  that are already self-explanatory inline (e.g. a labeled list of prefix
+  values).
+- For `mcq` steps, add `wrongExplain` to the 1–2 distractors that represent
+  a real, specific misconception — not every wrong option needs one; a
+  distractor that's just obviously wrong can fall through to the generic
+  `explain`.
+- If a chapter introduces a new sim type in `sims.js`, give that factory a
+  `kind` and a one-sentence `orient` describing what to drag/watch for.
 
 The four chapters built so far (`toolkit`, `kinematics`, `projectile`, `forces`
 — in that build order) are good reference examples for tone, step-mix, and how

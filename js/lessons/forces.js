@@ -21,6 +21,8 @@
         {
           kind: 'lesson',
           title: 'Objects resist changes to their motion',
+          prereq: 'This chapter leans on vectors and velocity/acceleration from the first two chapters — force is the *why* behind motion you already know how to describe.',
+          hook: "You're standing on a bus that brakes hard, and your body lurches forward even though nothing pushed you forward. Your body was just continuing to do what it was already doing — the bus is what changed.",
           body: "Every chapter so far has described *how* things move. This chapter asks *why*. Newton's First Law is the starting point: an object at rest stays at rest, and an object in motion stays in motion at constant velocity, **unless a net force acts on it**.\n\nThat resistance to changing motion is called **inertia**. It's not a force — it's a property every object with mass has, just by existing.",
           callout: { variant: 'key', text: 'Net force = 0 doesn\'t mean "not moving." It means "velocity isn\'t changing" — which includes staying at rest *and* cruising at constant speed in a straight line.' }
         },
@@ -29,7 +31,8 @@
           prompt: 'A hockey puck slides across frictionless ice with no one touching it. What happens to its velocity?',
           options: ['It gradually slows down and stops', 'It stays exactly the same, forever', 'It speeds up slightly', 'It curves off to one side'],
           correct: 1,
-          explain: 'With zero net force acting on it (no friction, no push), the First Law says its velocity simply doesn\'t change — same speed, same direction, indefinitely.'
+          explain: 'With zero net force acting on it (no friction, no push), the First Law says its velocity simply doesn\'t change — same speed, same direction, indefinitely.',
+          wrongExplain: { 0: 'That\'s the everyday intuition friction trains into us — but this puck is on frictionless ice. With zero net force, the First Law says velocity simply doesn\'t change at all.' }
         },
         {
           kind: 'lesson',
@@ -42,7 +45,8 @@
           prompt: 'A book sits on a table, motionless. According to the First Law, what can you conclude about the net force on it?',
           options: ['It must be zero', 'It must equal the book\'s weight', 'It must point downward', 'You can\'t say — there\'s no motion to analyze'],
           correct: 0,
-          explain: 'Constant velocity (zero, in this case) means zero net force. Gravity is still pulling down on the book, but the table is pushing up with an equal and opposite normal force, so the two cancel exactly.'
+          explain: 'Constant velocity (zero, in this case) means zero net force. Gravity is still pulling down on the book, but the table is pushing up with an equal and opposite normal force, so the two cancel exactly.',
+          wrongExplain: { 1: 'The book\'s weight is one of the individual forces on it — net force is what\'s left *after* combining all of them. Gravity down and the normal force up cancel exactly, leaving net force at zero, not equal to the weight.' }
         },
         {
           kind: 'lesson',
@@ -55,7 +59,8 @@
           prompt: 'A car is turning left at a perfectly constant speed. Is the net force on the car zero?',
           options: ['Yes — speed never changes, so net force is zero', 'No — changing direction is changing velocity, so there must be a net force', 'Only if the car speeds up while turning', 'Net force only applies to straight-line motion'],
           correct: 1,
-          explain: 'Velocity is a vector — direction counts as much as speed. Turning changes the direction, so velocity is changing even at constant speed, which means there IS a net force (pointing toward the turn, as you\'ll see in a later chapter). The First Law only guarantees zero net force for motion that\'s constant in *both* speed and direction.'
+          explain: 'Velocity is a vector — direction counts as much as speed. Turning changes the direction, so velocity is changing even at constant speed, which means there IS a net force (pointing toward the turn, as you\'ll see in a later chapter). The First Law only guarantees zero net force for motion that\'s constant in *both* speed and direction.',
+          wrongExplain: { 0: 'Speed staying constant isn\'t the whole story — velocity is a vector, and turning changes its *direction*. A changing velocity means there IS a net force, even without any change in speed.' }
         }
       ]
     },
@@ -69,8 +74,13 @@
         {
           kind: 'lesson',
           title: 'The law that connects push to speed-up',
+          hook: "Pushing an empty shopping cart takes barely any effort to speed up. Push the exact same way on a cart loaded with a dozen bags of concrete, and it barely budges — same push, wildly different result.",
           body: 'The First Law says what happens with *zero* net force. The Second Law says what happens with *nonzero* net force: it produces an acceleration, in the same direction as the force, proportional to the force and inversely proportional to the object\'s mass.',
-          formula: { name: "Newton's Second Law", tex: '\\vec{F}_{net} = m\\vec{a}' },
+          formula: { name: "Newton's Second Law", tex: '\\vec{F}_{net} = m\\vec{a}', vars: [
+            { sym: 'F_{net}', mean: 'net force acting on the object' },
+            { sym: 'm', mean: 'its mass' },
+            { sym: 'a', mean: 'the acceleration produced' }
+          ] },
           callout: { variant: 'key', text: 'Bigger net force → bigger acceleration. Bigger mass → smaller acceleration for the same force. Mass is literally a measure of how much an object resists being accelerated.' }
         },
         {
@@ -92,13 +102,18 @@
             'It only matters when there are more than three forces'
           ],
           correct: 1,
-          explain: 'The whole point of isolating one object and listing its forces is bookkeeping: it\'s easy to forget a force (like friction, or a normal force) or accidentally include a force that acts on something else. Once every force on the object is accounted for, you sum them as vectors to get F_net.'
+          explain: 'The whole point of isolating one object and listing its forces is bookkeeping: it\'s easy to forget a force (like friction, or a normal force) or accidentally include a force that acts on something else. Once every force on the object is accounted for, you sum them as vectors to get F_net.',
+          wrongExplain: { 2: 'A free-body diagram doesn\'t replace F = ma — it\'s the bookkeeping step that makes sure you\'ve got the right forces *before* you plug them into F = ma.' }
         },
         {
           kind: 'lesson',
           title: 'Mass vs. weight: a scalar and a force',
           body: '**Mass** is how much matter something has — a scalar, in kilograms, that doesn\'t change no matter where the object is. **Weight** is the *force* of gravity pulling on that mass — it depends on the local gravitational field, so it\'s different on the Moon than on Earth.',
-          formula: { name: 'Weight', tex: 'W = mg' }
+          formula: { name: 'Weight', tex: 'W = mg', vars: [
+            { sym: 'W', mean: 'weight (a force, in newtons)' },
+            { sym: 'm', mean: 'mass' },
+            { sym: 'g', mean: 'local gravitational acceleration' }
+          ] }
         },
         {
           kind: 'numeric',
@@ -120,7 +135,8 @@
             'Both decrease by the same factor'
           ],
           correct: 1,
-          explain: 'Mass (75 kg) is a property of the person\'s matter — it doesn\'t care about location. Weight (mg) depends on g, so on the Moon it drops to about 75 × 1.62 ≈ 121.5 N, roughly a sixth of its Earth value — same person, much lighter scale reading.'
+          explain: 'Mass (75 kg) is a property of the person\'s matter — it doesn\'t care about location. Weight (mg) depends on g, so on the Moon it drops to about 75 × 1.62 ≈ 121.5 N, roughly a sixth of its Earth value — same person, much lighter scale reading.',
+          wrongExplain: { 3: 'Mass isn\'t affected by location at all — it\'s a property of the matter itself. Only weight (which depends on g) changes on the Moon; mass stays exactly 75 kg.' }
         },
         {
           kind: 'numeric',
@@ -143,8 +159,12 @@
         {
           kind: 'lesson',
           title: 'Every force has a partner',
+          hook: "Stand on a skateboard next to a wall and push off it — you shoot backward, even though you're the one doing the pushing. Somehow pushing something else got *you* moving.",
           body: 'Whenever object A pushes or pulls on object B, object B pushes or pulls back on A with a force of the **same magnitude**, in the **opposite direction**. These two forces are an action-reaction pair — and critically, they act on *two different objects*, not the same one.',
-          formula: { name: "Newton's Third Law", tex: '\\vec{F}_{A\\text{ on }B} = -\\vec{F}_{B\\text{ on }A}' }
+          formula: { name: "Newton's Third Law", tex: '\\vec{F}_{A\\text{ on }B} = -\\vec{F}_{B\\text{ on }A}', vars: [
+            { sym: 'F_{A\\text{ on }B}', mean: 'force A exerts on B' },
+            { sym: 'F_{B\\text{ on }A}', mean: 'force B exerts on A — equal in size, opposite in direction' }
+          ] }
         },
         {
           kind: 'mcq',
@@ -156,7 +176,8 @@
             'Action-reaction pairs only apply to collisions'
           ],
           correct: 1,
-          explain: 'The two forces in a pair never act on the same object — so they can\'t cancel *for* that object. When you push off a wall, the wall pushes back on *you* (accelerating you), while your push acts on the *wall* (which usually doesn\'t move because something else, like the ground, holds it in place). Each object only "feels" its own half of the pair.'
+          explain: 'The two forces in a pair never act on the same object — so they can\'t cancel *for* that object. When you push off a wall, the wall pushes back on *you* (accelerating you), while your push acts on the *wall* (which usually doesn\'t move because something else, like the ground, holds it in place). Each object only "feels" its own half of the pair.',
+          wrongExplain: { 2: 'Action-reaction pairs are *exactly* equal in magnitude, always — not approximately smaller. The real resolution is that the two forces act on different objects, so they never cancel for either one.' }
         },
         {
           kind: 'lesson',
@@ -174,7 +195,8 @@
             'There is no reaction force in this case'
           ],
           correct: 0,
-          explain: 'Your feet pushing down on the Earth (action) is paired with the Earth pushing up on your feet (reaction) — that upward push is exactly the normal force. Your weight is a separate force (gravity pulling you down), whose Third Law partner is actually your pull on the Earth, not the normal force.'
+          explain: 'Your feet pushing down on the Earth (action) is paired with the Earth pushing up on your feet (reaction) — that upward push is exactly the normal force. Your weight is a separate force (gravity pulling you down), whose Third Law partner is actually your pull on the Earth, not the normal force.',
+          wrongExplain: { 1: 'Your weight is gravity pulling on *you* — a completely separate force from this feet/ground pair. Weight\'s own Third Law partner is actually your gravitational pull on the Earth, not the normal force.' }
         },
         {
           kind: 'lesson',
@@ -203,8 +225,15 @@
         {
           kind: 'lesson',
           title: 'Friction opposes relative sliding',
+          hook: "A heavy box refuses to budge no matter how hard you shove — until, with one extra bit of effort, it suddenly breaks free and slides almost too easily. Something changes right at that instant.",
           body: 'Friction is a force between two surfaces in contact that opposes their sliding relative to each other. It comes in two flavors: **static friction**, which resists an object *starting* to slide, and **kinetic friction**, which resists an object that is *already* sliding. Both are proportional to the normal force pressing the surfaces together.',
-          formula: { name: 'Friction force', tex: 'f_s \\le \\mu_s N    f_k = \\mu_k N' }
+          formula: { name: 'Friction force', tex: 'f_s \\le \\mu_s N    f_k = \\mu_k N', vars: [
+            { sym: 'f_s', mean: 'static friction (ranges from 0 up to a maximum)' },
+            { sym: '\\mu_s', mean: 'coefficient of static friction' },
+            { sym: 'f_k', mean: 'kinetic friction, once sliding' },
+            { sym: '\\mu_k', mean: 'coefficient of kinetic friction' },
+            { sym: 'N', mean: 'normal force' }
+          ] }
         },
         {
           kind: 'lesson',
@@ -227,7 +256,8 @@
           prompt: 'That same 20 kg crate ($f_{s,max} \\approx 88.3\\text{ N}$) is pushed with a steady 70 N force. What happens?',
           options: ['It slides, slowly accelerating', 'It stays put — static friction matches the 70 N push', 'It slides at constant velocity', 'Not enough information'],
           correct: 1,
-          explain: '70 N is below the maximum static friction of about 88.3 N, so static friction simply rises to match it — 70 N of friction, net force zero, crate stays put.'
+          explain: '70 N is below the maximum static friction of about 88.3 N, so static friction simply rises to match it — 70 N of friction, net force zero, crate stays put.',
+          wrongExplain: { 0: '70 N is below this crate\'s maximum static friction (~88.3 N) — static friction simply rises to match the push exactly, so net force stays zero and nothing moves.' }
         },
         {
           kind: 'numeric',
@@ -249,7 +279,8 @@
             'Because the box gets lighter once it starts moving'
           ],
           correct: 2,
-          explain: 'Static friction can climb all the way up to μs N before releasing; kinetic friction, once sliding, settles at the usually-lower μk N. That\'s the everyday feeling of a box "breaking free" with a jerk and then sliding more easily.'
+          explain: 'Static friction can climb all the way up to μs N before releasing; kinetic friction, once sliding, settles at the usually-lower μk N. That\'s the everyday feeling of a box "breaking free" with a jerk and then sliding more easily.',
+          wrongExplain: { 1: 'It\'s the other way around — μs is usually the *larger* one. That\'s exactly why breaking an object free from rest takes more force than keeping it sliding afterward.' }
         },
         {
           kind: 'sim',
@@ -270,8 +301,14 @@
         {
           kind: 'lesson',
           title: 'Same trick as tk-vectors, new context',
+          hook: "A delivery driver parks on a gentle hill, and the hand brake alone is enough to hold the truck still. Park on a much steeper hill and even a fully engaged brake isn't enough — the truck creeps forward. Same gravity, pulling differently depending on the slope.",
           body: 'On a slope, gravity still pulls straight down — but "straight down" is neither perfectly along the slope nor perfectly perpendicular to it. Just like splitting any vector into components, split weight into a piece **parallel to the slope** (what actually pulls the object down the ramp) and a piece **perpendicular to the slope** (what presses the object into the surface).',
-          formula: { name: 'Weight components on a slope', tex: 'W_{\\parallel} = mg\\sin\\theta    W_{\\perp} = mg\\cos\\theta' },
+          formula: { name: 'Weight components on a slope', tex: 'W_{\\parallel} = mg\\sin\\theta    W_{\\perp} = mg\\cos\\theta', vars: [
+            { sym: 'W_{\\parallel}', mean: 'weight component along the slope' },
+            { sym: 'W_{\\perp}', mean: 'weight component into the slope' },
+            { sym: 'm, g', mean: 'mass and gravitational acceleration' },
+            { sym: '\\theta', mean: 'incline angle from horizontal' }
+          ] },
           callout: { variant: 'info', text: 'θ is measured from the horizontal ground to the slope. Steeper slope (bigger θ) → more weight redirected along the slope, less pressing into it — same redistribution idea as launch angle in Chapter 2.' }
         },
         {
@@ -298,7 +335,12 @@
           kind: 'lesson',
           title: 'The normal force balances the perpendicular piece',
           body: 'As long as the block isn\'t flying off the ramp or being crushed into it, there\'s no acceleration *perpendicular* to the slope — so the normal force exactly balances $W_\\perp$. That\'s why the normal force on an incline is $mg\\cos\\theta$, not the full weight $mg$ like it would be on flat ground.',
-          formula: { name: 'Normal force on a slope', tex: 'N = mg\\cos\\theta' }
+          formula: { name: 'Normal force on a slope', tex: 'N = mg\\cos\\theta', vars: [
+            { sym: 'N', mean: 'normal force' },
+            { sym: 'm', mean: 'mass' },
+            { sym: 'g', mean: 'gravitational acceleration' },
+            { sym: '\\theta', mean: 'incline angle from horizontal' }
+          ] }
         },
         {
           kind: 'numeric',
@@ -314,7 +356,12 @@
           kind: 'lesson',
           title: 'Adding friction back in',
           body: 'With kinetic friction acting up the slope (opposing the sliding), it subtracts from the down-slope pull. The net acceleration is what\'s left after friction eats into gravity\'s along-slope component.',
-          formula: { name: 'Acceleration down an incline, with kinetic friction', tex: 'a = g(\\sin\\theta - \\mu_k\\cos\\theta)' },
+          formula: { name: 'Acceleration down an incline, with kinetic friction', tex: 'a = g(\\sin\\theta - \\mu_k\\cos\\theta)', vars: [
+            { sym: 'a', mean: 'acceleration down the slope' },
+            { sym: 'g', mean: 'gravitational acceleration' },
+            { sym: '\\theta', mean: 'incline angle from horizontal' },
+            { sym: '\\mu_k', mean: 'coefficient of kinetic friction' }
+          ] },
           callout: { variant: 'warn', text: 'If $\\mu_k \\cos\\theta$ is bigger than $\\sin\\theta$, the formula goes negative — meaning friction alone is enough to keep it from sliding at all once it\'s at rest.' }
         },
         {

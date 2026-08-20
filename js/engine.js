@@ -11,10 +11,24 @@
        body,                         // rich text, 'lesson' kind
        prompt,                       // question text, other kinds
        callout: {variant, icon, text},
-       formula: {name, tex},
+       formula: {name, tex, vars: [{sym, mean}...]},  // vars renders an
+                                      // optional "who's who" legend below
+                                      // the formula, sym through math, mean
+                                      // through inline markup
        hint: 'text',
+       // lesson only:
+       prereq: 'text',               // rendered as a fixed prereq callout,
+                                      // above everything else in the step —
+                                      // reserved for a chapter's first lesson
+       hook: 'text',                 // short relatable scenario rendered
+                                      // above body, before the formal def
        // mcq:
        options: [str...], correct: idx, explain: 'str',
+       wrongExplain: {idx: 'str'},   // optional, keyed by option's original
+                                      // index (same indexing as `correct`);
+                                      // misconception-specific explanation
+                                      // shown instead of `explain` when that
+                                      // particular wrong option is picked
        // numeric:
        unit, correct: num, tol, decimals, placeholder, explain,
        // order:
@@ -66,6 +80,13 @@
     var box = el('div', 'formula');
     box.innerHTML = (formula.name ? '<span class="fname">' + fmt.esc(formula.name) + '</span>' : '') +
       fmt.mathSpan(formula.tex);
+    if (formula.vars && formula.vars.length) {
+      var legend = el('div', 'formula-legend');
+      legend.innerHTML = formula.vars.map(function (v) {
+        return '<span class="fv"><span class="fv-sym">' + fmt.mathSpan(v.sym) + '</span> — ' + fmt.inline(v.mean) + '</span>';
+      }).join('');
+      box.appendChild(legend);
+    }
     container.appendChild(box);
   }
 
@@ -240,6 +261,8 @@
 
   /* ---- lesson (pure explanation) ---- */
   Engine.prototype._renderLesson = function (wrap, step) {
+    if (step.prereq) renderCallout(wrap, { variant: 'prereq', icon: '🎒', text: step.prereq });
+    if (step.hook) wrap.appendChild(el('div', 'lesson-hook', fmt.inline(step.hook)));
     if (step.body) wrap.appendChild(el('div', 'prose', fmt.rich(step.body)));
     renderFormula(wrap, step.formula);
     renderCallout(wrap, step.callout);
@@ -289,7 +312,9 @@
         else if (origIdx === selected) o.classList.add('ko');
         else o.classList.add('dim');
       });
-      return { ok: ok, explain: step.explain, detail: { selected: selected } };
+      var explain = (!ok && step.wrongExplain && step.wrongExplain[selected] != null) ?
+        step.wrongExplain[selected] : step.explain;
+      return { ok: ok, explain: explain, detail: { selected: selected } };
     };
   };
 

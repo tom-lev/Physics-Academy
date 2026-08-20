@@ -578,6 +578,15 @@ a { color: var(--brand); text-decoration: none; }
 .callout .c-ico { font-size: 18px; flex: none; line-height: 1.4; }
 .callout.warn { border-left-color: var(--warn); }
 .callout.key  { border-left-color: var(--good); }
+.callout.prereq { border-left-color: var(--violet); }
+
+.lesson-hook {
+  font-style: italic;
+  color: var(--ink-dim);
+  font-size: 15.5px;
+  line-height: 1.55;
+  margin: 0 0 14px;
+}
 
 .formula {
   display: block;
@@ -599,6 +608,18 @@ a { color: var(--brand); text-decoration: none; }
   color: var(--ink-faint);
   margin-bottom: 11px;
 }
+.formula-legend {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 4px 16px;
+  margin-top: 14px;
+  font-size: 13.5px;
+  font-weight: 500;
+  letter-spacing: 0;
+  color: var(--ink-faint);
+}
+.formula-legend .fv-sym { font-size: 1em; color: var(--ink-dim); }
 
 /* math typography */
 .mathv { font-family: var(--mono); white-space: nowrap; }
@@ -773,6 +794,32 @@ a { color: var(--brand); text-decoration: none; }
 }
 .sim-goal.hit { background: var(--good-bg); color: var(--good); }
 .sim-goal .g-ico { font-size: 15px; flex: none; }
+
+.sim-orient {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 10px 10px 10px 15px;
+  font-size: 13.5px;
+  font-weight: 550;
+  line-height: 1.45;
+  background: rgba(139,140,249,.10);
+  border-bottom: 1px solid var(--line-soft);
+  color: #d9dafc;
+}
+.sim-orient .so-ico { font-size: 15px; flex: none; }
+.sim-orient .so-text { flex: 1; }
+.sim-orient .so-dismiss {
+  flex: none;
+  padding: 6px 11px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--violet);
+  border: 1px solid color-mix(in srgb, var(--violet) 40%, transparent);
+  white-space: nowrap;
+}
+.sim-orient .so-dismiss:hover { background: rgba(139,140,249,.14); }
 
 .sim-readouts {
   display: flex;

@@ -16,9 +16,18 @@
      - animate(state, dt) -> void                       (optional; if
                     present the sim runs a rAF loop instead of only
                     redrawing on control changes)
+     - kind:       'dropSim' etc.                       (optional, paired
+                    with `orient`; identifies this sim *type* so its
+                    one-time orientation banner is only ever shown once,
+                    the first time that type appears anywhere in the app)
+     - orient:     {text}                                (optional; shown
+                    as a dismissible banner above the stage the first
+                    time `kind` is encountered, tracked in localStorage)
    ============================================================ */
 (function (root) {
   'use strict';
+
+  var fmt = root.PA.fmt;
 
   function el(tag, cls, html) {
     var n = document.createElement(tag);
@@ -37,6 +46,25 @@
     var ctx = canvas.getContext('2d');
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     return ctx;
+  }
+
+  /* ---------- one-time sim-orientation tracking ---------- */
+
+  var SEEN_KEY = 'pa-sim-seen';
+
+  function hasSeenKind(kind) {
+    try {
+      var raw = root.localStorage.getItem(SEEN_KEY);
+      return !!raw && raw.split(',').indexOf(kind) !== -1;
+    } catch (e) { return true; }   // storage blocked: don't nag every visit
+  }
+
+  function markSeenKind(kind) {
+    try {
+      var raw = root.localStorage.getItem(SEEN_KEY);
+      var seen = raw ? raw.split(',') : [];
+      if (seen.indexOf(kind) === -1) { seen.push(kind); root.localStorage.setItem(SEEN_KEY, seen.join(',')); }
+    } catch (e) {}
   }
 
   /* ---------- shared drawing helpers ---------- */
@@ -125,6 +153,18 @@
   function build(host, spec) {
     var state = spec.state || {};
     var root_ = el('div', 'sim');
+
+    if (spec.orient && spec.kind && !hasSeenKind(spec.kind)) {
+      var orientEl = el('div', 'sim-orient', '<span class="so-ico">🧭</span><span class="so-text">' + fmt.inline(spec.orient.text) + '</span>');
+      var orientBtn = el('button', 'so-dismiss', '✕ הבנתי');
+      orientBtn.type = 'button';
+      orientBtn.addEventListener('click', function () {
+        markSeenKind(spec.kind);
+        orientEl.parentNode.removeChild(orientEl);
+      });
+      orientEl.appendChild(orientBtn);
+      root_.appendChild(orientEl);
+    }
 
     var stage = el('div', 'sim-stage');
     var canvas = document.createElement('canvas');

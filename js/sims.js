@@ -25,6 +25,8 @@
     var targetTime = args.targetTime;
 
     return {
+      kind: 'drop',
+      orient: { text: 'בחר עולם וגובה עם המחוונים, ואז לחץ **⬇ Drop it** כדי לשחרר את הכדור ולראות כמה זמן לוקח לנחות.' },
       aspect: 0.62,
       state: { planet: 'earth', height: args.height || 20, t: 0, falling: false },
 
@@ -84,6 +86,8 @@
     var maxRange = wallDistance * 1.35;
 
     return {
+      kind: 'brake',
+      orient: { text: 'גרור **Speed**, **Braking** ו-**Reaction time** ותסתכל אם המכונית נעצרת לפני הקיר.' },
       aspect: 0.34,
       state: { speed: args.speed || 20, decel: args.decel || 6, reaction: args.reaction != null ? args.reaction : 0.4 },
 
@@ -169,6 +173,8 @@
     }
 
     return {
+      kind: 'vectorAdd',
+      orient: { text: 'הכחול (A) והכתום (B) הם שני הווקטורים שאתה שולט בהם; הסגול הוא הסכום שלהם. גרור את אורך/זווית A ו-B עד שהחץ הסגול חופף לחץ המקווקו (היעד).' },
       aspect: 0.62,
       state: { aMag: 6, aAng: 0, bMag: 6, bAng: 90 },
 
@@ -253,6 +259,8 @@
     }
 
     return {
+      kind: 'projectile',
+      orient: { text: 'החץ הכתום בנקודת השיגור הוא כיוון הירי. גרור **Speed** ו-**Angle** — המסלול הכחול/ירוק מראה איפה הכדור טס, והקו המקווקו הלבן מראה איפה הוא נוחת.' },
       aspect: 0.55,
       state: { speed: args.speed || 20, angle: args.angle || 45 },
 
@@ -358,6 +366,8 @@
     }
 
     return {
+      kind: 'incline',
+      orient: { text: 'הכתום (W) הוא המשקל, הכחול (N) הוא הכוח הניצב, הירוק/אדום (f) הוא החיכוך — אדום כשהגוש כבר גולש. גרור את הזווית והחיכוך ותסתכל מתי הוא מחזיק ומתי מתחיל לגלוש.' },
       aspect: 0.6,
       state: {
         angle: args.angle != null ? args.angle : 25,

@@ -23,6 +23,8 @@
         {
           kind: 'lesson',
           title: 'The x-motion and the y-motion don\'t know about each other',
+          prereq: 'This chapter builds directly on Chapter 1 (free fall, velocity) and the toolkit\'s vector components — make sure both feel solid before diving in.',
+          hook: 'A basketball player releases a shot on a wild diagonal arc, and somehow it drops through the hoop anyway, over and over in practice. No one is solving equations mid-shot — but the exact math you\'re about to learn is quietly running underneath every one of those arcs.',
           body: 'Once something moves in two dimensions — a thrown ball, a kicked soccer ball, a launched rocket — its motion looks complicated. The trick that makes it simple: split it into a **horizontal story** and a **vertical story**, and handle them completely separately.\n\nHorizontally, nothing pushes the object once it leaves your hand (ignore air resistance), so it moves at **constant velocity**. Vertically, gravity pulls down the whole time, so it moves with **constant acceleration** $g$ — exactly the free fall you already know from Chapter 1.',
           callout: { variant: 'key', text: 'The only thing the x-motion and y-motion share is **time**. They tick along on the same clock, but neither one affects the other.' }
         },
@@ -31,7 +33,8 @@
           prompt: 'A ball is thrown through the air (ignore air resistance). While it is in flight, what is its horizontal acceleration?',
           options: ['0', '$g$, downward', '$g$, upward', 'Depends on the launch angle'],
           correct: 0,
-          explain: 'Gravity is a purely vertical force — it never pushes sideways. With no horizontal force acting on it, the ball\'s horizontal acceleration is zero, so its horizontal velocity never changes during the flight.'
+          explain: 'Gravity is a purely vertical force — it never pushes sideways. With no horizontal force acting on it, the ball\'s horizontal acceleration is zero, so its horizontal velocity never changes during the flight.',
+          wrongExplain: { 1: '$g$ is a *vertical* acceleration — it only ever acts along the vertical direction. Nothing pushes or pulls the ball sideways, so the horizontal acceleration is exactly zero, whatever the launch angle.' }
         },
         {
           kind: 'lesson',
@@ -45,6 +48,7 @@
           options: ['The one that rolled off — it has extra speed', 'The one that was dropped — it fell straighter', 'They land at the same time', 'It depends on how fast the first ball was rolling'],
           correct: 2,
           explain: 'Both balls start with the same vertical velocity (zero) and fall under the same $g$. Their vertical stories are identical, so they land simultaneously — no matter how fast the first one was moving horizontally.',
+          wrongExplain: { 0: 'Horizontal speed doesn\'t affect how long the fall takes — only the vertical story (starting vertical velocity and $g$) decides fall time, and that\'s identical for both balls.' },
           hint: 'Ask only about the vertical story — horizontal speed doesn\'t enter into it at all.'
         },
         {
@@ -79,8 +83,14 @@
         {
           kind: 'lesson',
           title: 'Same trick as vector components, new context',
+          hook: 'A soccer player choosing between a low, fast free-kick and a high, looping one over the wall is unconsciously trading horizontal speed for vertical speed — the same launch effort, just split differently depending on the angle.',
           body: 'When something launches at an angle $\\theta$ above the horizontal — a cannonball, a soccer kick, a basketball shot — its initial velocity $v_0$ is a vector, and it splits into components exactly the way you learned in the vectors lesson: $A_x = A\\cos\\theta$, $A_y = A\\sin\\theta$.\n\nHere, $v_{0x}$ stays constant for the entire flight (nothing changes it). $v_{0y}$ is just the *starting* vertical velocity — gravity immediately starts eating into it.',
-          formula: { name: 'Launch velocity components', tex: 'v_{0x} = v_0\\cos\\theta \\qquad v_{0y} = v_0\\sin\\theta' }
+          formula: { name: 'Launch velocity components', tex: 'v_{0x} = v_0\\cos\\theta \\qquad v_{0y} = v_0\\sin\\theta', vars: [
+            { sym: 'v_0', mean: 'launch speed' },
+            { sym: '\\theta', mean: 'launch angle above horizontal' },
+            { sym: 'v_{0x}', mean: 'horizontal velocity component (stays constant)' },
+            { sym: 'v_{0y}', mean: 'vertical velocity component (gravity acts on this one)' }
+          ] }
         },
         {
           kind: 'numeric',
@@ -106,7 +116,8 @@
           prompt: 'For a fixed launch speed $v_0$, which launch angle gives the *largest* horizontal velocity component $v_{0x}$?',
           options: ['0° (straight along the ground)', '45°', '90° (straight up)', 'It\'s the same at every angle'],
           correct: 0,
-          explain: '$v_{0x} = v_0\\cos\\theta$, and cosine is largest (equal to 1) at 0°. As the launch gets steeper, more and more of $v_0$ gets redirected into the vertical component instead.'
+          explain: '$v_{0x} = v_0\\cos\\theta$, and cosine is largest (equal to 1) at 0°. As the launch gets steeper, more and more of $v_0$ gets redirected into the vertical component instead.',
+          wrongExplain: { 1: '45° turns out to be special for *range* (in a later lesson), not for maximizing a single component. $\\cos\\theta$ — which controls $v_{0x}$ — is actually largest at 0° and only shrinks as the angle steepens.' }
         },
         {
           kind: 'lesson',
@@ -119,7 +130,8 @@
           prompt: 'A ball is launched at exactly 45° above horizontal. How do its $v_{0x}$ and $v_{0y}$ compare?',
           options: ['$v_{0x} > v_{0y}$', '$v_{0x} < v_{0y}$', '$v_{0x} = v_{0y}$', 'Can\'t tell without knowing $v_0$'],
           correct: 2,
-          explain: 'At 45°, cos(45°) = sin(45°) ≈ 0.707, so the two components come out exactly equal, no matter what $v_0$ is.'
+          explain: 'At 45°, cos(45°) = sin(45°) ≈ 0.707, so the two components come out exactly equal, no matter what $v_0$ is.',
+          wrongExplain: { 0: 'At exactly 45°, cos(45°) and sin(45°) are equal (≈0.707) — so neither component actually comes out bigger than the other.' }
         }
       ]
     },
@@ -133,8 +145,13 @@
         {
           kind: 'lesson',
           title: 'The vertical story sets the clock',
+          hook: 'A quarterback\'s long pass, a fountain jet, a stone skipped off a bridge — every one of them climbs, pauses for an instant at the very top, and falls back down in exactly the same time it took to rise.',
           body: 'For a projectile launched and landing at the same height, the vertical motion is a mirror image of throwing something straight up: it climbs, decelerates to a stop at the peak, then falls back down — taking exactly as long to fall as it took to rise. So the total time of flight is *twice* the time to reach the peak.',
-          formula: { name: 'Time of flight', tex: 'T = \\frac{2v_{0y}}{g} = \\frac{2v_0\\sin\\theta}{g}' },
+          formula: { name: 'Time of flight', tex: 'T = \\frac{2v_{0y}}{g} = \\frac{2v_0\\sin\\theta}{g}', vars: [
+            { sym: 'T', mean: 'total time of flight' },
+            { sym: 'v_{0y}', mean: 'initial vertical velocity component' },
+            { sym: 'g', mean: 'gravitational acceleration' }
+          ] },
           callout: { variant: 'info', text: 'At the peak, the *vertical* velocity is momentarily zero — but the horizontal velocity never stops. That\'s why the path bends into a smooth arc instead of coming to a dead stop.' }
         },
         {
@@ -161,7 +178,11 @@
           kind: 'lesson',
           title: 'Range: how far horizontally',
           body: 'Range is just the horizontal-motion story applied over the full time of flight: constant velocity $v_{0x}$, for a duration $T$. Substituting $T$ in gives a single formula in terms of $v_0$ and $\\theta$ alone.',
-          formula: { name: 'Range', tex: 'R = v_{0x}\\,T = \\frac{v_0^2\\sin(2\\theta)}{g}' }
+          formula: { name: 'Range', tex: 'R = v_{0x}\\,T = \\frac{v_0^2\\sin(2\\theta)}{g}', vars: [
+            { sym: 'R', mean: 'horizontal range' },
+            { sym: 'v_0, \\theta', mean: 'launch speed and angle' },
+            { sym: 'g', mean: 'gravitational acceleration' }
+          ] }
         },
         {
           kind: 'numeric',
@@ -186,6 +207,7 @@
           options: ['Right at launch', 'At the peak of its arc', 'Just before it lands', 'Speed stays constant the whole flight'],
           correct: 1,
           explain: 'Overall speed is √(vx² + vy²). vx never changes, but vy shrinks to exactly zero at the peak — so that\'s the one moment total speed equals just vx, its smallest value anywhere along the path.',
+          wrongExplain: { 2: 'Just before landing, the vertical speed has built back up to nearly its launch value — that\'s close to the *fastest* point of the flight, not the slowest.' },
           hint: 'Speed combines both components: think about which component vanishes, and where.'
         }
       ]
@@ -200,8 +222,13 @@
         {
           kind: 'lesson',
           title: 'Why 45° is special',
+          hook: 'A javelin thrower and a shot-putter aim for very different-looking trajectories, but there\'s one specific angle — 45° — that sends anything the farthest for a given launch speed, whether it\'s a javelin, a cannonball, or a golf ball off a flat green.',
           body: 'Look again at the range formula: $R = \\frac{v_0^2 \\sin(2\\theta)}{g}$. For a fixed launch speed, $R$ is entirely controlled by $\\sin(2\\theta)$ — and sine maxes out at exactly 1, when its argument is 90°. That happens when $2\\theta = 90°$, i.e. $\\theta = 45°$.',
-          formula: { name: 'Range', tex: 'R = \\frac{v_0^2\\sin(2\\theta)}{g}' },
+          formula: { name: 'Range', tex: 'R = \\frac{v_0^2\\sin(2\\theta)}{g}', vars: [
+            { sym: 'R', mean: 'horizontal range' },
+            { sym: 'v_0, \\theta', mean: 'launch speed and angle' },
+            { sym: 'g', mean: 'gravitational acceleration' }
+          ] },
           callout: { variant: 'key', text: 'This only holds when launch and landing heights are equal. Launch off a cliff, or up onto a platform, and the ideal angle shifts away from 45°.' }
         },
         {
@@ -209,7 +236,8 @@
           prompt: 'For a fixed launch speed, with equal launch and landing height, which angle gives the maximum range?',
           options: ['30°', '45°', '60°', '90°'],
           correct: 1,
-          explain: 'R ∝ sin(2θ), which peaks when 2θ = 90°, i.e. θ = 45°. At θ = 90° the projectile goes straight up and comes straight back down — zero range.'
+          explain: 'R ∝ sin(2θ), which peaks when 2θ = 90°, i.e. θ = 45°. At θ = 90° the projectile goes straight up and comes straight back down — zero range.',
+          wrongExplain: { 3: 'At 90° the projectile goes straight up and comes straight back down to the same spot — zero horizontal range, the worst choice here, not the best.' }
         },
         {
           kind: 'lesson',
@@ -222,7 +250,8 @@
           prompt: 'A projectile launched at 20° lands at the same range as an identical launch (same $v_0$) at which other angle?',
           options: ['20°', '70°', '45°', '90°'],
           correct: 1,
-          explain: '20° and 70° are complementary (they add to 90°), so sin(2×20°) = sin(40°) = sin(140°) = sin(2×70°) — same range.'
+          explain: '20° and 70° are complementary (they add to 90°), so sin(2×20°) = sin(40°) = sin(140°) = sin(2×70°) — same range.',
+          wrongExplain: { 2: '45° gives the single largest possible range — but it doesn\'t specifically tie with 20°. That match is 70°, since 20° + 70° = 90° (complementary angles).' }
         },
         {
           kind: 'numeric',
@@ -252,8 +281,15 @@
         {
           kind: 'lesson',
           title: 'Does it clear the wall?',
+          hook: 'A basketball player has to arc a shot just over a defender\'s outstretched hand and still have it drop through the hoop several meters further on — clearing an obstacle and hitting a target are two separate conditions the same shot has to satisfy at once.',
           body: 'Everything so far has asked "where does it land?" But you can just as easily ask "how high is it at some horizontal distance $x$, *before* it lands?" — useful for checking whether a shot clears a wall, a net, or a defender\'s outstretched arms.\n\nThe trick: find the time it takes to travel that far horizontally ($t = x/v_{0x}$), then plug that time into the vertical-motion equation.',
-          formula: { name: 'Height at horizontal distance x', tex: 'y = v_{0y}t - \\tfrac{1}{2}gt^2 \\quad \\text{where } t = x / v_{0x}' }
+          formula: { name: 'Height at horizontal distance x', tex: 'y = v_{0y}t - \\tfrac{1}{2}gt^2 \\quad \\text{where } t = x / v_{0x}', vars: [
+            { sym: 'y', mean: 'height above launch level at that point' },
+            { sym: 'x', mean: 'horizontal distance traveled' },
+            { sym: 't', mean: 'time to reach that x, found first' },
+            { sym: 'v_{0x}, v_{0y}', mean: 'horizontal and vertical velocity components' },
+            { sym: 'g', mean: 'gravitational acceleration' }
+          ] }
         },
         {
           kind: 'numeric',
@@ -289,7 +325,8 @@
             'Both range and height are completely unrelated between them'
           ],
           correct: 0,
-          explain: '30° and 60° add to 90°, so sin(2θ) — and therefore range — matches for both. But max height depends on v0y = v0sinθ alone, and sin(60°) > sin(30°), so the steeper 60° launch climbs higher even though it lands at the same spot.'
+          explain: '30° and 60° add to 90°, so sin(2θ) — and therefore range — matches for both. But max height depends on v0y = v0sinθ alone, and sin(60°) > sin(30°), so the steeper 60° launch climbs higher even though it lands at the same spot.',
+          wrongExplain: { 1: 'It\'s the reverse: 30° and 60° tie on *range* (complementary angles), while max height differs — and it\'s the steeper 60° launch that climbs higher, not the 30° one that lands farther.' }
         },
         {
           kind: 'lesson',
