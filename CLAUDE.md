@@ -119,62 +119,110 @@ authoritative list, but in short:
   should stay generous enough that reasonable learner rounding still passes.
 - `order` — `prompt`, `items[]` given **already in correct order** (the engine
   shuffles them for display and checks the learner's reordering).
+- All three gradable kinds above also accept an optional
+  `difficulty: 'easy'|'medium'|'hard'`, shown as a small badge next to the
+  step's kicker.
 - `sim` — `prompt`, `simId` (key into `PA.sims`), `args` passed to that factory,
   optional `note`. Each factory in `sims.js` may also declare `kind` (its own
   stable type name) and `orient: {text}` — a one-time, dismissible orientation
   banner shown the first time that sim *type* appears anywhere in the app
   (tracked in `localStorage`), independent of which lesson step renders it.
 
-**Voice — apply this to every `body`, `hook`, and `callout` in every chapter,
-new and existing:** write like a young, enthusiastic teacher who's genuinely
-excited about the topic, not a textbook. The goal of every sentence is to
-keep the reader interested and motivated to keep going, not just to be
-technically correct. Concretely: open with (or build on) a vivid, specific
-real-world example — not "a car" but a roller coaster's speed readout, not
-"an object" but a dropped phone — and let the formal definition grow out of
-that example rather than precede it. Favor a confident, conversational
-register ("Here's the thing about...", a rhetorical question, a concrete
-stake) over the passive, hedged tone dry reference material defaults to.
-This doesn't mean padding — keep it as tight as a drier version would be,
+### Lesson-Quality Checklist
+
+Every rule here came from a real problem found while building or actually
+*playing* the four chapters below — not theory. Apply all of them to every
+new chapter (physics or otherwise), and treat gaps found in old chapters as
+bugs worth fixing, not just noted for next time.
+
+**Voice.** Write every `body`/`hook`/`callout` like a young, enthusiastic
+teacher who's genuinely excited about the topic, not a textbook. Open with
+(or build on) a vivid, specific real-world example — not "a car" but a
+roller coaster's speed readout, not "an object" but a dropped phone — and
+let the formal definition grow out of that example rather than precede it.
+Favor a confident, conversational register ("Here's the thing about...", a
+rhetorical question, a concrete stake) over passive, hedged reference-book
+tone. This isn't padding — keep it as tight as a drier version would be,
 just spend the words on texture instead of throat-clearing.
 
-**Notation audit — required before a chapter counts as done.** Every math
-symbol, operation, or notation convention that appears inside any `tex`
-string (exponents, $\sin$/$\cos$, $\sqrt{}$, the Pythagorean theorem,
-$\vec{}$ for vectors, subscripts, whatever's next) must have an explicit
-teaching moment at its *first appearance anywhere in the curriculum* —
-via `hook`/`body`, a `formula.vars` entry, or a `callout`. It is not
-enough for a symbol to be *used correctly* by the answer key; a first-time
-learner must be able to see where it came from before being graded on it.
-This bit repeatedly in this chapter's build: negative exponents, trig
-values, $\vec{}$ notation, and the Pythagorean theorem were all used
-before being taught, and each was only caught by a learner actually
-getting stuck mid-question — not by reading the source. Concretely: before
-marking a chapter finished, list every distinct notation/operation it
-introduces and check each one against this rule; don't rely on read-through
-review alone to catch this class of gap.
-
-**Beginner-friendliness conventions — apply these to every new chapter, not
-just the four below:**
-
-- Every lesson's *first* step (`kind: 'lesson'`) gets a `hook`: one or two
-  sentences grounding the concept in a concrete, everyday scenario, before
-  the formal definition in `body`. Write the formal definition second, not
-  first — the hook exists so a total beginner has something to picture
-  before the abstraction lands.
-- The *first* lesson of a chapter also gets `prereq` on that same opening
-  step: one sentence naming the background the chapter assumes (specific
-  math skills, or which earlier chapters/lessons it leans on).
+**Notation & prerequisites.**
+- Every math symbol/operation/convention used inside a `tex` string
+  (exponents, $\sin$/$\cos$, $\sqrt{}$, the Pythagorean theorem, $\vec{}$,
+  subscripts, whatever's next) needs an explicit teaching moment at its
+  *first appearance anywhere in the curriculum* — via `hook`/`body`, a
+  `formula.vars` entry, or a `callout`. A symbol being used *correctly* by
+  the answer key is not enough; a first-time learner must see where it came
+  from before being graded on it. (Negative exponents, trig values, $\vec{}$
+  notation, and the Pythagorean theorem all shipped unexplained in this
+  chapter's first pass — each only caught by a learner getting stuck
+  mid-question, never by source review. Don't rely on read-through alone.)
+- `prereq` (on a chapter's opening step) must name specific concepts —
+  "the Pythagorean theorem," "sin/cos as a calculator operation" — never a
+  vague category like "basic algebra." Vague prereqs don't tell anyone,
+  including future-you, what's actually being assumed.
 - Any `formula` a learner will need to *use* (not just admire) should carry
-  `vars`, spelling out what each symbol means — skip it only for formulas
-  that are already self-explanatory inline (e.g. a labeled list of prefix
-  values).
-- For `mcq` steps, add `wrongExplain` to the 1–2 distractors that represent
-  a real, specific misconception — not every wrong option needs one; a
-  distractor that's just obviously wrong can fall through to the generic
-  `explain`.
-- If a chapter introduces a new sim type in `sims.js`, give that factory a
-  `kind` and a one-sentence `orient` describing what to drag/watch for.
+  `vars` spelling out what each symbol means — skip only for formulas
+  already self-explanatory inline (e.g. a labeled list of prefix values).
+
+**Content & pedagogy.**
+- Never grade a learner on a formula/idea cold — there must be a worked,
+  computed example using that exact formula somewhere earlier in the step
+  or lesson, not just the bare formula itself.
+- Keep numbers physically plausible (no 300 m/s soccer kicks) — unrealistic
+  numbers quietly undermine the intuition the course is trying to build.
+- Before writing `mcq` distractors, think through the specific
+  misconceptions a learner is likely to have, and write `wrongExplain` for
+  the 1–2 that represent a *real* misconception — not every wrong option
+  needs one, and don't invent artificial-sounding wrong answers just to
+  have something to explain.
+- Prefer reusing one concrete scenario 2–3 times across a lesson's steps
+  over a fresh, unrelated example every step — a throughline reads as one
+  coherent story instead of a grab-bag of trivia.
+- Check new content doesn't re-teach something an earlier chapter already
+  covered in different words — cross-reference instead (the existing
+  pattern of "same trick as tk-vectors, new context" titles is good).
+
+**Structure & pacing.**
+- Keep lessons around 5–7 steps; if one is running much longer or shorter
+  without a clear reason, reconsider the split.
+- Vary step `kind` within a lesson — avoid four `mcq` in a row; alternate
+  with `numeric`/`order`/`sim` to keep rhythm.
+- Order graded steps easiest-first within a lesson (recognize/recall before
+  multi-step application) rather than opening with the hardest question.
+- Don't stack too many info blocks (`prereq`+`hook`+`body`+`formula`+
+  `callout`) onto one step — if a step feels crowded, split it.
+- Give each chapter roughly one short review lesson near its midpoint,
+  mixing 4–5 questions that reuse ideas from that chapter's earlier
+  lessons — cheaper than a checkpoint after every lesson, still catches
+  drift before the chapter ends.
+
+**Feedback & assessment.**
+- `explain` should teach something even when the learner answered
+  correctly, not just congratulate them — reinforce *why* it's right.
+- Tag graded steps with `difficulty: 'easy'|'medium'|'hard'` where it adds
+  real signal, so a learner isn't blindsided by a hard question with no
+  warning.
+
+**Terminology.** Pick one term per concept and keep it across the whole
+course (e.g. always "resultant," never switching to "sum" for the same
+thing later) — inconsistent naming reads as a different concept to a
+learner who's pattern-matching on words.
+
+**Simulations.**
+- Give every new sim `kind` + a one-sentence `orient` describing what to
+  drag/watch for the first time it appears (tracked once, globally, in
+  `localStorage`).
+- Sims with a resettable/gettable-stuck state (an `animate` loop, accumulated
+  position) need an explicit reset control; pure slider-driven sims don't
+  (moving any slider already resets the view).
+- Reuse the emoji/character already established for a scenario (🚗, 💥, 🚀)
+  rather than a generic shape, where it fits.
+
+**Process.** Before marking any chapter "done," actually play it in a
+browser as a learner would, start to finish — every real bug found while
+building this course (a formula overflowing its card, all four notation
+gaps above) was invisible in source review and only surfaced by clicking
+through the lesson for real.
 
 The four chapters built so far (`toolkit`, `kinematics`, `projectile`, `forces`
 — in that build order) are good reference examples for tone, step-mix, and how
