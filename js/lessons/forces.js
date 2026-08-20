@@ -28,6 +28,7 @@
         },
         {
           kind: 'mcq',
+          difficulty: 'easy',
           prompt: 'A hockey puck slides across frictionless ice with no one touching it. What happens to its velocity?',
           options: ['It gradually slows down and stops', 'It stays exactly the same, forever', 'It speeds up slightly', 'It curves off to one side'],
           correct: 1,
@@ -42,6 +43,7 @@
         },
         {
           kind: 'mcq',
+          difficulty: 'medium',
           prompt: 'A book sits on a table, motionless. According to the First Law, what can you conclude about the net force on it?',
           options: ['It must be zero', 'It must equal the book\'s weight', 'It must point downward', 'You can\'t say — there\'s no motion to analyze'],
           correct: 0,
@@ -56,6 +58,7 @@
         },
         {
           kind: 'mcq',
+          difficulty: 'hard',
           prompt: 'A car is turning left at a perfectly constant speed. Is the net force on the car zero?',
           options: ['Yes — speed never changes, so net force is zero', 'No — changing direction is changing velocity, so there must be a net force', 'Only if the car speeds up while turning', 'Net force only applies to straight-line motion'],
           correct: 1,
@@ -85,6 +88,7 @@
         },
         {
           kind: 'numeric',
+          difficulty: 'easy',
           prompt: 'A 1200 kg car experiences a net force of 3600 N. What is its acceleration, in m/s²?',
           unit: 'm/s²',
           correct: 3,
@@ -94,6 +98,7 @@
         },
         {
           kind: 'mcq',
+          difficulty: 'medium',
           prompt: 'The idea of a "free-body diagram" is to isolate one object and draw every force acting *on* it (not forces it exerts on other things). Why bother, instead of just eyeballing the situation?',
           options: [
             'It\'s required by law in physics class',
@@ -118,6 +123,7 @@
         },
         {
           kind: 'numeric',
+          difficulty: 'medium',
           prompt: 'A person has a mass of 75 kg. What is their weight on Earth, in newtons ($g = 9.81\\text{ m/s}^2$)?',
           unit: 'N',
           correct: 735.75,
@@ -128,6 +134,7 @@
         },
         {
           kind: 'mcq',
+          difficulty: 'medium',
           prompt: 'That same 75 kg person travels to the Moon, where $g \\approx 1.62\\text{ m/s}^2$. What happens to their mass and weight?',
           options: [
             'Both stay exactly the same',
@@ -141,6 +148,7 @@
         },
         {
           kind: 'numeric',
+          difficulty: 'hard',
           prompt: 'A rocket sled needs to accelerate a 200 kg test dummy assembly at $12.5\\text{ m/s}^2$. Using $F_{net} = ma$, what net force is required, in newtons?',
           unit: 'N',
           correct: 2500,
@@ -169,6 +177,7 @@
         },
         {
           kind: 'mcq',
+          difficulty: 'easy',
           prompt: 'A common misconception: "action-reaction pairs cancel out, so nothing should ever be able to accelerate." What\'s wrong with that reasoning?',
           options: [
             'Nothing — Newton\'s Third Law really does mean nothing can accelerate',
@@ -188,6 +197,7 @@
         },
         {
           kind: 'mcq',
+          difficulty: 'medium',
           prompt: 'You stand still on the ground. Your feet push down on the Earth; what is the Third Law reaction to that force?',
           options: [
             'The normal force the ground exerts up on your feet',
@@ -207,6 +217,7 @@
         },
         {
           kind: 'numeric',
+          difficulty: 'hard',
           prompt: 'A skater pushes against a wall with a force of 180 N. By Newton\'s Third Law, with how much force does the wall push back on the skater, in newtons?',
           unit: 'N',
           correct: 180,
@@ -244,6 +255,7 @@
         },
         {
           kind: 'numeric',
+          difficulty: 'easy',
           prompt: 'A 20 kg crate sits on a floor with $\\mu_s = 0.45$ ($g = 9.81\\text{ m/s}^2$). What is the maximum static friction force before it starts to slide, in newtons?',
           unit: 'N',
           correct: 88.29,
@@ -254,6 +266,7 @@
         },
         {
           kind: 'mcq',
+          difficulty: 'medium',
           prompt: 'That same 20 kg crate ($f_{s,max} \\approx 88.3\\text{ N}$) is pushed with a steady 70 N force. What happens?',
           options: ['It slides, slowly accelerating', 'It stays put — static friction matches the 70 N push', 'It slides at constant velocity', 'Not enough information'],
           correct: 1,
@@ -262,6 +275,7 @@
         },
         {
           kind: 'numeric',
+          difficulty: 'medium',
           prompt: 'Once that crate IS sliding (kinetic friction takes over) with $\\mu_k = 0.3$, what is the kinetic friction force, in newtons?',
           unit: 'N',
           correct: 58.86,
@@ -272,6 +286,7 @@
         },
         {
           kind: 'mcq',
+          difficulty: 'hard',
           prompt: 'Why is it typically harder to get a heavy box moving from rest than it is to keep it sliding at constant speed?',
           options: [
             'It isn\'t harder — both take exactly the same force',
@@ -314,6 +329,7 @@
         },
         {
           kind: 'numeric',
+          difficulty: 'easy',
           prompt: 'An 8 kg block sits on a $25°$ incline ($g = 9.81\\text{ m/s}^2$). What is the component of its weight parallel to the slope (pulling it down the ramp), in newtons?',
           unit: 'N',
           correct: 33.17,
@@ -324,6 +340,7 @@
         },
         {
           kind: 'numeric',
+          difficulty: 'medium',
           prompt: 'Same block (8 kg, 25° incline). What is the component of its weight perpendicular to the slope, in newtons?',
           unit: 'N',
           correct: 71.13,
@@ -346,6 +363,7 @@
         },
         {
           kind: 'numeric',
+          difficulty: 'medium',
           prompt: 'A frictionless incline is set at $25°$. Using only the parallel component of gravity, what is the block\'s acceleration down the slope, in m/s²?',
           unit: 'm/s²',
           correct: 4.15,
@@ -369,6 +387,7 @@
         },
         {
           kind: 'numeric',
+          difficulty: 'hard',
           prompt: 'Same 25° incline, now with $\\mu_k = 0.15$. What is the block\'s acceleration down the slope, in m/s²?',
           unit: 'm/s²',
           correct: 2.81,

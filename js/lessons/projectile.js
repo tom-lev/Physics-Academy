@@ -30,6 +30,7 @@
         },
         {
           kind: 'mcq',
+          difficulty: 'easy',
           prompt: 'A ball is thrown through the air (ignore air resistance). While it is in flight, what is its horizontal acceleration?',
           options: ['0', '$g$, downward', '$g$, upward', 'Depends on the launch angle'],
           correct: 0,
@@ -44,6 +45,7 @@
         },
         {
           kind: 'mcq',
+          difficulty: 'medium',
           prompt: 'A ball rolls off a table and falls to the floor at the same instant an identical ball is dropped straight down from the same height. Which one lands first?',
           options: ['The one that rolled off — it has extra speed', 'The one that was dropped — it fell straighter', 'They land at the same time', 'It depends on how fast the first ball was rolling'],
           correct: 2,
@@ -53,6 +55,7 @@
         },
         {
           kind: 'numeric',
+          difficulty: 'medium',
           prompt: 'A ball rolls off a table with a horizontal speed of 15 m/s and falls a height of 20 m ($g = 9.81\\text{ m/s}^2$). Since it starts with zero *vertical* velocity, this is just free fall — how long is it in the air, in seconds?',
           unit: 's',
           correct: 2.02,
@@ -63,6 +66,7 @@
         },
         {
           kind: 'numeric',
+          difficulty: 'hard',
           prompt: 'Same ball — rolls off at 15 m/s horizontally, falls for about 2.02 s. Since horizontal velocity is constant, how far does it travel horizontally before landing, in meters?',
           unit: 'm',
           correct: 30.3,
@@ -94,6 +98,7 @@
         },
         {
           kind: 'numeric',
+          difficulty: 'easy',
           prompt: 'A ball is launched at $v_0 = 25\\text{ m/s}$, at $30°$ above horizontal. What is its horizontal velocity component $v_{0x}$, in m/s?',
           unit: 'm/s',
           correct: 21.65,
@@ -104,6 +109,7 @@
         },
         {
           kind: 'numeric',
+          difficulty: 'medium',
           prompt: 'Same launch — 25 m/s at 30°. What is its vertical velocity component $v_{0y}$, in m/s?',
           unit: 'm/s',
           correct: 12.5,
@@ -113,6 +119,7 @@
         },
         {
           kind: 'mcq',
+          difficulty: 'medium',
           prompt: 'For a fixed launch speed $v_0$, which launch angle gives the *largest* horizontal velocity component $v_{0x}$?',
           options: ['0° (straight along the ground)', '45°', '90° (straight up)', 'It\'s the same at every angle'],
           correct: 0,
@@ -127,6 +134,7 @@
         },
         {
           kind: 'mcq',
+          difficulty: 'hard',
           prompt: 'A ball is launched at exactly 45° above horizontal. How do its $v_{0x}$ and $v_{0y}$ compare?',
           options: ['$v_{0x} > v_{0y}$', '$v_{0x} < v_{0y}$', '$v_{0x} = v_{0y}$', 'Can\'t tell without knowing $v_0$'],
           correct: 2,
@@ -156,6 +164,7 @@
         },
         {
           kind: 'numeric',
+          difficulty: 'easy',
           prompt: 'A projectile launches at $v_0 = 30\\text{ m/s}$, at $53°$ above horizontal ($g = 9.81\\text{ m/s}^2$). What is its total time of flight, in seconds?',
           unit: 's',
           correct: 4.88,
@@ -166,6 +175,7 @@
         },
         {
           kind: 'numeric',
+          difficulty: 'medium',
           prompt: 'Same launch (30 m/s at 53°). What is its maximum height, in meters? (Same idea as "peak height" from Chapter 1 free fall, using $v_{0y}$ as the launch speed.)',
           unit: 'm',
           correct: 29.3,
@@ -187,6 +197,7 @@
         },
         {
           kind: 'numeric',
+          difficulty: 'medium',
           prompt: 'Same launch again (30 m/s at 53°, time of flight ≈ 4.88 s). What is its range, in meters?',
           unit: 'm',
           correct: 88.2,
@@ -204,6 +215,7 @@
         },
         {
           kind: 'mcq',
+          difficulty: 'hard',
           prompt: 'At what point during a projectile\'s flight is its overall speed (not just vertical speed) at a minimum?',
           options: ['Right at launch', 'At the peak of its arc', 'Just before it lands', 'Speed stays constant the whole flight'],
           correct: 1,
@@ -234,6 +246,7 @@
         },
         {
           kind: 'mcq',
+          difficulty: 'easy',
           prompt: 'For a fixed launch speed, with equal launch and landing height, which angle gives the maximum range?',
           options: ['30°', '45°', '60°', '90°'],
           correct: 1,
@@ -248,6 +261,7 @@
         },
         {
           kind: 'mcq',
+          difficulty: 'medium',
           prompt: 'A projectile launched at 20° lands at the same range as an identical launch (same $v_0$) at which other angle?',
           options: ['20°', '70°', '45°', '90°'],
           correct: 1,
@@ -256,6 +270,7 @@
         },
         {
           kind: 'numeric',
+          difficulty: 'medium',
           prompt: 'A projectile launches at $v_0 = 18\\text{ m/s}$, at $30°$ ($g = 9.81\\text{ m/s}^2$). What is its range, in meters?',
           unit: 'm',
           correct: 28.6,
@@ -266,6 +281,7 @@
         },
         {
           kind: 'order',
+          difficulty: 'hard',
           prompt: 'Three balls launch at the same speed but different angles: 15°, 60°, and 40°. Rank them by range, from *least* to *most*.',
           items: ['15° launch angle', '60° launch angle', '40° launch angle'],
           explain: 'Range depends on sin(2θ): sin(30°) ≈ 0.50 for 15°, sin(120°) ≈ 0.87 for 60°, and sin(80°) ≈ 0.98 for 40°. The closer an angle sits to 45°, the further sin(2θ) — and the range — climbs toward its peak.'
@@ -294,6 +310,7 @@
         },
         {
           kind: 'numeric',
+          difficulty: 'easy',
           prompt: 'A ball launches at $v_0 = 20\\text{ m/s}$, at $40°$ ($g = 9.81\\text{ m/s}^2$). What is its height above launch level after traveling 15 m horizontally, in meters?',
           unit: 'm',
           correct: 7.88,
@@ -304,6 +321,7 @@
         },
         {
           kind: 'mcq',
+          difficulty: 'medium',
           prompt: 'Using that result — a height of about 7.9 m at x = 15 m — does this ball clear a 3 m wall placed right at x = 15 m?',
           options: ['Yes, it comfortably clears it', 'No, it hits below 3 m', 'It exactly grazes the top', 'Impossible to tell'],
           correct: 0,
@@ -318,6 +336,7 @@
         },
         {
           kind: 'mcq',
+          difficulty: 'hard',
           prompt: 'Two identical balls launch at the same speed, one at 30° and one at 60°. How do their ranges and max heights compare?',
           options: [
             'Same range (complementary angles); the 60° ball goes higher',

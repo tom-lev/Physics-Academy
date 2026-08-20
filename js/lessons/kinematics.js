@@ -28,6 +28,7 @@
         },
         {
           kind: 'mcq',
+          difficulty: 'easy',
           prompt: 'You walk 8 m east, then turn around and walk 3 m west. What is your displacement (taking east as positive)?',
           options: ['+11 m', '+5 m', '-5 m', '+8 m'],
           correct: 1,
@@ -47,6 +48,7 @@
         },
         {
           kind: 'numeric',
+          difficulty: 'medium',
           prompt: 'A drone starts at $x_i = -12\\text{ m}$ and ends at $x_f = 7\\text{ m}$. What is its displacement, in meters?',
           unit: 'm',
           correct: 19,
@@ -56,6 +58,7 @@
         },
         {
           kind: 'mcq',
+          difficulty: 'medium',
           prompt: 'Which statement about distance and displacement is always true?',
           options: [
             'Distance is greater than or equal to the magnitude of displacement',
@@ -72,6 +75,7 @@
         },
         {
           kind: 'order',
+          difficulty: 'hard',
           prompt: 'Three hikers each end up 2 km from where they started. Rank their trips by total distance walked, from *least* to *most*.',
           items: [
             'Walked straight there — 2 km in one direction',
@@ -102,6 +106,7 @@
         },
         {
           kind: 'numeric',
+          difficulty: 'easy',
           prompt: 'A cyclist rides from $x=0$ to $x=150\\text{ m}$ in 30 s, then stops. What is her average velocity, in m/s?',
           unit: 'm/s',
           correct: 5,
@@ -110,6 +115,7 @@
         },
         {
           kind: 'mcq',
+          difficulty: 'medium',
           prompt: 'A runner does a full lap of a 400 m track in 80 s and ends up back where she started. What is her average velocity?',
           options: ['5 m/s', '0.2 m/s', '0 m/s', 'Impossible to say without a stopwatch on each leg'],
           correct: 2,
@@ -126,6 +132,7 @@
         },
         {
           kind: 'mcq',
+          difficulty: 'medium',
           prompt: 'On a position-vs-time graph, a curve bends so its slope keeps getting steeper (while staying positive). What is the object doing?',
           options: ['Moving in the positive direction and speeding up', 'Moving in the negative direction and slowing down', 'Standing still', 'Moving at constant velocity'],
           correct: 0,
@@ -134,6 +141,7 @@
         },
         {
           kind: 'numeric',
+          difficulty: 'hard',
           prompt: 'A car covers 300 m in 25 s at constant velocity. If it kept that same velocity, how far would it travel in 40 s, in meters?',
           unit: 'm',
           correct: 480,
@@ -163,6 +171,7 @@
         },
         {
           kind: 'numeric',
+          difficulty: 'easy',
           prompt: 'A skateboarder speeds up from 2 m/s to 11 m/s in 3 s. What is her acceleration, in m/s²?',
           unit: 'm/s²',
           correct: 3,
@@ -171,6 +180,7 @@
         },
         {
           kind: 'mcq',
+          difficulty: 'medium',
           prompt: 'Which of these has zero acceleration?',
           options: [
             'A ball rolling at a constant 4 m/s in a straight line',
@@ -195,6 +205,7 @@
         },
         {
           kind: 'mcq',
+          difficulty: 'medium',
           prompt: 'A car moves in the negative direction ($v < 0$) while its acceleration is positive ($a > 0$). What is happening to its speed?',
           options: ['Increasing', 'Decreasing', 'Staying constant', 'Not enough information'],
           correct: 1,
@@ -203,6 +214,7 @@
         },
         {
           kind: 'numeric',
+          difficulty: 'hard',
           prompt: 'A train decelerates at $1.5\\text{ m/s}^2$ from an initial velocity of 20 m/s. Using $v = v_0 + at$, what is its velocity after 8 s, in m/s?',
           unit: 'm/s',
           correct: 8,
@@ -234,6 +246,7 @@
         },
         {
           kind: 'mcq',
+          difficulty: 'easy',
           prompt: 'You drop a bowling ball and a tennis ball from the same height at the same time, in a vacuum (no air resistance). Which hits the ground first?',
           options: ['The bowling ball, because it\'s heavier', 'The tennis ball, because it\'s lighter', 'They land at the same time', 'Depends on the exact height'],
           correct: 2,
@@ -249,6 +262,7 @@
         },
         {
           kind: 'numeric',
+          difficulty: 'medium',
           prompt: 'An object is dropped from rest from a height of 45 m on Earth ($g = 9.81\\text{ m/s}^2$). How long does it take to land, in seconds?',
           unit: 's',
           correct: 3.02,
@@ -259,6 +273,7 @@
         },
         {
           kind: 'numeric',
+          difficulty: 'medium',
           prompt: 'Same drop — 45 m on Earth. What is its impact speed, in m/s?',
           unit: 'm/s',
           correct: 29.7,
@@ -268,6 +283,7 @@
         },
         {
           kind: 'mcq',
+          difficulty: 'hard',
           prompt: 'The same object is dropped from the same height, but on the Moon ($g \\approx 1.62\\text{ m/s}^2$) instead of Earth. What happens to the fall time?',
           options: ['It gets much shorter', 'It gets much longer', 'It stays exactly the same', 'It becomes zero'],
           correct: 1,
@@ -298,6 +314,7 @@
         },
         {
           kind: 'numeric',
+          difficulty: 'easy',
           prompt: 'A car brakes from 24 m/s to a stop with a deceleration of $6\\text{ m/s}^2$. Using $v^2 = v_0^2 + 2a\\Delta x$, how far does it travel before stopping, in meters?',
           unit: 'm',
           correct: 48,
@@ -307,6 +324,7 @@
         },
         {
           kind: 'mcq',
+          difficulty: 'medium',
           prompt: 'A car\'s braking distance depends on the square of its initial speed. If the speed doubles, what happens to the braking distance (same deceleration)?',
           options: ['It doubles', 'It triples', 'It quadruples', 'It stays the same'],
           correct: 2,
@@ -322,6 +340,7 @@
         },
         {
           kind: 'numeric',
+          difficulty: 'medium',
           prompt: 'A driver going 18 m/s takes 0.5 s to react, then brakes at $5\\text{ m/s}^2$. What is the total stopping distance, in meters? (reaction distance + braking distance)',
           unit: 'm',
           correct: 41.4,
@@ -332,6 +351,7 @@
         },
         {
           kind: 'mcq',
+          difficulty: 'hard',
           prompt: 'Which single change would shrink a car\'s total stopping distance the most?',
           options: [
             'Halving the reaction time',
@@ -361,6 +381,7 @@
         },
         {
           kind: 'mcq',
+          difficulty: 'easy',
           prompt: 'A position-vs-time graph is a straight line with a constant negative slope. What does this describe?',
           options: [
             'Constant velocity in the negative direction',
@@ -374,6 +395,7 @@
         },
         {
           kind: 'numeric',
+          difficulty: 'medium',
           prompt: 'On a velocity-vs-time graph, an object holds a constant 12 m/s for 5 s. The area under that segment equals its displacement. What is that area, in meters?',
           unit: 'm',
           correct: 60,
@@ -383,6 +405,7 @@
         },
         {
           kind: 'order',
+          difficulty: 'hard',
           prompt: 'Three v-t graphs, each a straight line starting at v = 0 lasting 4 s. Rank them by total displacement (area of the triangle), from *least* to *most*.',
           items: [
             'Rises to 2 m/s over the 4 s',

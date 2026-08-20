@@ -27,6 +27,7 @@
         },
         {
           kind: 'mcq',
+          difficulty: 'easy',
           prompt: 'Which SI base unit measures mass?',
           options: ['Newton', 'Kilogram', 'Joule', 'Pascal'],
           correct: 1,
@@ -49,6 +50,7 @@
         },
         {
           kind: 'numeric',
+          difficulty: 'medium',
           prompt: 'A capacitor is rated at 4700 µF (microfarads). Since $\\mu = 10^{-6}$, what is that value in farads (F)?',
           unit: 'F',
           correct: 0.0047,
@@ -59,6 +61,7 @@
         },
         {
           kind: 'mcq',
+          difficulty: 'medium',
           prompt: 'A signal has a frequency of 2.4 GHz. Which prefix does "G" represent?',
           options: ['10³ (thousand)', '10⁶ (million)', '10⁹ (billion)', '10¹² (trillion)'],
           correct: 2,
@@ -67,6 +70,7 @@
         },
         {
           kind: 'order',
+          difficulty: 'hard',
           prompt: 'Rank these prefixes from smallest to largest multiplier.',
           items: ['nano (n)', 'milli (m)', 'kilo (k)', 'mega (M)'],
           explain: 'nano = 10⁻⁹, milli = 10⁻³, kilo = 10³, mega = 10⁶ — each is a thousand times the one before it, in order.'
@@ -89,6 +93,7 @@
         },
         {
           kind: 'numeric',
+          difficulty: 'easy',
           prompt: 'A car travels at 90 km/h. Convert this to m/s. (1 km = 1000 m, 1 h = 3600 s)',
           unit: 'm/s',
           correct: 25,
@@ -98,6 +103,7 @@
         },
         {
           kind: 'numeric',
+          difficulty: 'medium',
           prompt: 'Convert 2.5 hours into seconds.',
           unit: 's',
           correct: 9000,
@@ -113,6 +119,7 @@
         },
         {
           kind: 'mcq',
+          difficulty: 'hard',
           prompt: 'Velocity has units of m/s and time has units of s. Which combination has units of a **distance** (meters)?',
           options: ['velocity ÷ time', 'velocity × time', 'velocity × time²', 'velocity² × time'],
           correct: 1,
@@ -138,6 +145,7 @@
         },
         {
           kind: 'mcq',
+          difficulty: 'easy',
           prompt: 'Four dart throws all land tightly clustered — but in the bottom-left corner of the board, far from the bullseye. This result is:',
           options: ['Accurate but not precise', 'Precise but not accurate', 'Both accurate and precise', 'Neither accurate nor precise'],
           correct: 1,
@@ -153,6 +161,7 @@
         },
         {
           kind: 'mcq',
+          difficulty: 'medium',
           prompt: 'How many significant figures does 0.00420 have?',
           options: ['2', '3', '5', '6'],
           correct: 1,
@@ -164,6 +173,7 @@
         },
         {
           kind: 'numeric',
+          difficulty: 'hard',
           prompt: 'Multiply 3.2 × 1.70 and report the result to the correct number of significant figures (limited by 3.2, which has 2 sig figs).',
           correct: 5.4,
           tol: 0.05,
@@ -212,6 +222,7 @@
         },
         {
           kind: 'numeric',
+          difficulty: 'medium',
           prompt: 'Water flows into a tank at a constant rate of 3 L/min for 12 minutes. The area under this flow-rate-vs-time graph equals total volume added. How many liters entered?',
           unit: 'L',
           correct: 36,
@@ -221,6 +232,7 @@
         },
         {
           kind: 'mcq',
+          difficulty: 'medium',
           prompt: 'A graph of $y$ vs $x$ is a straight line through the origin. If $x$ doubles, what happens to $y$?',
           options: ['Also doubles', 'Quadruples', 'Stays the same', 'Halves'],
           correct: 0,
@@ -229,6 +241,7 @@
         },
         {
           kind: 'mcq',
+          difficulty: 'medium',
           prompt: 'A graph of $y$ vs $x$ curves upward, and doubling $x$ always quadruples $y$. What kind of relationship is this?',
           options: ['Linear ($y \\propto x$)', 'Quadratic ($y \\propto x^2$)', 'Inverse ($y \\propto 1/x$)', 'Constant'],
           correct: 1,
@@ -237,6 +250,7 @@
         },
         {
           kind: 'order',
+          difficulty: 'hard',
           prompt: 'Three graphs of $y$ vs. time are all straight lines. Rank them by their slope, from most negative to most positive.',
           items: [
             'Line falling steeply from top-left to bottom-right',
@@ -263,6 +277,7 @@
         },
         {
           kind: 'mcq',
+          difficulty: 'easy',
           prompt: 'Which of these is a vector quantity?',
           options: ['Temperature', 'Mass', 'Force', 'Energy'],
           correct: 2,
@@ -290,6 +305,7 @@
         },
         {
           kind: 'numeric',
+          difficulty: 'medium',
           prompt: 'Vector A points 6 units east. Vector B points 8 units north. What is the magnitude of their resultant (east and north are perpendicular)?',
           correct: 10,
           tol: 0.1,
@@ -302,6 +318,7 @@
         },
         {
           kind: 'mcq',
+          difficulty: 'hard',
           prompt: 'True or false: $\\vec{A} + \\vec{B}$ always gives the same resultant vector as $\\vec{B} + \\vec{A}$.',
           options: ['True — vector addition is commutative', 'False — order changes the direction', 'False — order changes the magnitude', 'Only true if A and B are perpendicular'],
           correct: 0,
