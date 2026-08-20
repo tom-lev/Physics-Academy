@@ -227,6 +227,70 @@
 
     /* ============================================================ */
     {
+      id: 'kin-checkpoint',
+      title: 'Checkpoint: Position, Velocity & Acceleration',
+      sub: '5 steps · mixed review',
+      steps: [
+        {
+          kind: 'lesson',
+          title: 'Quick check before moving on',
+          hook: 'A driving instructor watching a student\'s speedometer and odometer at once is silently tracking three things simultaneously — where the car is, how fast it\'s going, and whether that speed is climbing or falling — exactly the three ideas the last three lessons built.',
+          body: 'Five quick questions mixing position/displacement, velocity, and acceleration before free fall and the full equation toolkit build on top of all three.'
+        },
+        {
+          kind: 'mcq',
+          difficulty: 'easy',
+          prompt: 'A hiker walks 5 km north, then 5 km south, back to the exact same spot. What is her displacement?',
+          options: ['10 km', '5 km', '0 km', 'Depends on how long it took'],
+          correct: 2,
+          explain: 'Displacement only depends on start and end position — and she ends up exactly where she started, so it\'s zero. (Her *distance* walked was 10 km, a different number.)',
+          wrongExplain: { 0: 'That\'s the total distance walked (5 + 5 = 10 km), not displacement — displacement only cares about net change in position.' }
+        },
+        {
+          kind: 'numeric',
+          difficulty: 'easy',
+          prompt: 'A jogger runs from $x = 10\\text{ m}$ to $x = 90\\text{ m}$ in 20 s. What is her average velocity, in m/s?',
+          unit: 'm/s',
+          correct: 4,
+          tol: 0.1,
+          explain: 'v̄ = Δx/Δt = (90 − 10)/20 = 4 m/s.',
+          hint: 'Find Δx first, then divide by the time.'
+        },
+        {
+          kind: 'numeric',
+          difficulty: 'medium',
+          prompt: 'A cart speeds up from 3 m/s to 15 m/s in 4 s. What is its acceleration, in m/s²?',
+          unit: 'm/s²',
+          correct: 3,
+          tol: 0.1,
+          explain: 'a = Δv/Δt = (15 − 3)/4 = 3 m/s².',
+          hint: 'a = Δv/Δt.'
+        },
+        {
+          kind: 'mcq',
+          difficulty: 'medium',
+          prompt: 'An object has negative velocity and negative acceleration. What is happening to its speed?',
+          options: ['Increasing', 'Decreasing', 'Staying constant', 'Not enough information'],
+          correct: 0,
+          explain: 'Same sign as velocity means speeding up — here both v and a are negative, so it\'s speeding up in the negative direction.',
+          wrongExplain: { 1: 'Decreasing speed happens when v and a have *opposite* signs. Here they\'re both negative — the same sign — which means speeding up, not slowing down.' }
+        },
+        {
+          kind: 'numeric',
+          difficulty: 'hard',
+          prompt: 'A skater starts at 2 m/s and accelerates at $1.5\\text{ m/s}^2$ for 6 s. Using $x = v_0t + \\frac{1}{2}at^2$, how far does she travel, in meters?',
+          unit: 'm',
+          correct: 39,
+          tol: 1,
+          decimals: 0,
+          explain: 'x = v0t + ½at² = 2(6) + 0.5(1.5)(6²) = 12 + 27 = 39 m.',
+          hint: 'Plug v0=2, a=1.5, t=6 into x = v0t + ½at².'
+        }
+      ]
+    },
+
+    /* ============================================================ */
+    {
       id: 'kin-freefall',
       title: 'Free Fall',
       sub: '6 steps · gravity in action',

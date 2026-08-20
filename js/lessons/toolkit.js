@@ -186,6 +186,68 @@
 
     /* ============================================================ */
     {
+      id: 'tk-checkpoint',
+      title: 'Checkpoint: Units, Conversion & Precision',
+      sub: '5 steps · mixed review',
+      steps: [
+        {
+          kind: 'lesson',
+          title: 'Quick check before moving on',
+          hook: 'A pilot reading an altimeter, a nurse reading a syringe, an engineer reading a resistor\'s color bands — every one of them is doing exactly what the last three lessons taught: attaching the right power of ten, converting cleanly, and reporting only the digits they can trust.',
+          body: 'Five quick questions mixing everything so far — prefixes, conversion, and precision — before graphs and vectors build on top of it.'
+        },
+        {
+          kind: 'mcq',
+          difficulty: 'easy',
+          prompt: 'Which prefix represents $10^{-3}$?',
+          options: ['kilo (k)', 'milli (m)', 'mega (M)', 'nano (n)'],
+          correct: 1,
+          explain: 'milli (m) = $10^{-3}$ — a thousandth. kilo is $10^3$, mega is $10^6$, nano is $10^{-9}$.',
+          wrongExplain: { 0: 'kilo (k) is $10^{+3}$ — a *thousand times bigger*, the opposite direction from milli.' }
+        },
+        {
+          kind: 'numeric',
+          difficulty: 'easy',
+          prompt: 'Convert 45 minutes into seconds.',
+          unit: 's',
+          correct: 2700,
+          tol: 5,
+          explain: '45 min × 60 s/min = 2700 s.',
+          hint: 'Multiply by 60 to go from minutes to seconds.'
+        },
+        {
+          kind: 'numeric',
+          difficulty: 'medium',
+          prompt: 'A resistor is rated at 2.2 kΩ. Since k = $10^3$, what is that in ohms (Ω)?',
+          unit: 'Ω',
+          correct: 2200,
+          tol: 20,
+          explain: '2.2 × $10^3$ Ω = 2200 Ω.',
+          hint: 'Multiply 2.2 by 1000.'
+        },
+        {
+          kind: 'mcq',
+          difficulty: 'medium',
+          prompt: 'How many significant figures does 0.0620 have?',
+          options: ['2', '3', '4', '5'],
+          correct: 1,
+          explain: 'The leading zeros (0.0) are placeholders and don\'t count. "6", "2", and the trailing "0" after the decimal are all significant — 3 total.',
+          wrongExplain: { 0: 'That misses the trailing zero after the decimal point — it comes right after significant digits, so it counts too.' }
+        },
+        {
+          kind: 'mcq',
+          difficulty: 'hard',
+          prompt: 'A speedometer reads exactly "100.0 km/h" every single time you check it, but you\'re actually going 90 km/h. This speedometer is:',
+          options: ['Accurate but not precise', 'Precise but not accurate', 'Both accurate and precise', 'Neither'],
+          correct: 1,
+          explain: 'Reading the same value every time means it\'s *precise* (consistent). Being consistently 10 km/h off from the truth means it\'s not *accurate*.',
+          wrongExplain: { 0: 'That\'s backwards — a rock-steady repeated reading is what makes something precise, not accurate. Accuracy is about closeness to the true 90 km/h, which this misses every time.' }
+        }
+      ]
+    },
+
+    /* ============================================================ */
+    {
       id: 'tk-graphs',
       title: 'Reading Graphs Like a Scientist',
       sub: '8 steps · slope and area, everywhere',

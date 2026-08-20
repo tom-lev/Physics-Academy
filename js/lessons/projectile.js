@@ -228,6 +228,71 @@
 
     /* ============================================================ */
     {
+      id: 'proj-checkpoint',
+      title: 'Checkpoint: Splitting the Motion',
+      sub: '5 steps · mixed review',
+      steps: [
+        {
+          kind: 'lesson',
+          title: 'Quick check before moving on',
+          hook: 'A golf commentator watching a drive can tell you, almost by instinct, roughly how long it\'ll stay airborne and about where it\'ll land — the exact same horizontal/vertical split the last three lessons just made precise.',
+          body: 'Five quick questions mixing the horizontal/vertical split, velocity components, and time/height/range before we chase the angle that maximizes range.'
+        },
+        {
+          kind: 'mcq',
+          difficulty: 'easy',
+          prompt: 'Two identical balls launch horizontally from the same height and the same instant — one at 5 m/s, one at 15 m/s. Which lands first?',
+          options: ['The 5 m/s ball', 'The 15 m/s ball', 'They land at the same time', 'Depends on the launch height'],
+          correct: 2,
+          explain: 'Both start with zero vertical velocity and fall under the same $g$ — identical vertical stories mean identical fall times, no matter the horizontal speed.',
+          wrongExplain: { 1: 'Horizontal speed has zero effect on fall time — only the vertical story (starting vertical velocity and $g$) does, and that\'s the same for both.' }
+        },
+        {
+          kind: 'numeric',
+          difficulty: 'medium',
+          prompt: 'A ball launches at $v_0 = 16\\text{ m/s}$, at $60°$ above horizontal. What is its vertical velocity component $v_{0y}$, in m/s?',
+          unit: 'm/s',
+          correct: 13.86,
+          tol: 0.3,
+          decimals: 2,
+          explain: 'v0y = v0 sin θ = 16 × sin(60°) ≈ 16 × 0.866 ≈ 13.86 m/s.',
+          hint: 'v0y = v0 sin θ.'
+        },
+        {
+          kind: 'numeric',
+          difficulty: 'medium',
+          prompt: 'Same launch (16 m/s at 60°, $v_{0y} ≈ 13.86$ m/s, $g = 9.81\\text{ m/s}^2$). What is its total time of flight, in seconds?',
+          unit: 's',
+          correct: 2.82,
+          tol: 0.1,
+          decimals: 2,
+          explain: 'T = 2v0y/g = 2 × 13.86 / 9.81 ≈ 2.82 s.',
+          hint: 'T = 2v0y/g.'
+        },
+        {
+          kind: 'numeric',
+          difficulty: 'hard',
+          prompt: 'Same launch again (16 m/s at 60°, time of flight ≈ 2.82 s). What is its range, in meters?',
+          unit: 'm',
+          correct: 22.6,
+          tol: 0.6,
+          decimals: 1,
+          explain: 'v0x = 16 cos(60°) = 8 m/s. R = v0x · T ≈ 8 × 2.82 ≈ 22.6 m.',
+          hint: 'R = v0x · T, using v0x = v0 cos θ.'
+        },
+        {
+          kind: 'mcq',
+          difficulty: 'medium',
+          prompt: 'At the very peak of a projectile\'s arc, which velocity component is momentarily zero?',
+          options: ['Horizontal ($v_x$)', 'Vertical ($v_y$)', 'Both', 'Neither'],
+          correct: 1,
+          explain: 'The vertical velocity drops to zero right at the peak (that\'s what defines the peak) — but the horizontal velocity never stops, which is why the path curves smoothly instead of halting.'
+        }
+      ]
+    },
+
+    /* ============================================================ */
+    {
       id: 'proj-range-angle',
       title: 'How Range Depends on Angle',
       sub: '6 steps · finding the sweet spot',

@@ -230,6 +230,68 @@
 
     /* ============================================================ */
     {
+      id: 'fc-checkpoint',
+      title: "Checkpoint: Newton's Three Laws",
+      sub: '5 steps · mixed review',
+      steps: [
+        {
+          kind: 'lesson',
+          title: 'Quick check before moving on',
+          hook: 'A crash-test engineer replaying slow-motion footage is reading all three laws off a single collision at once — what kept moving until something stopped it, how hard that stop pushed back, and what pushed back just as hard in return.',
+          body: 'Five quick questions mixing inertia, F = ma, and action-reaction before friction adds a whole new force to the mix.'
+        },
+        {
+          kind: 'mcq',
+          difficulty: 'easy',
+          prompt: 'A ball floats motionless in deep space, far from any planet, with zero forces acting on it. According to the First Law, what happens to it?',
+          options: ['It drifts to a stop eventually', 'It stays exactly where it is, forever', 'It slowly accelerates', 'It depends on its mass'],
+          correct: 1,
+          explain: 'Zero net force means zero change in velocity — an object at rest with nothing acting on it just stays at rest, indefinitely.',
+          wrongExplain: { 0: 'Coming to a stop requires a force (like friction) to slow it down — and there\'s nothing out here to supply one.' }
+        },
+        {
+          kind: 'numeric',
+          difficulty: 'easy',
+          prompt: 'A 5 kg object accelerates at $2\\text{ m/s}^2$. What net force acts on it, in newtons?',
+          unit: 'N',
+          correct: 10,
+          tol: 0.2,
+          explain: 'F_net = ma = 5 × 2 = 10 N.',
+          hint: 'F_net = ma.'
+        },
+        {
+          kind: 'numeric',
+          difficulty: 'medium',
+          prompt: 'What is the weight of a 12 kg object on Earth, in newtons ($g = 9.81\\text{ m/s}^2$)?',
+          unit: 'N',
+          correct: 117.72,
+          tol: 1,
+          decimals: 1,
+          explain: 'W = mg = 12 × 9.81 = 117.72 N.',
+          hint: 'W = mg.'
+        },
+        {
+          kind: 'mcq',
+          difficulty: 'medium',
+          prompt: 'A hammer strikes a nail, pushing it downward into a board. By Newton\'s Third Law, what pushes back on the hammer?',
+          options: ['The nail pushes up on the hammer, equally hard', 'The board absorbs the force, so nothing pushes back', 'Gravity pushes back on the hammer', 'Nothing — the hammer keeps all its force'],
+          correct: 0,
+          explain: 'Action-reaction pairs are exact: the hammer pushes the nail down, so the nail pushes the hammer up with exactly the same magnitude — that\'s the jolt you feel in your hand.'
+        },
+        {
+          kind: 'mcq',
+          difficulty: 'hard',
+          prompt: 'A box sits still on a table. Its weight (gravity pulling down) is one force on it. What is that weight\'s actual Newton\'s Third Law reaction pair?',
+          options: ['The normal force the table exerts upward on the box', 'The box\'s own gravitational pull on the Earth', 'The friction between the box and the table', 'Weight has no reaction pair — it just balances the normal force'],
+          correct: 1,
+          explain: 'The normal force balances weight for this box\'s *net force*, but that\'s a coincidence of this situation, not a Third Law pair — a pair is always the same *kind* of force acting back on the *other* object. Gravity\'s partner is the box pulling back on the Earth, just as gravitationally.',
+          wrongExplain: { 0: 'The normal force happens to cancel weight here, but they\'re not a Third Law pair — a real pair is the same interaction acting on the other object. The normal force\'s own pair is the box pushing down on the table.' }
+        }
+      ]
+    },
+
+    /* ============================================================ */
+    {
       id: 'fc-friction',
       title: 'Friction — Static & Kinetic',
       sub: '7 steps · the force that resists sliding',
