@@ -160,9 +160,17 @@ just spend the words on texture instead of throat-clearing.
   "the Pythagorean theorem," "sin/cos as a calculator operation" — never a
   vague category like "basic algebra." Vague prereqs don't tell anyone,
   including future-you, what's actually being assumed.
-- Any `formula` a learner will need to *use* (not just admire) should carry
-  `vars` spelling out what each symbol means — skip only for formulas
-  already self-explanatory inline (e.g. a labeled list of prefix values).
+- Any `formula` a learner will need to *use* (not just admire) needs two
+  things attached to its own step: `vars` spelling out what each symbol
+  means, *and* a worked numeric example plugging real numbers into it —
+  `vars` alone tells a learner what the symbols are called, not how to
+  actually use them. A callout right under the formula is the usual place
+  for the worked example. Skip both only for formulas already
+  self-explanatory inline (e.g. a labeled list of prefix values). (A
+  `formula` with `vars` but no worked example, immediately followed by a
+  graded question using it — kin-position's displacement formula, before
+  it was fixed — is exactly this gap: correct on paper, useless to a
+  learner seeing it cold.)
 
 **Content & pedagogy.**
 - Never grade a learner on a formula/idea cold — there must be a worked,

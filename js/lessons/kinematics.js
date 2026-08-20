@@ -50,8 +50,9 @@
           body: 'One-dimensional motion works the same way. A vector quantity like displacement or velocity, squeezed onto a single line, is fully described by a magnitude and a **sign**. Pick a positive direction once (often "right" or "up") and stick with it for the whole problem — the sign then tells you which way something points, without needing an arrow.',
           formula: { name: 'Displacement', tex: '\\Delta x = x_f - x_i', vars: [
             { sym: '\\Delta x', mean: 'displacement' },
-            { sym: 'x_i, x_f', mean: 'initial and final position' }
-          ] }
+            { sym: 'x_f, x_i', mean: 'final and initial position' }
+          ] },
+          callout: { variant: 'info', text: 'Worked example: a hiker starts at $x_i = 3$ m and ends at $x_f = 10$ m — $\\Delta x = 10 - 3 = +7$ m. Now say she\'d started 3 m on the *other* side of zero instead, at $x_i = -3$ m, ending at the same $x_f = 10$ m: $\\Delta x = 10 - (-3) = +13$ m. Subtracting a negative starting position just adds — same rule as on any number line.' }
         },
         {
           kind: 'numeric',
