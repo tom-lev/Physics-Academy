@@ -79,7 +79,7 @@
           title: 'The law that connects push to speed-up',
           hook: "Pushing an empty shopping cart takes barely any effort to speed up. Push the exact same way on a cart loaded with a dozen bags of concrete, and it barely budges — same push, wildly different result.",
           body: 'The First Law says what happens with *zero* net force. The Second Law says what happens with *nonzero* net force: it produces an acceleration, in the same direction as the force, proportional to the force and inversely proportional to the object\'s mass.',
-          formula: { name: "Newton's Second Law", tex: '\\vec{F}_{net} = m\\vec{a}', vars: [
+          formula: { name: "Newton's Second Law", words: 'net force = mass × acceleration', tex: '\\vec{F}_{net} = m\\vec{a}', vars: [
             { sym: 'F_{net}', mean: 'net force acting on the object' },
             { sym: 'm', mean: 'its mass' },
             { sym: 'a', mean: 'the acceleration produced' }
@@ -115,7 +115,7 @@
           title: 'Mass vs. weight: a scalar and a force',
           hook: 'Step on a bathroom scale and what it reports is a *force* — your weight — not directly your mass. That\'s why astronauts don\'t shrink in orbit: nothing about how much matter they\'re made of has changed, only how hard something is pulling on it.',
           body: '**Mass** is how much matter something has — a scalar, in kilograms, that never changes no matter where the object is. **Weight** is the *force* of gravity pulling on that mass, and since it depends on the local gravitational field, it\'s different on the Moon than on Earth.',
-          formula: { name: 'Weight', tex: 'W = mg', vars: [
+          formula: { name: 'Weight', words: 'weight = mass × local gravitational acceleration', tex: 'W = mg', vars: [
             { sym: 'W', mean: 'weight (a force, in newtons)' },
             { sym: 'm', mean: 'mass' },
             { sym: 'g', mean: 'local gravitational acceleration' }
@@ -170,7 +170,7 @@
           title: 'Every force has a partner',
           hook: "Stand on a skateboard next to a wall and push off it — you shoot backward, even though you're the one doing the pushing. Somehow pushing something else got *you* moving.",
           body: 'Whenever object A pushes or pulls on object B, object B pushes or pulls back on A with a force of the **same magnitude**, in the **opposite direction**. These two forces are an action-reaction pair — and critically, they act on *two different objects*, not the same one.',
-          formula: { name: "Newton's Third Law", tex: '\\vec{F}_{A\\text{ on }B} = -\\vec{F}_{B\\text{ on }A}', vars: [
+          formula: { name: "Newton's Third Law", words: 'force A exerts on B = -(force B exerts on A)', tex: '\\vec{F}_{A\\text{ on }B} = -\\vec{F}_{B\\text{ on }A}', vars: [
             { sym: 'F_{A\\text{ on }B}', mean: 'force A exerts on B' },
             { sym: 'F_{B\\text{ on }A}', mean: 'force B exerts on A — equal in size, opposite in direction' }
           ] }
@@ -301,7 +301,7 @@
           title: 'Friction opposes relative sliding',
           hook: "A heavy box refuses to budge no matter how hard you shove — until, with one extra bit of effort, it suddenly breaks free and slides almost too easily. Something changes right at that instant.",
           body: 'Friction is a force between two surfaces in contact that opposes their sliding relative to each other. It comes in two flavors: **static friction**, which resists an object *starting* to slide, and **kinetic friction**, which resists an object that is *already* sliding. Both are proportional to the normal force pressing the surfaces together.',
-          formula: { name: 'Friction force', tex: 'f_s \\le \\mu_s N    f_k = \\mu_k N', vars: [
+          formula: { name: 'Friction force', words: 'maximum static friction ≤ coefficient of static friction × normal force — kinetic friction = coefficient of kinetic friction × normal force', tex: 'f_s \\le \\mu_s N    f_k = \\mu_k N', vars: [
             { sym: 'f_s', mean: 'static friction (ranges from 0 up to a maximum)' },
             { sym: '\\mu_s', mean: 'coefficient of static friction' },
             { sym: 'f_k', mean: 'kinetic friction, once sliding' },
@@ -381,7 +381,7 @@
           title: 'Same trick as tk-vectors, new context',
           hook: "A delivery driver parks on a gentle hill, and the hand brake alone is enough to hold the truck still. Park on a much steeper hill and even a fully engaged brake isn't enough — the truck creeps forward. Same gravity, pulling differently depending on the slope.",
           body: 'On a slope, gravity still pulls straight down — but "straight down" is neither perfectly along the slope nor perfectly perpendicular to it. Just like splitting any vector into components, split weight into a piece **parallel to the slope** (what actually pulls the object down the ramp) and a piece **perpendicular to the slope** (what presses the object into the surface).',
-          formula: { name: 'Weight components on a slope', tex: 'W_{\\parallel} = mg\\sin\\theta    W_{\\perp} = mg\\cos\\theta', vars: [
+          formula: { name: 'Weight components on a slope', words: 'weight component along the slope = mass × gravity × sin(angle) — weight component into the slope = mass × gravity × cos(angle)', tex: 'W_{\\parallel} = mg\\sin\\theta    W_{\\perp} = mg\\cos\\theta', vars: [
             { sym: 'W_{\\parallel}', mean: 'weight component along the slope' },
             { sym: 'W_{\\perp}', mean: 'weight component into the slope' },
             { sym: 'm, g', mean: 'mass and gravitational acceleration' },
@@ -416,7 +416,7 @@
           title: 'The normal force balances the perpendicular piece',
           hook: 'A suitcase on an airport\'s tilted baggage ramp neither sinks through the belt nor pops off the surface — something is exactly canceling the piece of gravity trying to press it through.',
           body: 'That something is the normal force. As long as the block isn\'t flying off the ramp or being crushed into it, there\'s no acceleration *perpendicular* to the slope — so the normal force exactly balances $W_\\perp$. That\'s why the normal force on an incline is $mg\\cos\\theta$, not the full weight $mg$ like it would be on flat ground.',
-          formula: { name: 'Normal force on a slope', tex: 'N = mg\\cos\\theta', vars: [
+          formula: { name: 'Normal force on a slope', words: 'normal force = mass × gravitational acceleration × cos(incline angle)', tex: 'N = mg\\cos\\theta', vars: [
             { sym: 'N', mean: 'normal force' },
             { sym: 'm', mean: 'mass' },
             { sym: 'g', mean: 'gravitational acceleration' },
@@ -439,7 +439,7 @@
           title: 'Adding friction back in',
           hook: 'A freshly waxed ski and a beat-up, rusty one send you down the exact same slope at very different speeds — the whole difference comes down to friction eating into gravity\'s pull.',
           body: 'With kinetic friction acting up the slope (opposing the sliding), it subtracts from the down-slope pull. The net acceleration is what\'s left after friction takes its cut.',
-          formula: { name: 'Acceleration down an incline, with kinetic friction', tex: 'a = g(\\sin\\theta - \\mu_k\\cos\\theta)', vars: [
+          formula: { name: 'Acceleration down an incline, with kinetic friction', words: 'acceleration = gravity × (sin(angle) - coefficient of kinetic friction × cos(angle))', tex: 'a = g(\\sin\\theta - \\mu_k\\cos\\theta)', vars: [
             { sym: 'a', mean: 'acceleration down the slope' },
             { sym: 'g', mean: 'gravitational acceleration' },
             { sym: '\\theta', mean: 'incline angle from horizontal' },

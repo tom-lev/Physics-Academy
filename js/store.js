@@ -14,7 +14,7 @@
       xp: 0,
       lessons: {},                       // id -> { done, best, attempts, lastTs }
       streak: { count: 0, lastDay: null },
-      inProgress: {},                    // lessonId -> { idx, answers, ts } — mid-lesson resume, local-only
+      inProgress: {},                    // lessonId -> { idx, maxIdx, answers, ts } — mid-lesson resume, local-only
       createdAt: Date.now()
     };
   }
@@ -76,8 +76,12 @@
         if (!Object.prototype.hasOwnProperty.call(raw.inProgress, lid)) continue;
         var p = raw.inProgress[lid];
         if (!p || typeof p !== 'object' || !Array.isArray(p.answers)) continue;
+        var idx = Math.max(0, Math.floor(p.idx || 0));
         d.inProgress[lid] = {
-          idx: Math.max(0, Math.floor(p.idx || 0)),
+          idx: idx,
+          // older saves predate maxIdx — fall back to idx (correct, just
+          // loses any forward-skip range earned before this field existed)
+          maxIdx: Math.max(idx, Math.floor(p.maxIdx != null ? p.maxIdx : idx)),
           answers: p.answers,
           ts: typeof p.ts === 'number' ? p.ts : Date.now()
         };
@@ -224,9 +228,17 @@
       return null;
     },
 
-    /** Mid-lesson resume point: current step index + the answers given so far. */
-    saveStepProgress: function (lessonId, idx, answers) {
-      data.inProgress[lessonId] = { idx: Math.max(0, Math.floor(idx || 0)), answers: answers, ts: Date.now() };
+    /** Mid-lesson resume point: current step index, the furthest step index
+     *  reached so far (for forward-skip past already-answered steps), and
+     *  the answers given so far. */
+    saveStepProgress: function (lessonId, idx, answers, maxIdx) {
+      var i = Math.max(0, Math.floor(idx || 0));
+      data.inProgress[lessonId] = {
+        idx: i,
+        maxIdx: Math.max(i, Math.floor(maxIdx != null ? maxIdx : i)),
+        answers: answers,
+        ts: Date.now()
+      };
       save();
     },
 

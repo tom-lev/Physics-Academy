@@ -351,7 +351,7 @@
           title: 'Adding vectors: tip to tail',
           hook: 'A pilot flying due north at 200 km/h through a 40 km/h crosswind doesn\'t actually travel due north over the ground — their plane\'s velocity and the wind\'s velocity add together into a path that\'s neither one alone.',
           body: 'The trick for finding that combined path is beautifully simple: place the tail of the second vector at the tip of the first — the sum (the **resultant**) is the arrow from the very start to the very end. From here on, a small arrow overhead ($\\vec{A}$) marks something as a vector, to distinguish it from just its magnitude ($A$, a plain number) — and order never matters: $\\vec{A}+\\vec{B} = \\vec{B}+\\vec{A}$.',
-          formula: { name: 'Components', tex: 'A_x = A\\cos\\theta \\qquad A_y = A\\sin\\theta', vars: [
+          formula: { name: 'Components', words: 'horizontal component = magnitude × cos(angle) — vertical component = magnitude × sin(angle)', tex: 'A_x = A\\cos\\theta \\qquad A_y = A\\sin\\theta', vars: [
             { sym: 'A', mean: 'the vector\'s length (magnitude)' },
             { sym: '\\theta', mean: 'its angle from the positive x-axis' },
             { sym: 'A_x, A_y', mean: 'its horizontal and vertical components' }
@@ -371,7 +371,7 @@
           prompt: 'Vector A points 6 units east. Vector B points 8 units north — east and north meet at a right angle (90°), meaning they\'re **perpendicular**. What is the magnitude of their resultant?',
           correct: 10,
           tol: 0.1,
-          formula: { name: 'Pythagorean theorem (right triangles only)', tex: 'c = \\sqrt{a^2+b^2}', vars: [
+          formula: { name: 'Pythagorean theorem (right triangles only)', words: 'hypotenuse = square root of (leg one² + leg two²)', tex: 'c = \\sqrt{a^2+b^2}', vars: [
             { sym: 'a, b', mean: 'the two perpendicular legs' },
             { sym: 'c', mean: 'the hypotenuse — the longest side, opposite the right angle' }
           ] },

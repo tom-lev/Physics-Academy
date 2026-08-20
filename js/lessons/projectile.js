@@ -89,7 +89,7 @@
           title: 'Same trick as vector components, new context',
           hook: 'A soccer player choosing between a low, fast free-kick and a high, looping one over the wall is unconsciously trading horizontal speed for vertical speed — the same launch effort, just split differently depending on the angle.',
           body: 'When something launches at an angle $\\theta$ above the horizontal — a cannonball, a soccer kick, a basketball shot — its initial velocity $v_0$ is a vector, and it splits into components exactly the way you learned in the vectors lesson: $A_x = A\\cos\\theta$, $A_y = A\\sin\\theta$.\n\nHere, $v_{0x}$ stays constant for the entire flight (nothing changes it). $v_{0y}$ is just the *starting* vertical velocity — gravity immediately starts eating into it.',
-          formula: { name: 'Launch velocity components', tex: 'v_{0x} = v_0\\cos\\theta \\qquad v_{0y} = v_0\\sin\\theta', vars: [
+          formula: { name: 'Launch velocity components', words: 'horizontal launch velocity = launch speed × cos(angle) — vertical launch velocity = launch speed × sin(angle)', tex: 'v_{0x} = v_0\\cos\\theta \\qquad v_{0y} = v_0\\sin\\theta', vars: [
             { sym: 'v_0', mean: 'launch speed' },
             { sym: '\\theta', mean: 'launch angle above horizontal' },
             { sym: 'v_{0x}', mean: 'horizontal velocity component (stays constant)' },
@@ -155,7 +155,7 @@
           title: 'The vertical story sets the clock',
           hook: 'A quarterback\'s long pass, a fountain jet, a stone skipped off a bridge — every one of them climbs, pauses for an instant at the very top, and falls back down in exactly the same time it took to rise.',
           body: 'For a projectile launched and landing at the same height, the vertical motion is a mirror image of throwing something straight up: it climbs, decelerates to a stop at the peak, then falls back down — taking exactly as long to fall as it took to rise. So the total time of flight is *twice* the time to reach the peak.',
-          formula: { name: 'Time of flight', tex: 'T = \\frac{2v_{0y}}{g} = \\frac{2v_0\\sin\\theta}{g}', vars: [
+          formula: { name: 'Time of flight', words: 'total time of flight = 2 × vertical launch velocity / gravity', tex: 'T = \\frac{2v_{0y}}{g} = \\frac{2v_0\\sin\\theta}{g}', vars: [
             { sym: 'T', mean: 'total time of flight' },
             { sym: 'v_{0y}', mean: 'initial vertical velocity component' },
             { sym: 'g', mean: 'gravitational acceleration' }
@@ -189,7 +189,7 @@
           title: 'Range: how far horizontally',
           hook: 'A slugger\'s home-run ball and a golfer\'s drive off the tee both eventually ask the exact same question: how far does this thing actually travel before it comes back down?',
           body: 'Range is just the horizontal-motion story applied over the full time of flight: constant velocity $v_{0x}$, for a duration $T$. Substituting $T$ in gives a single formula in terms of $v_0$ and $\\theta$ alone.',
-          formula: { name: 'Range', tex: 'R = v_{0x}\\,T = \\frac{v_0^2\\sin(2\\theta)}{g}', vars: [
+          formula: { name: 'Range', words: 'horizontal range = horizontal launch velocity × time of flight', tex: 'R = v_{0x}\\,T = \\frac{v_0^2\\sin(2\\theta)}{g}', vars: [
             { sym: 'R', mean: 'horizontal range' },
             { sym: 'v_0, \\theta', mean: 'launch speed and angle' },
             { sym: 'g', mean: 'gravitational acceleration' }
@@ -302,7 +302,7 @@
           title: 'Why 45° is special',
           hook: 'A javelin thrower and a shot-putter aim for very different-looking trajectories, but there\'s one specific angle — 45° — that sends anything the farthest for a given launch speed, whether it\'s a javelin, a cannonball, or a golf ball off a flat green.',
           body: 'Look again at the range formula: $R = \\frac{v_0^2 \\sin(2\\theta)}{g}$. For a fixed launch speed, $R$ is entirely controlled by $\\sin(2\\theta)$ — and sine maxes out at exactly 1, when its argument is 90°. That happens when $2\\theta = 90°$, i.e. $\\theta = 45°$.',
-          formula: { name: 'Range', tex: 'R = \\frac{v_0^2\\sin(2\\theta)}{g}', vars: [
+          formula: { name: 'Range', words: 'horizontal range = launch speed² × sin(2 × launch angle) / gravity', tex: 'R = \\frac{v_0^2\\sin(2\\theta)}{g}', vars: [
             { sym: 'R', mean: 'horizontal range' },
             { sym: 'v_0, \\theta', mean: 'launch speed and angle' },
             { sym: 'g', mean: 'gravitational acceleration' }
@@ -365,7 +365,7 @@
           title: 'Does it clear the wall?',
           hook: 'A basketball player has to arc a shot just over a defender\'s outstretched hand and still have it drop through the hoop several meters further on — clearing an obstacle and hitting a target are two separate conditions the same shot has to satisfy at once.',
           body: 'Everything so far has asked "where does it land?" But you can just as easily ask "how high is it at some horizontal distance $x$, *before* it lands?" — useful for checking whether a shot clears a wall, a net, or a defender\'s outstretched arms.\n\nThe trick: find the time it takes to travel that far horizontally ($t = x/v_{0x}$), then plug that time into the vertical-motion equation.',
-          formula: { name: 'Height at horizontal distance x', tex: 'y = v_{0y}t - \\tfrac{1}{2}gt^2 \\quad \\text{where } t = x / v_{0x}', vars: [
+          formula: { name: 'Height at horizontal distance x', words: 'height at that point = vertical launch velocity × time - ½ × gravity × time²', tex: 'y = v_{0y}t - \\tfrac{1}{2}gt^2 \\quad \\text{where } t = x / v_{0x}', vars: [
             { sym: 'y', mean: 'height above launch level at that point' },
             { sym: 'x', mean: 'horizontal distance traveled' },
             { sym: 't', mean: 'time to reach that x, found first' },

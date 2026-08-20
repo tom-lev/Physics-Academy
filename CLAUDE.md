@@ -160,17 +160,24 @@ just spend the words on texture instead of throat-clearing.
   "the Pythagorean theorem," "sin/cos as a calculator operation" — never a
   vague category like "basic algebra." Vague prereqs don't tell anyone,
   including future-you, what's actually being assumed.
-- Any `formula` a learner will need to *use* (not just admire) needs two
-  things attached to its own step: `vars` spelling out what each symbol
-  means, *and* a worked numeric example plugging real numbers into it —
-  `vars` alone tells a learner what the symbols are called, not how to
-  actually use them. A callout right under the formula is the usual place
-  for the worked example. Skip both only for formulas already
-  self-explanatory inline (e.g. a labeled list of prefix values). (A
-  `formula` with `vars` but no worked example, immediately followed by a
-  graded question using it — kin-position's displacement formula, before
-  it was fixed — is exactly this gap: correct on paper, useless to a
-  learner seeing it cold.)
+- Any `formula` a learner will need to *use* (not just admire) needs three
+  things attached to its own step: a plain-English `words` restatement with
+  no symbols at all (e.g. `'displacement = final position - initial
+  position'`, rendered above the equation via `formula.words` —
+  `renderFormula` in `engine.js` puts it between the name and the `tex`),
+  `vars` spelling out what each symbol means (one symbol per entry — don't
+  combine two symbols into one comma-joined row like `'x_f, x_i'`, that
+  just forces the reader to positionally re-pair them instead of reading
+  straight down), and a worked numeric example plugging real numbers into
+  it. `vars` alone tells a learner what the symbols are called, not how to
+  actually use them; `words` alone doesn't tell them which symbol is which.
+  A callout right under the formula is the usual place for the worked
+  example. Skip all three only for formulas already self-explanatory inline
+  (e.g. a labeled list of prefix values — `tk-units`' SI-prefix table is
+  the one existing example). (A `formula` with `vars` but no worked
+  example, immediately followed by a graded question using it —
+  kin-position's displacement formula, before it was fixed — is exactly
+  this gap: correct on paper, useless to a learner seeing it cold.)
 
 **Content & pedagogy.**
 - Never grade a learner on a formula/idea cold — there must be a worked,

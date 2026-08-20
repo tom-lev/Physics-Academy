@@ -35,6 +35,15 @@
   // multi-letter names that should render upright, not italic
   var UPRIGHT = /^(sin|cos|tan|log|ln|exp|max|min|abs|avg|net|tot|total|const)/;
 
+  // infix operators/relations: unlike \Delta before a variable, these sit
+  // between two separate terms and read better with the source's own
+  // spacing kept (this renderer has no real auto-spacing to fall back on)
+  var SPACED_OPS = {
+    times: 1, cdot: 1, div: 1, pm: 1, mp: 1, approx: 1, ne: 1, neq: 1,
+    le: 1, leq: 1, ge: 1, geq: 1, ll: 1, gg: 1, equiv: 1, propto: 1,
+    to: 1, rightarrow: 1, leftarrow: 1, Rightarrow: 1
+  };
+
   function esc(s) {
     return String(s)
       .replace(/&/g, '&amp;')
@@ -75,6 +84,12 @@
         if (!m) { out += esc(src[i + 1] || ''); i += 2; continue; }  // \$ \{ etc.
         var name = m[1];
         i += m[0].length;
+        // a LaTeX control word swallows the whitespace right after it
+        // (\Delta x typesets as "Δx", not "Δ x") — this parser must too,
+        // except for infix operators/relations (see SPACED_OPS above)
+        if (!SPACED_OPS[name]) {
+          while (src[i] === ' ' || src[i] === '\t' || src[i] === '\n') i++;
+        }
 
         if (name === 'frac') {
           var a = group(src, i); i = a.next;

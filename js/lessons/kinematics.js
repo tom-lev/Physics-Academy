@@ -48,9 +48,10 @@
           title: 'Signs are directions',
           hook: 'A bank statement doesn\'t draw arrows: "+\\$50" means money came in, "−\\$50" means it went out, and the sign alone carries all the direction anyone needs.',
           body: 'One-dimensional motion works the same way. A vector quantity like displacement or velocity, squeezed onto a single line, is fully described by a magnitude and a **sign**. Pick a positive direction once (often "right" or "up") and stick with it for the whole problem — the sign then tells you which way something points, without needing an arrow.',
-          formula: { name: 'Displacement', tex: '\\Delta x = x_f - x_i', vars: [
+          formula: { name: 'Displacement', words: 'displacement = final position - initial position', tex: '\\Delta x = x_f - x_i', vars: [
             { sym: '\\Delta x', mean: 'displacement' },
-            { sym: 'x_f, x_i', mean: 'final and initial position' }
+            { sym: 'x_f', mean: 'final position' },
+            { sym: 'x_i', mean: 'initial position' }
           ] },
           callout: { variant: 'info', text: 'Worked example: a hiker starts at $x_i = 3$ m and ends at $x_f = 10$ m — $\\Delta x = 10 - 3 = +7$ m. Now say she\'d started 3 m on the *other* side of zero instead, at $x_i = -3$ m, ending at the same $x_f = 10$ m: $\\Delta x = 10 - (-3) = +13$ m. Subtracting a negative starting position just adds — same rule as on any number line.' }
         },
@@ -106,7 +107,7 @@
           title: 'How fast, and which way',
           hook: 'Your GPS reports a 30-minute drive as "40 km, average speed 80 km/h" — a single tidy number that hides ten minutes stuck in traffic followed by a fast, open highway. That one average is real, but it\'s definitely not the whole story.',
           body: 'Speed tells you how fast the odometer is spinning — always positive, no direction attached. **Velocity** is the vector version: displacement per time, direction included.',
-          formula: { name: 'Average velocity', tex: '\\bar{v} = \\frac{\\Delta x}{\\Delta t}', vars: [
+          formula: { name: 'Average velocity', words: 'average velocity = displacement / time elapsed', tex: '\\bar{v} = \\frac{\\Delta x}{\\Delta t}', vars: [
             { sym: '\\bar{v}', mean: 'average velocity' },
             { sym: '\\Delta x', mean: 'displacement over the interval' },
             { sym: '\\Delta t', mean: 'time elapsed' }
@@ -171,7 +172,7 @@
           title: 'Acceleration is how velocity itself changes',
           hook: 'A rollercoaster car sits at the very top of the first hill, motionless for a split second — and everyone still screams, because they can feel what\'s coming. Being momentarily still and being unaffected by acceleration are two very different things.',
           body: 'If velocity is how fast position changes, **acceleration** is how fast velocity changes. It\'s measured in m/s² — "meters per second, per second" — and like velocity, it has a sign.',
-          formula: { name: 'Average acceleration', tex: 'a = \\frac{\\Delta v}{\\Delta t}', vars: [
+          formula: { name: 'Average acceleration', words: 'average acceleration = change in velocity / time elapsed', tex: 'a = \\frac{\\Delta v}{\\Delta t}', vars: [
             { sym: 'a', mean: 'average acceleration' },
             { sym: '\\Delta v', mean: 'change in velocity' },
             { sym: '\\Delta t', mean: 'time elapsed' }
@@ -308,7 +309,7 @@
           title: 'The one acceleration everyone already knows',
           hook: 'Drop a hammer and a feather at the same time and every instinct says the hammer wins easily. In 1971, an Apollo 15 astronaut did exactly that on the airless Moon, on live TV — and they hit the ground at the same instant.',
           body: 'Drop anything near Earth\'s surface and — ignoring air resistance — it accelerates downward at a constant $g \\approx 9.81\\text{ m/s}^2$, no matter how heavy it is. That last part surprises people every time.',
-          formula: { name: 'Free fall from rest', tex: 'h = \\frac{1}{2} g t^2 \\qquad v = g t', vars: [
+          formula: { name: 'Free fall from rest', words: 'height fallen = ½ × gravity × time² — and speed = gravity × time', tex: 'h = \\frac{1}{2} g t^2 \\qquad v = g t', vars: [
             { sym: 'h', mean: 'height fallen' },
             { sym: 'g', mean: 'gravitational acceleration (≈9.81 m/s² on Earth)' },
             { sym: 't', mean: 'time since release' },
@@ -376,7 +377,7 @@
           title: 'Three equations, one underlying idea',
           hook: 'A car safety engineer needs a vehicle\'s stopping distance without physically crashing it forty times on a test track. Given just its speed and how hard it can brake, one equation hands over the answer before a single test run happens.',
           body: 'Whenever acceleration is constant, three equations connect position, velocity, acceleration, and time. Pick whichever one already contains the variables you have — and skips the one you don\'t.',
-          formula: { name: 'The kinematics toolkit', tex: 'v = v_0 + at', vars: [
+          formula: { name: 'The kinematics toolkit', words: 'final velocity = initial velocity + acceleration × time', tex: 'v = v_0 + at', vars: [
             { sym: 'v', mean: 'final velocity' },
             { sym: 'v_0', mean: 'initial velocity' },
             { sym: 'a', mean: 'acceleration' },

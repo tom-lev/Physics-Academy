@@ -11,10 +11,16 @@
        body,                         // rich text, 'lesson' kind
        prompt,                       // question text, other kinds
        callout: {variant, icon, text},
-       formula: {name, tex, vars: [{sym, mean}...]},  // vars renders an
-                                      // optional "who's who" legend below
-                                      // the formula, sym through math, mean
-                                      // through inline markup
+       formula: {name, words, tex, vars: [{sym, mean}...]},
+                                      // words: optional plain-English
+                                      // restatement of the formula, no
+                                      // symbols, rendered above the math —
+                                      // "displacement = final position -
+                                      // initial position" above "Δx = xf-xi"
+                                      // vars renders an optional "who's who"
+                                      // legend below the formula, sym
+                                      // through math, mean through inline
+                                      // markup
        hint: 'text',
        // lesson only:
        prereq: 'text',               // rendered as a fixed prereq callout,
@@ -79,6 +85,7 @@
     if (!formula) return;
     var box = el('div', 'formula');
     box.innerHTML = (formula.name ? '<span class="fname">' + fmt.esc(formula.name) + '</span>' : '') +
+      (formula.words ? '<div class="formula-words">' + fmt.inline(formula.words) + '</div>' : '') +
       fmt.mathSpan(formula.tex);
     if (formula.vars && formula.vars.length) {
       var legend = el('div', 'formula-legend');
@@ -119,9 +126,11 @@
     var saved = root.PA.store.loadStepProgress(this.lesson.id);
     if (saved && saved.idx >= 0 && saved.idx < n) {
       this.idx = saved.idx;
+      this.maxIdx = Math.min(n - 1, Math.max(this.idx, saved.maxIdx != null ? saved.maxIdx : this.idx));
       this.stepAnswers = saved.answers.slice(0, n);
     } else {
       this.idx = 0;
+      this.maxIdx = 0;
       this.stepAnswers = [];
     }
 
@@ -148,7 +157,7 @@
   };
 
   Engine.prototype._saveProgress = function () {
-    root.PA.store.saveStepProgress(this.lesson.id, this.idx, this.stepAnswers);
+    root.PA.store.saveStepProgress(this.lesson.id, this.idx, this.stepAnswers, this.maxIdx);
   };
 
   Engine.prototype._build = function () {
@@ -167,11 +176,16 @@
     back.title = 'Previous step';
     back.addEventListener('click', function () { self._goBack(); });
     this.backBtn = back;
+    var fwd = el('button', 'icon-btn', '›');
+    fwd.type = 'button';
+    fwd.title = 'Skip forward to a step you already reached';
+    fwd.addEventListener('click', function () { self._goForward(); });
+    this.fwdBtn = fwd;
     var bar = el('div', 'player-bar');
     this.barFill = el('div', 'player-bar-fill');
     bar.appendChild(this.barFill);
     this.scoreEl = el('div', 'player-score', '0/0');
-    top.appendChild(close); top.appendChild(back); top.appendChild(bar); top.appendChild(this.scoreEl);
+    top.appendChild(close); top.appendChild(back); top.appendChild(fwd); top.appendChild(bar); top.appendChild(this.scoreEl);
 
     this.scroll = el('div', 'player-scroll');
 
@@ -201,6 +215,10 @@
     this.backBtn.disabled = this.idx === 0;
     this.backBtn.style.opacity = this.idx === 0 ? '.32' : '';
     this.backBtn.style.pointerEvents = this.idx === 0 ? 'none' : '';
+    var canSkipFwd = this.idx < this.maxIdx;
+    this.fwdBtn.disabled = !canSkipFwd;
+    this.fwdBtn.style.opacity = canSkipFwd ? '' : '.32';
+    this.fwdBtn.style.pointerEvents = canSkipFwd ? '' : 'none';
   };
 
   Engine.prototype._resetFoot = function (label, disabled) {
@@ -510,6 +528,7 @@
   Engine.prototype._advance = function () {
     if (this.idx < this.lesson.steps.length - 1) {
       this.idx++;
+      if (this.idx > this.maxIdx) this.maxIdx = this.idx;
       this._renderStep();
       this._saveProgress();
     } else {
@@ -520,6 +539,15 @@
   Engine.prototype._goBack = function () {
     if (this.idx === 0) return;
     this.idx--;
+    this._renderStep();
+    this._saveProgress();
+  };
+
+  /** Skip forward one step, but only into territory already reached this
+   *  lesson (this.maxIdx) — never past unseen content. */
+  Engine.prototype._goForward = function () {
+    if (this.idx >= this.maxIdx) return;
+    this.idx++;
     this._renderStep();
     this._saveProgress();
   };
@@ -561,9 +589,11 @@
         var savedNext = root.PA.store.loadStepProgress(next.id);
         if (savedNext && savedNext.idx >= 0 && savedNext.idx < n) {
           self.idx = savedNext.idx;
+          self.maxIdx = Math.min(n - 1, Math.max(self.idx, savedNext.maxIdx != null ? savedNext.maxIdx : self.idx));
           self.stepAnswers = savedNext.answers.slice(0, n);
         } else {
           self.idx = 0;
+          self.maxIdx = 0;
           self.stepAnswers = [];
         }
         self._recomputeScore();
