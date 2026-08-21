@@ -71,6 +71,111 @@
     return a;
   }
 
+  /* ---------- calculator: safe expression evaluator (no eval/Function) ---------- */
+
+  function calcTokenize(src) {
+    var tokens = [], i = 0, n = src.length;
+    while (i < n) {
+      var c = src[i];
+      if (c === ' ') { i++; continue; }
+      if ((c >= '0' && c <= '9') || c === '.') {
+        var j = i, dots = 0;
+        while (j < n && ((src[j] >= '0' && src[j] <= '9') || src[j] === '.')) {
+          if (src[j] === '.') dots++;
+          j++;
+        }
+        if (dots > 1) throw new Error('bad number');
+        tokens.push({ t: 'num', v: parseFloat(src.slice(i, j)) });
+        i = j;
+        continue;
+      }
+      if (c === '+' || c === '-') { tokens.push({ t: 'op', v: c }); i++; continue; }
+      if (c === '*' || c === '×') { tokens.push({ t: 'op', v: '*' }); i++; continue; }
+      if (c === '/' || c === '÷') { tokens.push({ t: 'op', v: '/' }); i++; continue; }
+      if (c === '^') { tokens.push({ t: 'op', v: '^' }); i++; continue; }
+      if (c === '(') { tokens.push({ t: 'lp' }); i++; continue; }
+      if (c === ')') { tokens.push({ t: 'rp' }); i++; continue; }
+      if (c === '√') { tokens.push({ t: 'sqrt' }); i++; continue; }
+      throw new Error('unexpected character: ' + c);
+    }
+    return tokens;
+  }
+
+  // Recursive-descent, precedence low->high: + - , * / , ^ (right-assoc), unary - / √
+  function CalcParser(tokens) {
+    this.toks = tokens;
+    this.pos = 0;
+  }
+  CalcParser.prototype.peek = function () { return this.toks[this.pos]; };
+  CalcParser.prototype.take = function () { return this.toks[this.pos++]; };
+  CalcParser.prototype.expr = function () {
+    var v = this.term(), t;
+    while ((t = this.peek()) && t.t === 'op' && (t.v === '+' || t.v === '-')) {
+      this.take();
+      var rhs = this.term();
+      v = t.v === '+' ? v + rhs : v - rhs;
+    }
+    return v;
+  };
+  CalcParser.prototype.term = function () {
+    var v = this.power(), t;
+    while ((t = this.peek()) && t.t === 'op' && (t.v === '*' || t.v === '/')) {
+      this.take();
+      var rhs = this.power();
+      v = t.v === '*' ? v * rhs : v / rhs;
+    }
+    return v;
+  };
+  CalcParser.prototype.power = function () {
+    var v = this.unary();
+    var t = this.peek();
+    if (t && t.t === 'op' && t.v === '^') { this.take(); return Math.pow(v, this.power()); }
+    return v;
+  };
+  CalcParser.prototype.unary = function () {
+    var t = this.peek();
+    if (t && t.t === 'op' && t.v === '-') { this.take(); return -this.unary(); }
+    if (t && t.t === 'op' && t.v === '+') { this.take(); return this.unary(); }
+    if (t && t.t === 'sqrt') {
+      this.take();
+      var v = this.unary();
+      if (v < 0) throw new Error('sqrt of a negative number');
+      return Math.sqrt(v);
+    }
+    return this.primary();
+  };
+  CalcParser.prototype.primary = function () {
+    var t = this.take();
+    if (!t) throw new Error('unexpected end of expression');
+    if (t.t === 'num') return t.v;
+    if (t.t === 'lp') {
+      var v = this.expr();
+      var close = this.take();
+      if (!close || close.t !== 'rp') throw new Error('missing )');
+      return v;
+    }
+    throw new Error('unexpected token');
+  };
+
+  function calcEval(src) {
+    var tokens = calcTokenize(src);
+    if (!tokens.length) throw new Error('empty expression');
+    var p = new CalcParser(tokens);
+    var v = p.expr();
+    if (p.pos !== tokens.length) throw new Error('unexpected trailing input');
+    if (typeof v !== 'number' || !isFinite(v)) throw new Error('result is not a finite number');
+    return v;
+  }
+
+  function calcSafeEval(src) {
+    try { return { ok: true, value: calcEval(src) }; }
+    catch (e) { return { ok: false }; }
+  }
+
+  function isCalcOpChar(c) {
+    return c === '+' || c === '-' || c === '×' || c === '÷' || c === '^';
+  }
+
   /* ---------- shared block renderers ---------- */
 
   function renderCallout(container, callout) {
@@ -196,11 +301,16 @@
     fwd.title = 'Skip forward to a step you already reached';
     fwd.addEventListener('click', function () { self._goForward(); });
     this.fwdBtn = fwd;
+    var calc = el('button', 'icon-btn', '🧮');
+    calc.type = 'button';
+    calc.title = 'Calculator';
+    calc.addEventListener('click', function () { self._toggleCalc(); });
+    this.calcBtn = calc;
     var bar = el('div', 'player-bar');
     this.barFill = el('div', 'player-bar-fill');
     bar.appendChild(this.barFill);
     this.scoreEl = el('div', 'player-score', '0/0');
-    top.appendChild(close); top.appendChild(back); top.appendChild(fwd); top.appendChild(bar); top.appendChild(this.scoreEl);
+    top.appendChild(close); top.appendChild(back); top.appendChild(fwd); top.appendChild(calc); top.appendChild(bar); top.appendChild(this.scoreEl);
 
     this.scroll = el('div', 'player-scroll');
 
@@ -218,8 +328,18 @@
     this.node.appendChild(this.scroll);
     this.node.appendChild(this.footbar);
 
+    this.calcOpen = false;
+    this.calcExpr = '';
+    this._calcErrored = false;
+    this._calcLastResult = null;
+    this._buildCalc();
+    this.node.appendChild(this.calcPanel);
+
     document.body.appendChild(this.node);
     document.body.style.overflow = 'hidden';
+
+    this._calcKeyHandler = function (e) { self._onCalcKey(e); };
+    document.addEventListener('keydown', this._calcKeyHandler);
   };
 
   Engine.prototype._updateChrome = function () {
@@ -234,6 +354,205 @@
     this.fwdBtn.disabled = !canSkipFwd;
     this.fwdBtn.style.opacity = canSkipFwd ? '' : '.32';
     this.fwdBtn.style.pointerEvents = canSkipFwd ? '' : 'none';
+  };
+
+  /* ---- calculator panel ---- */
+  Engine.prototype._buildCalc = function () {
+    var self = this;
+    var panel = el('div', 'calc-panel');
+    panel.style.display = 'none';
+    this.calcPanel = panel;
+
+    var head = el('div', 'calc-head');
+    head.appendChild(el('span', 'calc-title', '🧮 Calculator'));
+    var closeBtn = el('button', 'icon-btn calc-close', '✕');
+    closeBtn.type = 'button';
+    closeBtn.addEventListener('click', function () { self._closeCalc(); });
+    head.appendChild(closeBtn);
+    panel.appendChild(head);
+
+    var disp = el('div', 'calc-display');
+    this.calcExprEl = el('div', 'calc-expr', '0');
+    this.calcResultEl = el('div', 'calc-result', '');
+    disp.appendChild(this.calcExprEl);
+    disp.appendChild(this.calcResultEl);
+    panel.appendChild(disp);
+
+    var keys = [
+      { l: 'C', a: 'clear', r: 1, c: 1 }, { l: '(', a: 'lp', r: 1, c: 2 },
+      { l: ')', a: 'rp', r: 1, c: 3 }, { l: '⌫', a: 'bksp', r: 1, c: 4 },
+      { l: '√', a: 'sqrt', r: 2, c: 1 }, { l: '^', a: 'pow', r: 2, c: 2 },
+      { l: '÷', a: 'div', r: 2, c: 3 }, { l: '×', a: 'mul', r: 2, c: 4 },
+      { l: '7', a: 'd7', r: 3, c: 1 }, { l: '8', a: 'd8', r: 3, c: 2 },
+      { l: '9', a: 'd9', r: 3, c: 3 }, { l: '−', a: 'sub', r: 3, c: 4 },
+      { l: '4', a: 'd4', r: 4, c: 1 }, { l: '5', a: 'd5', r: 4, c: 2 },
+      { l: '6', a: 'd6', r: 4, c: 3 }, { l: '+', a: 'add', r: 4, c: 4 },
+      { l: '1', a: 'd1', r: 5, c: 1 }, { l: '2', a: 'd2', r: 5, c: 2 },
+      { l: '3', a: 'd3', r: 5, c: 3 }, { l: '=', a: 'eq', r: 5, c: 4, rs: 2 },
+      { l: '0', a: 'd0', r: 6, c: 1, cs: 2 }, { l: '.', a: 'dot', r: 6, c: 3 }
+    ];
+    var grid = el('div', 'calc-grid');
+    keys.forEach(function (k) {
+      var btn = el('button', 'calc-key' + (k.a === 'eq' ? ' eq' : (k.a === 'd' + k.l || k.a === 'dot' ? '' : ' op')), fmt.esc(k.l));
+      btn.type = 'button';
+      btn.style.gridColumn = k.c + (k.cs ? ' / span ' + k.cs : '');
+      btn.style.gridRow = k.r + (k.rs ? ' / span ' + k.rs : '');
+      btn.addEventListener('click', function () { self._calcKeyAction(k.a); });
+      grid.appendChild(btn);
+    });
+    panel.appendChild(grid);
+
+    var useBtn = el('button', 'btn btn-sm calc-use', 'Use this result ↓');
+    useBtn.type = 'button';
+    useBtn.disabled = true;
+    useBtn.addEventListener('click', function () { self._calcUseResult(); });
+    this.calcUseBtn = useBtn;
+    panel.appendChild(useBtn);
+  };
+
+  Engine.prototype._calcKeyAction = function (code) {
+    if (code === 'clear') return this._calcClear();
+    if (code === 'lp') return this._calcOpenParen();
+    if (code === 'rp') return this._calcCloseParen();
+    if (code === 'bksp') return this._calcBackspace();
+    if (code === 'sqrt') return this._calcSqrt();
+    if (code === 'pow') return this._calcAppendOp('^');
+    if (code === 'div') return this._calcAppendOp('÷');
+    if (code === 'mul') return this._calcAppendOp('×');
+    if (code === 'sub') return this._calcAppendOp('-');
+    if (code === 'add') return this._calcAppendOp('+');
+    if (code === 'eq') return this._calcEquals();
+    if (code === 'dot') return this._calcAppendDot();
+    if (code.charAt(0) === 'd') return this._calcAppendDigit(code.charAt(1));
+  };
+
+  Engine.prototype._toggleCalc = function () {
+    if (this.calcOpen) this._closeCalc(); else this._openCalc();
+  };
+  Engine.prototype._openCalc = function () {
+    this.calcOpen = true;
+    this.calcPanel.style.display = '';
+    this.calcBtn.classList.add('on');
+    this._calcRefresh();
+  };
+  Engine.prototype._closeCalc = function () {
+    if (!this.calcOpen) return;
+    this.calcOpen = false;
+    this.calcPanel.style.display = 'none';
+    this.calcBtn.classList.remove('on');
+    // Wipe the expression on close so a stale result/typo from a previous
+    // calculation never silently prefixes what's typed next time it opens.
+    this._calcSetExpr('');
+  };
+
+  Engine.prototype._onCalcKey = function (e) {
+    if (!this.calcOpen) return;
+    var ae = document.activeElement;
+    if (ae && (ae.tagName === 'INPUT' || ae.tagName === 'TEXTAREA') && !this.calcPanel.contains(ae)) return;
+    var k = e.key;
+    if (k >= '0' && k <= '9') { this._calcAppendDigit(k); e.preventDefault(); return; }
+    if (k === '.') { this._calcAppendDot(); e.preventDefault(); return; }
+    if (k === '+') { this._calcAppendOp('+'); e.preventDefault(); return; }
+    if (k === '-') { this._calcAppendOp('-'); e.preventDefault(); return; }
+    if (k === '*') { this._calcAppendOp('×'); e.preventDefault(); return; }
+    if (k === '/') { this._calcAppendOp('÷'); e.preventDefault(); return; }
+    if (k === '^') { this._calcAppendOp('^'); e.preventDefault(); return; }
+    if (k === '(') { this._calcOpenParen(); e.preventDefault(); return; }
+    if (k === ')') { this._calcCloseParen(); e.preventDefault(); return; }
+    if (k === 'Enter' || k === '=') { this._calcEquals(); e.preventDefault(); return; }
+    if (k === 'Backspace') { this._calcBackspace(); e.preventDefault(); return; }
+    if (k === 'Escape') { this._closeCalc(); e.preventDefault(); return; }
+    if (k === 'c' || k === 'C') { this._calcClear(); e.preventDefault(); return; }
+  };
+
+  Engine.prototype._calcSetExpr = function (expr) {
+    this.calcExpr = expr;
+    this._calcErrored = false;
+    this._calcRefresh();
+  };
+  Engine.prototype._calcAppendDigit = function (d) { this._calcSetExpr(this.calcExpr + d); };
+  Engine.prototype._calcAppendDot = function () {
+    var m = /[0-9.]*$/.exec(this.calcExpr)[0];
+    if (m.indexOf('.') !== -1) return;
+    this._calcSetExpr(this.calcExpr + (m === '' ? '0.' : '.'));
+  };
+  Engine.prototype._calcAppendOp = function (op) {
+    var e = this.calcExpr;
+    if (e === '' || e.charAt(e.length - 1) === '(') {
+      if (op === '-') this._calcSetExpr(e + '-');
+      return;
+    }
+    if (isCalcOpChar(e.charAt(e.length - 1))) this._calcSetExpr(e.slice(0, -1) + op);
+    else this._calcSetExpr(e + op);
+  };
+  Engine.prototype._calcOpenParen = function () { this._calcSetExpr(this.calcExpr + '('); };
+  Engine.prototype._calcCloseParen = function () {
+    var opens = (this.calcExpr.match(/\(/g) || []).length;
+    var closes = (this.calcExpr.match(/\)/g) || []).length;
+    if (opens <= closes) return;
+    var last = this.calcExpr.charAt(this.calcExpr.length - 1);
+    if (last === '(' || isCalcOpChar(last)) return;
+    this._calcSetExpr(this.calcExpr + ')');
+  };
+  Engine.prototype._calcSqrt = function () { this._calcSetExpr(this.calcExpr + '√('); };
+  Engine.prototype._calcBackspace = function () {
+    if (!this.calcExpr) return;
+    var t = this.calcExpr.slice(-2) === '√(' ? this.calcExpr.slice(0, -2) : this.calcExpr.slice(0, -1);
+    this._calcSetExpr(t);
+  };
+  Engine.prototype._calcClear = function () { this._calcSetExpr(''); };
+  Engine.prototype._calcEquals = function () {
+    var r = this._calcEvaluate();
+    if (r.ok) { this.calcExpr = r.display; this._calcErrored = false; }
+    else { this._calcErrored = true; }
+    this._calcRefresh();
+  };
+
+  /** Shared by live preview and '=': auto-closes unmatched '(' so a learner
+   *  who forgets a trailing ')' (very common after √() still gets a result. */
+  Engine.prototype._calcEvaluate = function () {
+    var expr = this.calcExpr;
+    if (!expr) return { ok: false };
+    var opens = (expr.match(/\(/g) || []).length;
+    var closes = (expr.match(/\)/g) || []).length;
+    for (var k = closes; k < opens; k++) expr += ')';
+    var r = calcSafeEval(expr);
+    if (!r.ok) return { ok: false };
+    return { ok: true, value: r.value, display: fmt.num(r.value, 6) };
+  };
+
+  Engine.prototype._calcRefresh = function () {
+    if (!this.calcExprEl) return;
+    this.calcExprEl.textContent = this.calcExpr || '0';
+    if (!this.calcExpr) {
+      this.calcResultEl.textContent = '';
+      this.calcResultEl.classList.remove('calc-err');
+      this.calcUseBtn.disabled = true;
+      this._calcLastResult = null;
+      return;
+    }
+    var r = this._calcEvaluate();
+    if (r.ok) {
+      this.calcResultEl.textContent = '= ' + r.display;
+      this.calcResultEl.classList.remove('calc-err');
+      this.calcUseBtn.disabled = false;
+      this._calcLastResult = r.display;
+    } else {
+      this.calcResultEl.textContent = this._calcErrored ? 'Error' : '';
+      this.calcResultEl.classList.toggle('calc-err', !!this._calcErrored);
+      this.calcUseBtn.disabled = true;
+      this._calcLastResult = null;
+    }
+  };
+
+  Engine.prototype._calcUseResult = function () {
+    if (this._calcLastResult == null) return;
+    var input = this.scroll.querySelector('.numinput:not([disabled])');
+    if (!input) { this._toast('No answer field on this step'); return; }
+    input.value = this._calcLastResult;
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+    input.focus();
+    this._toast('Filled the answer field');
   };
 
   Engine.prototype._resetFoot = function (label, disabled) {
@@ -254,6 +573,7 @@
 
   Engine.prototype._renderStep = function () {
     if (this.simCtrl) { this.simCtrl.destroy(); this.simCtrl = null; }
+    this._closeCalc();
     this.scroll.innerHTML = '';
     this.scroll.scrollTop = 0;
     this.checkFn = null;
@@ -625,6 +945,7 @@
 
   Engine.prototype.exit = function () {
     if (this.simCtrl) { this.simCtrl.destroy(); this.simCtrl = null; }
+    document.removeEventListener('keydown', this._calcKeyHandler);
     document.body.style.overflow = '';
     this.node.parentNode.removeChild(this.node);
     this.onExit();
