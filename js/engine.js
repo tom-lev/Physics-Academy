@@ -124,10 +124,12 @@
 
     var n = this.lesson.steps.length;
     var saved = root.PA.store.loadStepProgress(this.lesson.id);
+    var resuming = false;
     if (saved && saved.idx >= 0 && saved.idx < n) {
       this.idx = saved.idx;
       this.maxIdx = Math.min(n - 1, Math.max(this.idx, saved.maxIdx != null ? saved.maxIdx : this.idx));
       this.stepAnswers = saved.answers.slice(0, n);
+      resuming = this.idx > 0;
     } else {
       this.idx = 0;
       this.maxIdx = 0;
@@ -144,7 +146,20 @@
     this._recomputeScore();
     this._build();
     this._renderStep();
+    // Resuming mid-lesson replays only already-graded steps, not unseen
+    // content — but silently landing past step 1 can read as "this wasn't
+    // taught yet" to someone who doesn't remember an earlier visit. Say so.
+    if (resuming) this._toast('↩ Resumed at step ' + (this.idx + 1) + ' of ' + n);
   }
+
+  Engine.prototype._toast = function (msg) {
+    var el = document.getElementById('toast');
+    if (!el) return;
+    el.textContent = msg;
+    el.classList.add('show');
+    clearTimeout(this._toastTimer);
+    this._toastTimer = setTimeout(function () { el.classList.remove('show'); }, 2600);
+  };
 
   Engine.prototype._recomputeScore = function () {
     var correct = 0, total = 0;
