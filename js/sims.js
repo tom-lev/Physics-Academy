@@ -717,6 +717,136 @@
     };
   }
 
+  /**
+   * Unlimited-play capstone: pick a world, height and launch velocity
+   * (thrown up, dropped, or thrown down) to match a randomly-generated
+   * fall-time or impact-speed target. A hit scores a point and serves a
+   * fresh, slightly tighter target — no pass/fail, just a running streak.
+   */
+  function freeFallPlaygroundSim() {
+    var TOL = {
+      time: { start: 0.22, floor: 0.06 },
+      speed: { start: 1.4, floor: 0.4 }
+    };
+    var SHRINK = 0.88;
+
+    function pickTarget(score) {
+      var opts = PLANETS;
+      var planet = opts[Math.floor(Math.random() * opts.length)].value;
+      var height = Math.round(5 + Math.random() * 40);
+      var v0 = Math.round(Math.random() * 32 - 16); // -16..+16 m/s
+      var g = kin.gravity[planet];
+      var t = kin.timeToPosition(height, v0, -g, 0);
+      var type = Math.random() < 0.5 ? 'time' : 'speed';
+      var value = type === 'time' ? t : Math.abs(kin.velocity(v0, -g, t));
+      var band = TOL[type];
+      var tol = Math.max(band.floor, band.start * Math.pow(SHRINK, score));
+      return { type: type, value: value, tol: tol, seedPlanet: planet, seedHeight: height, seedV0: v0 };
+    }
+
+    function liveResult(state) {
+      var g = kin.gravity[state.planet];
+      var t = kin.timeToPosition(state.height, state.v0, -g, 0);
+      if (t == null) return null;
+      return { t: t, speed: Math.abs(kin.velocity(state.v0, -g, t)) };
+    }
+
+    var firstTarget = pickTarget(0);
+
+    return {
+      kind: 'freeFallPlayground',
+      orient: { text: 'Drag World, Height and Launch velocity to match the glowing target — land the exact time or speed asked for. Hit it and a fresh, slightly tougher target shows up. Play as long as you like.' },
+      aspect: 0.62,
+      state: {
+        planet: firstTarget.seedPlanet, height: firstTarget.seedHeight, v0: 0,
+        t: 0, playing: false,
+        round: 1, score: 0, wasHit: false,
+        target: firstTarget
+      },
+
+      controls: [
+        { key: 'planet', label: 'World', type: 'seg', options: PLANETS },
+        { key: 'height', label: 'Height', type: 'range', min: 2, max: 50, step: 1, format: function (v) { return v + ' m'; } },
+        { key: 'v0', label: 'Launch velocity', type: 'range', min: -20, max: 20, step: 1, format: function (v) {
+            return (v > 0 ? '+' + v + ' ↑' : v < 0 ? v + ' ↓' : '0') + ' m/s';
+          } }
+      ],
+
+      buttons: [
+        { label: '▶ Launch', run: function (state) { state.t = 0; state.playing = true; } },
+        { label: '↻ New target', run: function (state) {
+            if (state.wasHit) { state.score += 1; }
+            state.round += 1;
+            state.target = pickTarget(state.score);
+            state.t = 0; state.playing = false;
+          } }
+      ],
+
+      readouts: [
+        { label: 'Round', value: function (s) { return String(s.round); } },
+        { label: 'Score', value: function (s) { return String(s.score); }, color: 'var(--warn)' },
+        { label: 'Fall time', value: function (s) { var r = liveResult(s); return r ? fmt.num(r.t, 2) + ' s' : '—'; } },
+        { label: 'Impact speed', value: function (s) { var r = liveResult(s); return r ? fmt.num(r.speed, 1) + ' m/s' : '—'; }, color: 'var(--brand)' }
+      ],
+
+      goal: {
+        label: function (s) {
+          var t = s.target;
+          return t.type === 'time'
+            ? 'Land at exactly ' + fmt.num(t.value, 2) + ' s (±' + fmt.num(t.tol, 2) + 's)'
+            : 'Hit the ground at exactly ' + fmt.num(t.value, 1) + ' m/s (±' + fmt.num(t.tol, 1) + ' m/s)';
+        },
+        hit: function (s) {
+          var r = liveResult(s);
+          if (!r) return false;
+          var val = s.target.type === 'time' ? r.t : r.speed;
+          return Math.abs(val - s.target.value) <= s.target.tol;
+        }
+      },
+      onGoal: function (hit, state) { state.wasHit = hit; },
+
+      animate: function (state, dt) {
+        if (!state.playing) return;
+        state.t += dt;
+        var g = kin.gravity[state.planet];
+        var landT = kin.timeToPosition(state.height, state.v0, -g, 0);
+        if (landT != null && state.t >= landT) { state.t = landT; state.playing = false; }
+      },
+
+      draw: function (ctx, w, h, state, d) {
+        var groundY = h - 26;
+        var topY = 22;
+        var g = kin.gravity[state.planet];
+        var peak = state.v0 > 0 ? (state.v0 * state.v0) / (2 * g) : 0;
+        var maxHeight = Math.max(state.height + peak, state.height) * 1.12 + 3;
+        var scale = (groundY - topY) / maxHeight;
+
+        var sky = ctx.createLinearGradient(0, 0, 0, groundY);
+        sky.addColorStop(0, '#0a0f1e');
+        sky.addColorStop(1, '#16213e');
+        ctx.fillStyle = sky;
+        ctx.fillRect(0, 0, w, groundY);
+
+        d.grid(ctx, w, groundY, 28);
+        d.ground(ctx, w, groundY);
+
+        var y = kin.position(state.height, state.v0, -g, state.t);
+        if (y < 0) y = 0;
+        var ballY = groundY - y * scale;
+        var ballX = w / 2;
+        var releaseY = groundY - state.height * scale;
+
+        d.dashedH(ctx, releaseY, ballX - 60, ballX + 60, 'rgba(255,255,255,.14)');
+        d.label(ctx, ballX + 64, releaseY, state.height + ' m', '#64739a', 'left');
+        d.dashedV(ctx, ballX, topY, groundY, 'rgba(255,255,255,.12)');
+
+        var color = state.wasHit ? '#34d399' : '#38bdf8';
+        d.circle(ctx, ballX, ballY, 11, color);
+        d.label(ctx, ballX + 20, ballY, fmt.num(y, 1) + ' m', '#c3cbe0', 'left');
+      }
+    };
+  }
+
   root.PA = root.PA || {};
   root.PA.sims = {
     drop: dropSim,
@@ -726,7 +856,8 @@
     incline: inclineSim,
     slopeGraph: slopeGraphSim,
     areaGraph: areaGraphSim,
-    walkTrack: walkTrackSim
+    walkTrack: walkTrackSim,
+    freeFallPlayground: freeFallPlaygroundSim
   };
 
 })(typeof window !== 'undefined' ? window : globalThis);

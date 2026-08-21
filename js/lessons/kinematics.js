@@ -494,6 +494,27 @@
           callout: { variant: 'key', text: 'Keep this straight in your head and everything downstream gets easier: **displacement** is a vector, **distance** is a scalar — and the same split applies to velocity vs. speed.' }
         }
       ]
+    },
+
+    /* ============================================================ */
+    {
+      id: 'kin-playground',
+      title: 'Free-Fall Playground',
+      sub: '2 steps · unlimited practice, no grade',
+      steps: [
+        {
+          kind: 'lesson',
+          title: 'One last thing — just for fun',
+          body: 'Every idea from this chapter — position, velocity, acceleration, and the constant-acceleration equations — is really just one skill: given a world, a height, and a launch velocity, predict exactly when and how fast something hits the ground.\n\nBelow is an open sandbox version of that skill. Match the glowing target, score a point, get a fresh (slightly tougher) one. There\'s no pass/fail here and no limit on rounds — play as long as it\'s fun.',
+          callout: { variant: 'key', text: 'Tip: a positive launch velocity throws it **up** first — it still has to come back down past your starting height before it reaches the ground.' }
+        },
+        {
+          kind: 'sim',
+          prompt: 'Match the target. Beat your score.',
+          simId: 'freeFallPlayground',
+          note: 'Positive velocity = thrown up, negative = thrown down, zero = simply dropped.'
+        }
+      ]
     }
   );
 
