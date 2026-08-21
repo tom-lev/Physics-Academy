@@ -9,6 +9,13 @@ zero build step: plain HTML/CSS/JS loaded via `<script>` tags in `index.html`, n
 bundler, no package.json, no transpiler. Deployed via GitHub Pages from `main` at
 https://github.com/tom-lev/Physics-Academy.
 
+**Cache-busting**: every `<script src="js/...">` and the `<link rel="stylesheet">`
+in `index.html` carries a `?v=YYYYMMDD-HHmm` query string, all kept identical and
+bumped together to the current date-time whenever *any* JS or CSS file changes.
+GitHub Pages/browsers otherwise cache these aggressively, and this project has no
+build step to fingerprint filenames automatically — skipping this step means a
+just-shipped fix can silently keep failing on a returning visitor's cached copy.
+
 ## Running it
 
 There is no build/lint/test command — this project has none of those tools.
