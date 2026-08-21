@@ -950,7 +950,18 @@ input[type=range]::-moz-range-thumb {
 .simbtn:hover { background: var(--card-3); border-color: var(--brand); }
 .simbtn.on { background: var(--brand); color: var(--brand-ink); border-color: var(--brand); }
 
-.seg { display: inline-flex; padding: 3px; border-radius: 10px; background: var(--card); border: 1px solid var(--line); gap: 3px; }
+.seg {
+  display: inline-flex;
+  padding: 3px;
+  border-radius: 10px;
+  background: var(--card);
+  border: 1px solid var(--line);
+  gap: 3px;
+  max-width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.seg button { flex: none; }
 .seg button {
   padding: 7px 14px;
   border-radius: 7px;
@@ -1137,6 +1148,8 @@ input[type=range]::-moz-range-thumb {
   .formula { font-size: 20px; padding: 16px 12px; }
   .ctrl-label { min-width: 84px; font-size: 12px; }
   .ctrl-val { min-width: 62px; font-size: 12.5px; }
+  .ctrl .seg { flex: 1 1 auto; min-width: 0; }
+  .seg button { padding: 7px 10px; font-size: 12px; }
   .done-stats { flex-direction: column; }
   .ch-hero { flex-direction: column; gap: 12px; }
   .ch-hero h1 { font-size: 27px; }
