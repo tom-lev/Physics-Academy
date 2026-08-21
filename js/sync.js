@@ -219,8 +219,13 @@
           return;
         }
         setCode(data.code);
-        setStatus({ syncing: false, lastError: null, lastSyncAt: Date.now(), retrying: false });
-        cb(null, data.code);
+        // A fresh code starts as an empty record server-side, and the
+        // debounced auto-push only fires on *future* store changes — so
+        // whatever progress already exists on this device needs an explicit
+        // push now, or it silently never reaches the server at all.
+        Sync.push(function (pushErr) {
+          cb(pushErr, data.code);
+        });
       });
     },
 
@@ -239,8 +244,11 @@
         resetRetry();
         var merged = mergeState(store.all(), remote);
         applyMergedToStore(merged);
-        setStatus({ syncing: false, lastError: null, lastSyncAt: Date.now(), retrying: false });
-        cb(null, merged);
+        // Write the local-∪-remote merge back so this device's pre-existing
+        // progress is reflected server-side too, not just pulled from it.
+        Sync.push(function (pushErr, pushMerged) {
+          cb(pushErr, pushMerged || merged);
+        });
       });
     },
 
