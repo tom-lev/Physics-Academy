@@ -388,6 +388,233 @@
           wrongExplain: { 3: 'It holds for *any* pair of vectors, not just perpendicular ones — commutativity of vector addition has nothing to do with the angle between them.' }
         }
       ]
+    },
+
+    /* ============================================================ */
+    /* Practice lesson: `pool` + `draw` instead of `steps`. Pool mix is
+       60/30/10 easy/medium/hard (12/6/2); each run keeps that at 6/3/1. */
+    {
+      id: 'tk-practice',
+      title: 'Toolkit Practice',
+      sub: 'endless drill · 10 fresh questions per run',
+      draw: { easy: 6, medium: 3, hard: 1 },
+      intro: {
+        kind: 'lesson',
+        title: 'The boring skills that save you later',
+        hook: 'Watch an experienced physicist work a problem and you\'ll notice they never actually stop to think about converting km/h to m/s, or which of sin and cos goes with the x-component. Those moves got automated years ago, and this is how.',
+        body: 'This is a drill on the skills this chapter taught — powers of ten, unit conversion, significant figures, and vector components. Nothing new appears here.\n\nTen questions get drawn fresh from a bigger bank each time you open it, so you can run it over and over and keep getting a different set. The 🧮 button at the top opens a calculator with **x²** and **√** keys.',
+        callout: { variant: 'key', text: 'Keep close: $1\\text{ km} = 10^3\\text{ m}$, $1\\text{ cm} = 10^{-2}\\text{ m}$, $1\\text{ mm} = 10^{-3}\\text{ m}$; components are $A_x = A\\cos\\theta$ and $A_y = A\\sin\\theta$; and a resultant\'s magnitude is $c = \\sqrt{a^2+b^2}$.' }
+      },
+      pool: [
+        /* ---- easy (12) ---- */
+        {
+          kind: 'numeric',
+          difficulty: 'easy',
+          prompt: 'How many meters are in 4.5 km?',
+          unit: 'm',
+          correct: 4500,
+          tol: 1,
+          explain: '1 km = 10³ m, so 4.5 km = 4.5 × 1000 = 4500 m. Going from a bigger unit to a smaller one always gives a bigger number.',
+          hint: 'Multiply by 1000.'
+        },
+        {
+          kind: 'numeric',
+          difficulty: 'easy',
+          prompt: 'How many meters are in 250 cm?',
+          unit: 'm',
+          correct: 2.5,
+          tol: 0.01,
+          decimals: 2,
+          explain: '1 cm = 10⁻² m, so 250 cm = 250 / 100 = 2.5 m. Going to a bigger unit gives a smaller number — a good sanity check every time.',
+          hint: 'There are 100 cm in a meter.'
+        },
+        {
+          kind: 'mcq',
+          difficulty: 'easy',
+          prompt: 'Which of these is a vector quantity?',
+          options: ['Velocity', 'Speed', 'Mass', 'Temperature'],
+          correct: 0,
+          explain: 'Velocity carries a direction as well as a size, which is what makes it a vector. Speed is velocity with the direction thrown away — that\'s the whole difference between the two.',
+          wrongExplain: { 1: 'Speed is the *scalar* twin of velocity: 30 m/s tells you how fast but not which way. Add a direction and it becomes velocity.' }
+        },
+        {
+          kind: 'numeric',
+          difficulty: 'easy',
+          prompt: 'Write 3500 in scientific notation as $3.5 \\times 10^{n}$. What is $n$?',
+          unit: '',
+          correct: 3,
+          tol: 0.01,
+          explain: '3500 = 3.5 × 1000 = 3.5 × 10³, so n = 3. Scientific notation always puts exactly one non-zero digit before the decimal point.',
+          hint: 'Count how many places you move the decimal point to get from 3500 to 3.5.'
+        },
+        {
+          kind: 'numeric',
+          difficulty: 'easy',
+          prompt: 'A vector has magnitude 10 at an angle of 30° from the x-axis. What is its x-component?',
+          unit: '',
+          correct: 8.66,
+          tol: 0.1,
+          decimals: 2,
+          explain: 'Aₓ = A cos θ = 10 × cos 30° ≈ 10 × 0.866 = 8.66. The x-component is always the cosine one.',
+          hint: 'x-component uses cos.'
+        },
+        {
+          kind: 'numeric',
+          difficulty: 'easy',
+          prompt: 'A vector has magnitude 10 at an angle of 30° from the x-axis. What is its y-component?',
+          unit: '',
+          correct: 5,
+          tol: 0.1,
+          explain: 'A_y = A sin θ = 10 × sin 30° = 10 × 0.5 = 5. The y-component is always the sine one.',
+          hint: 'y-component uses sin.'
+        },
+        {
+          kind: 'mcq',
+          difficulty: 'easy',
+          prompt: 'How many significant figures does 0.00420 have?',
+          options: ['Three', 'Two', 'Five', 'Six'],
+          correct: 0,
+          explain: 'Leading zeros are only placeholders and never count, but a trailing zero *after* the decimal point does — it was written on purpose to signal precision. So 4, 2 and the final 0 give three.',
+          wrongExplain: { 1: 'The trailing zero counts. Nobody writes 0.00420 instead of 0.0042 by accident — that final zero is a claim about how precisely it was measured.' }
+        },
+        {
+          kind: 'numeric',
+          difficulty: 'easy',
+          prompt: 'How many millimeters are in 7.2 m?',
+          unit: 'mm',
+          correct: 7200,
+          tol: 1,
+          explain: '1 mm = 10⁻³ m, so there are 1000 mm in a meter: 7.2 × 1000 = 7200 mm.',
+          hint: '1000 mm per meter.'
+        },
+        {
+          kind: 'numeric',
+          difficulty: 'easy',
+          prompt: 'A right triangle has legs of 3 and 4. What is the length of its hypotenuse?',
+          unit: '',
+          correct: 5,
+          tol: 0.05,
+          explain: 'c = √(a² + b²) = √(9 + 16) = √25 = 5. This is the same operation you use to get a resultant vector\'s magnitude from its two perpendicular components.',
+          hint: 'c = √(a² + b²).'
+        },
+        {
+          kind: 'mcq',
+          difficulty: 'easy',
+          prompt: 'What is the SI base unit of mass?',
+          options: ['Kilogram', 'Gram', 'Newton', 'Pound'],
+          correct: 0,
+          explain: 'The kilogram is the SI base unit — unusually, it is the only base unit that already carries a prefix. The newton is a unit of *force*, not mass, and it is derived from kg, m and s.',
+          wrongExplain: { 2: 'The newton measures force, not mass. It\'s a derived unit: 1 N = 1 kg·m/s².' }
+        },
+        {
+          kind: 'numeric',
+          difficulty: 'easy',
+          prompt: 'Two perpendicular vectors have magnitudes 6 and 8. What is the magnitude of their resultant?',
+          unit: '',
+          correct: 10,
+          tol: 0.1,
+          explain: '√(6² + 8²) = √(36 + 64) = √100 = 10. Because they are perpendicular, the components form a right triangle and the resultant is its hypotenuse.',
+          hint: 'Perpendicular components make a right triangle.'
+        },
+        {
+          kind: 'numeric',
+          difficulty: 'easy',
+          prompt: 'Convert 0.045 km to meters.',
+          unit: 'm',
+          correct: 45,
+          tol: 0.1,
+          explain: '0.045 × 1000 = 45 m. A small number of kilometers becomes a comfortably larger number of meters — worth a glance every time as a sanity check.',
+          hint: 'Multiply by 1000.'
+        },
+
+        /* ---- medium (6) ---- */
+        {
+          kind: 'numeric',
+          difficulty: 'medium',
+          prompt: 'A car travels at 72 km/h. What is that in m/s?',
+          unit: 'm/s',
+          correct: 20,
+          tol: 0.2,
+          explain: '72 km/h × (1000 m / 1 km) × (1 h / 3600 s) = 72000/3600 = 20 m/s. Dividing km/h by 3.6 is the same shortcut, and it\'s worth memorising.',
+          hint: 'Convert kilometers to meters and hours to seconds — or just divide by 3.6.'
+        },
+        {
+          kind: 'numeric',
+          difficulty: 'medium',
+          prompt: 'A vector has magnitude 15 at 40° from the x-axis. What is its y-component?',
+          unit: '',
+          correct: 9.64,
+          tol: 0.15,
+          decimals: 2,
+          explain: 'A_y = 15 × sin 40° ≈ 15 × 0.643 ≈ 9.64.',
+          hint: 'y-component uses sin θ.'
+        },
+        {
+          kind: 'numeric',
+          difficulty: 'medium',
+          prompt: 'A displacement has components $A_x = 5$ and $A_y = 12$. What is its magnitude?',
+          unit: '',
+          correct: 13,
+          tol: 0.1,
+          explain: '√(5² + 12²) = √(25 + 144) = √169 = 13. Components go *back* to a magnitude with the Pythagorean theorem, exactly reversing the cos/sin split.',
+          hint: 'Pythagoras on the two components.'
+        },
+        {
+          kind: 'mcq',
+          difficulty: 'medium',
+          prompt: 'You measure 12.5 cm and 3.42 cm and multiply them. How many significant figures should the answer have?',
+          options: ['Three', 'Two', 'Five', 'Six'],
+          correct: 0,
+          explain: 'For multiplication and division, the answer carries as many significant figures as the *least* precise input. 12.5 has three, 3.42 has three, so the result gets three. A calculation can never manufacture precision that wasn\'t in the measurements.',
+          wrongExplain: { 2: 'That\'s just counting the digits your calculator spits out. The result can\'t be more precise than the measurements that went in — here that caps it at three.' }
+        },
+        {
+          kind: 'numeric',
+          difficulty: 'medium',
+          prompt: 'Convert 5.4 km/h to m/s.',
+          unit: 'm/s',
+          correct: 1.5,
+          tol: 0.05,
+          decimals: 2,
+          explain: '5.4 / 3.6 = 1.5 m/s. (The long way: 5.4 × 1000 / 3600 = 5400/3600 = 1.5.)',
+          hint: 'Divide km/h by 3.6.'
+        },
+        {
+          kind: 'order',
+          difficulty: 'medium',
+          prompt: 'Rank these lengths from *smallest* to *largest*.',
+          items: [
+            '5 mm',
+            '2 cm',
+            '0.5 m',
+            '0.004 km'
+          ],
+          explain: 'Convert everything to meters first and it\'s obvious: 5 mm = 0.005 m, 2 cm = 0.02 m, 0.5 m = 0.5 m, and 0.004 km = 4 m. Converting to a single unit before comparing is always the safe move.'
+        },
+
+        /* ---- hard (2) ---- */
+        {
+          kind: 'numeric',
+          difficulty: 'hard',
+          prompt: 'A hiker walks 40 m east, then 30 m north. What is the magnitude of her resultant displacement, in meters?',
+          unit: 'm',
+          correct: 50,
+          tol: 0.5,
+          explain: 'The two legs are perpendicular, so they *are* the components of the resultant: √(40² + 30²) = √(1600 + 900) = √2500 = 50 m. She walked 70 m of ground but ended up 50 m from where she started.',
+          hint: 'The two legs are already perpendicular components — no cos/sin needed.'
+        },
+        {
+          kind: 'numeric',
+          difficulty: 'hard',
+          prompt: 'A force of 25 N acts at 55° above the x-axis. What is the magnitude of its x-component, in newtons?',
+          unit: 'N',
+          correct: 14.3,
+          tol: 0.3,
+          decimals: 1,
+          explain: 'Fₓ = F cos θ = 25 × cos 55° ≈ 25 × 0.5736 ≈ 14.3 N. Because the angle is steeper than 45°, more of the force goes into the y-direction than the x — always worth checking your answer against that intuition.',
+          hint: 'x-component uses cos, even for a force.'
+        }
+      ]
     }
   );
 

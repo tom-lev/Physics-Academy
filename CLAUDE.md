@@ -135,6 +135,18 @@ authoritative list, but in short:
   banner shown the first time that sim *type* appears anywhere in the app
   (tracked in `localStorage`), independent of which lesson step renders it.
 
+**Practice lessons** are the one exception to `{id, title, sub, steps}`. A
+lesson may instead carry `pool` (an array of graded steps, each tagged with
+`difficulty`), `draw` (`{easy, medium, hard}` — how many of each to ask per
+run), and an optional `intro` (a single fixed `lesson` step shown first).
+`engine.js` expands that into a fresh `steps` list on every open: shuffled
+within each difficulty, still handed out easiest-first. Practice runs never
+save or resume mid-lesson progress, since a saved step index would point into
+a question set the next run no longer has, and their completion screen offers
+"Practice again" as the primary action. Anything that tests whether a lesson
+is authored must check `steps || pool` — `store.nextLesson`,
+`curriculum.isLive`, and `app.js`'s lesson-path renderer all do.
+
 ### Lesson-Quality Checklist
 
 Every rule here came from a real problem found while building or actually
@@ -217,6 +229,17 @@ just spend the words on texture instead of throat-clearing.
   mixing 4–5 questions that reuse ideas from that chapter's earlier
   lessons — cheaper than a checkpoint after every lesson, still catches
   drift before the chapter ends.
+- **Every chapter ends with a repeatable practice lesson** drilling the
+  equations that chapter taught — a `pool`/`draw` lesson (see "Practice
+  lessons" under the step schema) rather than a fixed `steps` list. The
+  pool holds **at least 15** questions in a **60/30/10** easy/medium/hard
+  mix, and `draw` keeps that same ratio per run (kinematics uses a pool of
+  20 = 12/6/2, drawing 10 = 6/3/1). Every question must drill something the
+  chapter already taught — a practice pool is the wrong place to introduce
+  anything, so nothing in it may need a formula the chapter didn't cover.
+  Reuse of an earlier lesson's exact question is fine; the point is reps.
+  Lean numeric-heavy, since plugging into equations is the skill being
+  drilled, but keep a couple of `mcq`/`order` for rhythm.
 
 **Feedback & assessment.**
 - `explain` should teach something even when the learner answered

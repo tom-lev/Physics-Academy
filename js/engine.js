@@ -48,6 +48,19 @@
    reopening a lesson resumes where you left off; Back/Continue replay
    already-graded steps in their locked, already-answered state rather
    than re-asking them.
+
+   Practice lessons are the exception. Instead of `steps` they carry:
+     {
+       id, title, sub,
+       intro: {kind:'lesson', ...},  // optional fixed opening step
+       draw:  {easy, medium, hard},  // how many of each to ask per run
+       pool:  [graded steps, each tagged with `difficulty`]
+     }
+   Each run draws a fresh sample from the pool (shuffled within a
+   difficulty, still ordered easiest-first) so the lesson can be replayed
+   indefinitely without repeating the same set. Practice runs never save
+   or resume mid-lesson progress, since a saved step index would point
+   into a question set the next run no longer has.
    ============================================================ */
 (function (root) {
   'use strict';
@@ -101,7 +114,10 @@
     return tokens;
   }
 
-  // Recursive-descent, precedence low->high: + - , * / , ^ (right-assoc), unary - / √
+  // Recursive-descent, precedence low->high: + - , * / , unary - / √ , ^ (right-assoc).
+  // '^' binds tighter than unary minus so -2^2 is -(2^2) = -4, matching the
+  // convention every other calculator and textbook uses; its right operand is a
+  // unary so 2^-3 still parses.
   function CalcParser(tokens) {
     this.toks = tokens;
     this.pos = 0;
@@ -118,18 +134,12 @@
     return v;
   };
   CalcParser.prototype.term = function () {
-    var v = this.power(), t;
+    var v = this.unary(), t;
     while ((t = this.peek()) && t.t === 'op' && (t.v === '*' || t.v === '/')) {
       this.take();
-      var rhs = this.power();
+      var rhs = this.unary();
       v = t.v === '*' ? v * rhs : v / rhs;
     }
-    return v;
-  };
-  CalcParser.prototype.power = function () {
-    var v = this.unary();
-    var t = this.peek();
-    if (t && t.t === 'op' && t.v === '^') { this.take(); return Math.pow(v, this.power()); }
     return v;
   };
   CalcParser.prototype.unary = function () {
@@ -142,7 +152,13 @@
       if (v < 0) throw new Error('sqrt of a negative number');
       return Math.sqrt(v);
     }
-    return this.primary();
+    return this.power();
+  };
+  CalcParser.prototype.power = function () {
+    var v = this.primary();
+    var t = this.peek();
+    if (t && t.t === 'op' && t.v === '^') { this.take(); return Math.pow(v, this.unary()); }
+    return v;
   };
   CalcParser.prototype.primary = function () {
     var t = this.take();
@@ -219,6 +235,35 @@
     container.appendChild(btn);
   }
 
+  /* ---------- practice lessons ---------- */
+
+  /** A practice lesson carries a `pool` of graded steps plus a `draw` count
+   *  per difficulty, instead of a fixed `steps` list. Each run samples a fresh
+   *  set — shuffled within a difficulty but still handed out easiest-first —
+   *  so replaying it is never the same questions in the same order twice. */
+  function buildPracticeRun(lesson) {
+    var draw = lesson.draw || {};
+    var buckets = { easy: [], medium: [], hard: [] };
+    lesson.pool.forEach(function (step) {
+      (buckets[step.difficulty] || buckets.easy).push(step);
+    });
+
+    var picked = [];
+    ['easy', 'medium', 'hard'].forEach(function (level) {
+      var bucket = buckets[level];
+      var want = Math.min(draw[level] || 0, bucket.length);
+      var order = shuffledIndices(bucket.length);
+      for (var i = 0; i < want; i++) picked.push(bucket[order[i]]);
+    });
+
+    return {
+      id: lesson.id,
+      title: lesson.title,
+      sub: lesson.sub,
+      steps: (lesson.intro ? [lesson.intro] : []).concat(picked)
+    };
+  }
+
   /* ---------- Engine ---------- */
 
   function Engine(opts) {
@@ -227,8 +272,30 @@
     this.onExit = opts.onExit || function () {};
     this.onAdvance = opts.onAdvance || function () {};
 
+    this.answered = false;
+    this.checkFn = null;      // set per-step; returns {ok, explain, detail}
+    this.gradable = false;
+    this.simCtrl = null;
+
+    var resuming = this._loadLesson(this.lesson);
+    this._build();
+    this._renderStep();
+    // Resuming mid-lesson replays only already-graded steps, not unseen
+    // content — but silently landing past step 1 can read as "this wasn't
+    // taught yet" to someone who doesn't remember an earlier visit. Say so.
+    if (resuming) this._toast('↩ Resumed at step ' + (this.idx + 1) + ' of ' + this.lesson.steps.length);
+  }
+
+  /** Points the engine at a lesson, expanding a practice pool into a fresh run
+   *  and restoring saved mid-lesson progress. Returns whether it resumed. */
+  Engine.prototype._loadLesson = function (lesson) {
+    this.sourceLesson = lesson;
+    this.isPractice = !!lesson.pool;
+    this.lesson = this.isPractice ? buildPracticeRun(lesson) : lesson;
+    if (this.isPractice) root.PA.store.clearStepProgress(lesson.id);
+
     var n = this.lesson.steps.length;
-    var saved = root.PA.store.loadStepProgress(this.lesson.id);
+    var saved = this.isPractice ? null : root.PA.store.loadStepProgress(lesson.id);
     var resuming = false;
     if (saved && saved.idx >= 0 && saved.idx < n) {
       this.idx = saved.idx;
@@ -240,22 +307,9 @@
       this.maxIdx = 0;
       this.stepAnswers = [];
     }
-
-    this.correct = 0;
-    this.total = 0;
-    this.answered = false;
-    this.checkFn = null;      // set per-step; returns {ok, explain, detail}
-    this.gradable = false;
-    this.simCtrl = null;
-
     this._recomputeScore();
-    this._build();
-    this._renderStep();
-    // Resuming mid-lesson replays only already-graded steps, not unseen
-    // content — but silently landing past step 1 can read as "this wasn't
-    // taught yet" to someone who doesn't remember an earlier visit. Say so.
-    if (resuming) this._toast('↩ Resumed at step ' + (this.idx + 1) + ' of ' + n);
-  }
+    return resuming;
+  };
 
   Engine.prototype._toast = function (msg) {
     var el = document.getElementById('toast');
@@ -277,6 +331,9 @@
   };
 
   Engine.prototype._saveProgress = function () {
+    // A practice run's steps are drawn fresh each time, so a saved index would
+    // point into a question set that no longer exists on the next visit.
+    if (this.isPractice) return;
     root.PA.store.saveStepProgress(this.lesson.id, this.idx, this.stepAnswers, this.maxIdx);
   };
 
@@ -381,15 +438,16 @@
     var keys = [
       { l: 'C', a: 'clear', r: 1, c: 1 }, { l: '(', a: 'lp', r: 1, c: 2 },
       { l: ')', a: 'rp', r: 1, c: 3 }, { l: '⌫', a: 'bksp', r: 1, c: 4 },
-      { l: '√', a: 'sqrt', r: 2, c: 1 }, { l: '^', a: 'pow', r: 2, c: 2 },
-      { l: '÷', a: 'div', r: 2, c: 3 }, { l: '×', a: 'mul', r: 2, c: 4 },
+      { l: '√', a: 'sqrt', r: 2, c: 1 }, { l: 'x²', a: 'sq', r: 2, c: 2 },
+      { l: 'xʸ', a: 'pow', r: 2, c: 3 }, { l: '÷', a: 'div', r: 2, c: 4 },
       { l: '7', a: 'd7', r: 3, c: 1 }, { l: '8', a: 'd8', r: 3, c: 2 },
-      { l: '9', a: 'd9', r: 3, c: 3 }, { l: '−', a: 'sub', r: 3, c: 4 },
+      { l: '9', a: 'd9', r: 3, c: 3 }, { l: '×', a: 'mul', r: 3, c: 4 },
       { l: '4', a: 'd4', r: 4, c: 1 }, { l: '5', a: 'd5', r: 4, c: 2 },
-      { l: '6', a: 'd6', r: 4, c: 3 }, { l: '+', a: 'add', r: 4, c: 4 },
+      { l: '6', a: 'd6', r: 4, c: 3 }, { l: '−', a: 'sub', r: 4, c: 4 },
       { l: '1', a: 'd1', r: 5, c: 1 }, { l: '2', a: 'd2', r: 5, c: 2 },
-      { l: '3', a: 'd3', r: 5, c: 3 }, { l: '=', a: 'eq', r: 5, c: 4, rs: 2 },
-      { l: '0', a: 'd0', r: 6, c: 1, cs: 2 }, { l: '.', a: 'dot', r: 6, c: 3 }
+      { l: '3', a: 'd3', r: 5, c: 3 }, { l: '+', a: 'add', r: 5, c: 4 },
+      { l: '0', a: 'd0', r: 6, c: 1, cs: 2 }, { l: '.', a: 'dot', r: 6, c: 3 },
+      { l: '=', a: 'eq', r: 6, c: 4 }
     ];
     var grid = el('div', 'calc-grid');
     keys.forEach(function (k) {
@@ -416,6 +474,7 @@
     if (code === 'rp') return this._calcCloseParen();
     if (code === 'bksp') return this._calcBackspace();
     if (code === 'sqrt') return this._calcSqrt();
+    if (code === 'sq') return this._calcSquare();
     if (code === 'pow') return this._calcAppendOp('^');
     if (code === 'div') return this._calcAppendOp('÷');
     if (code === 'mul') return this._calcAppendOp('×');
@@ -495,6 +554,11 @@
     this._calcSetExpr(this.calcExpr + ')');
   };
   Engine.prototype._calcSqrt = function () { this._calcSetExpr(this.calcExpr + '√('); };
+  Engine.prototype._calcSquare = function () {
+    var e = this.calcExpr;
+    if (!e || isCalcOpChar(e.charAt(e.length - 1)) || e.charAt(e.length - 1) === '(') return;
+    this._calcSetExpr(e + '^2');
+  };
   Engine.prototype._calcBackspace = function () {
     if (!this.calcExpr) return;
     var t = this.calcExpr.slice(-2) === '√(' ? this.calcExpr.slice(0, -2) : this.calcExpr.slice(0, -1);
@@ -914,27 +978,25 @@
     this.scroll.appendChild(screen);
 
     var actions = screen.querySelector('.done-actions');
+
+    function open(lesson) {
+      self._loadLesson(lesson);
+      self.footbar.style.display = '';
+      self._renderStep();
+    }
+
+    if (this.sourceLesson.pool) {
+      var againBtn = el('button', 'btn btn-primary btn-block', '🔁 Practice again — new questions');
+      againBtn.type = 'button';
+      againBtn.addEventListener('click', function () { open(self.sourceLesson); });
+      actions.appendChild(againBtn);
+    }
+
     var next = root.PA.store.nextLesson(this.chapter);
     if (next && next.id !== this.lesson.id) {
-      var nextBtn = el('button', 'btn btn-primary btn-block', 'Next lesson →');
+      var nextBtn = el('button', 'btn btn-block ' + (this.sourceLesson.pool ? 'btn-ghost' : 'btn-primary'), 'Next lesson →');
       nextBtn.type = 'button';
-      nextBtn.addEventListener('click', function () {
-        self.lesson = next;
-        var n = next.steps.length;
-        var savedNext = root.PA.store.loadStepProgress(next.id);
-        if (savedNext && savedNext.idx >= 0 && savedNext.idx < n) {
-          self.idx = savedNext.idx;
-          self.maxIdx = Math.min(n - 1, Math.max(self.idx, savedNext.maxIdx != null ? savedNext.maxIdx : self.idx));
-          self.stepAnswers = savedNext.answers.slice(0, n);
-        } else {
-          self.idx = 0;
-          self.maxIdx = 0;
-          self.stepAnswers = [];
-        }
-        self._recomputeScore();
-        self.footbar.style.display = '';
-        self._renderStep();
-      });
+      nextBtn.addEventListener('click', function () { open(next); });
       actions.appendChild(nextBtn);
     }
     var backBtn = el('button', 'btn btn-ghost btn-block', 'Back to chapter');

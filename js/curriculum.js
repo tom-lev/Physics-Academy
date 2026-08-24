@@ -172,10 +172,11 @@
     return null;
   }
 
-  /** Chapter is "live" once it has at least one lesson with steps. */
+  /** Chapter is "live" once it has at least one authored lesson — either a
+   *  fixed `steps` list or a practice `pool`. */
   function isLive(chapter) {
     for (var i = 0; i < chapter.lessons.length; i++) {
-      if (chapter.lessons[i].steps) return true;
+      if (chapter.lessons[i].steps || chapter.lessons[i].pool) return true;
     }
     return false;
   }

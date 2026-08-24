@@ -110,7 +110,11 @@
         }
         if (name === 'bar' || name === 'hat') {
           var h = group(src, i); i = h.next;
-          out += math(h.body) + (name === 'bar' ? '̄' : '̂');
+          // A combining macron/circumflex can't attach across the </i> that
+          // math() wraps a variable in, so it drifts off to the side instead
+          // of sitting over the letter. Overlay it with CSS like \vec does.
+          out += '<span class="' + (name === 'bar' ? 'barover' : 'hatover') +
+                 '">' + math(h.body) + '</span>';
           continue;
         }
         if (name === 'text' || name === 'mathrm' || name === 'unit') {

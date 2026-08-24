@@ -223,7 +223,7 @@
     nextLesson: function (chapter) {
       var lessons = (chapter && chapter.lessons) || [];
       for (var i = 0; i < lessons.length; i++) {
-        if (lessons[i].steps && !Store.isDone(lessons[i].id)) return lessons[i];
+        if ((lessons[i].steps || lessons[i].pool) && !Store.isDone(lessons[i].id)) return lessons[i];
       }
       return null;
     },

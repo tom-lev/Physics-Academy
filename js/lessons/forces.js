@@ -466,6 +466,247 @@
           note: 'The critical angle is where tan θ = μs — steeper than that and gravity\'s along-slope pull beats the maximum friction can supply.'
         }
       ]
+    },
+
+    /* ============================================================ */
+    /* Practice lesson: `pool` + `draw` instead of `steps`. Pool mix is
+       60/30/10 easy/medium/hard (12/6/2); each run keeps that at 6/3/1. */
+    {
+      id: 'fc-practice',
+      title: 'Force Equation Practice',
+      sub: 'endless drill · 10 fresh questions per run',
+      draw: { easy: 6, medium: 3, hard: 1 },
+      intro: {
+        kind: 'lesson',
+        title: 'Same three laws, forty different situations',
+        hook: 'Every free-body diagram a physicist has ever drawn is the same short checklist run again: name the forces, add them as signed numbers, divide by the mass. What makes it feel effortless later is only ever how many times you did it earlier.',
+        body: 'This is a drill on the equations this chapter taught — nothing new appears here. Ten questions get drawn fresh from a bigger bank each time you open it, so you can run it over and over and keep getting a different set.\n\nThe 🧮 button at the top opens a calculator if you need one.',
+        callout: { variant: 'key', text: 'Your toolkit: $F_{net} = ma$, weight $W = mg$ (use $g = 9.81\\text{ m/s}^2$), friction $f_k = \\mu_k N$ with $f_s \\le \\mu_s N$, a flat-ground normal force $N = mg$, and on a slope $N = mg\\cos\\theta$ with $W_{\\parallel} = mg\\sin\\theta$.' }
+      },
+      pool: [
+        /* ---- easy (12) ---- */
+        {
+          kind: 'numeric',
+          difficulty: 'easy',
+          prompt: 'A net force of 40 N acts on a 8 kg crate. What is its acceleration, in m/s²?',
+          unit: 'm/s²',
+          correct: 5,
+          tol: 0.1,
+          explain: 'a = F_net/m = 40/8 = 5 m/s². Newton\'s Second Law rearranged — the same force produces less acceleration the heavier the object is.',
+          hint: 'Rearrange F = ma for a.'
+        },
+        {
+          kind: 'numeric',
+          difficulty: 'easy',
+          prompt: 'What is the weight of a 12 kg suitcase on Earth ($g = 9.81\\text{ m/s}^2$), in newtons?',
+          unit: 'N',
+          correct: 117.7,
+          tol: 1,
+          decimals: 1,
+          explain: 'W = mg = 12 × 9.81 ≈ 117.7 N. Mass (12 kg) and weight (117.7 N) are different quantities in different units — the mass would be unchanged on the Moon, the weight would not.',
+          hint: 'W = mg.'
+        },
+        {
+          kind: 'numeric',
+          difficulty: 'easy',
+          prompt: 'A 3 kg ball accelerates at $4\\text{ m/s}^2$. What net force acts on it, in newtons?',
+          unit: 'N',
+          correct: 12,
+          tol: 0.2,
+          explain: 'F_net = ma = 3 × 4 = 12 N.',
+          hint: 'F = ma, straight from the definition.'
+        },
+        {
+          kind: 'mcq',
+          difficulty: 'easy',
+          prompt: 'A hockey puck slides across frictionless ice at a constant 6 m/s. What is the net force on it?',
+          options: ['Zero', '6 N in the direction of motion', 'Equal to its weight', 'Impossible to say without the mass'],
+          correct: 0,
+          explain: 'Constant velocity means zero acceleration, and F_net = ma, so the net force must be zero. This is Newton\'s First Law: motion needs no force to *continue*, only to *change*.',
+          wrongExplain: { 1: 'That\'s the everyday intuition that something moving must be pushed — but a force is what *changes* motion. Steady motion at constant velocity needs no net force at all.' }
+        },
+        {
+          kind: 'numeric',
+          difficulty: 'easy',
+          prompt: 'A 20 kg box rests on flat ground with nothing pressing on it. What is the normal force from the ground, in newtons?',
+          unit: 'N',
+          correct: 196.2,
+          tol: 2,
+          decimals: 1,
+          explain: 'On flat ground with no extra vertical push, the surface pushes back with exactly the object\'s weight: N = mg = 20 × 9.81 ≈ 196.2 N. The box isn\'t accelerating vertically, so the vertical forces must cancel.',
+          hint: 'On level ground with nothing else pushing down, N = mg.'
+        },
+        {
+          kind: 'numeric',
+          difficulty: 'easy',
+          prompt: 'A crate is pressed onto the floor with a normal force of 150 N. If $\\mu_k = 0.3$, what is the kinetic friction force while it slides, in newtons?',
+          unit: 'N',
+          correct: 45,
+          tol: 0.5,
+          explain: 'f_k = μ_k N = 0.3 × 150 = 45 N. Notice friction depends on how hard the surfaces are pressed together, not on how fast the crate is sliding.',
+          hint: 'f_k = μ_k N.'
+        },
+        {
+          kind: 'mcq',
+          difficulty: 'easy',
+          prompt: 'You push against a wall with 200 N. What force does the wall exert on you?',
+          options: [
+            '200 N back toward you',
+            'Zero — the wall isn\'t moving',
+            'More than 200 N, since the wall is stronger',
+            'It depends on the wall\'s mass'
+          ],
+          correct: 0,
+          explain: 'Newton\'s Third Law: forces always come in equal, opposite pairs, one on each of the two objects. The wall not moving says nothing about the force it exerts — it says the wall has other forces (the floor, the foundation) balancing it.',
+          wrongExplain: { 1: 'Not moving doesn\'t mean not pushing. The wall pushes back with exactly 200 N; it stays put because the ground and its foundation balance that push, not because the force is absent.' }
+        },
+        {
+          kind: 'numeric',
+          difficulty: 'easy',
+          prompt: 'A 1200 kg car accelerates at $2.5\\text{ m/s}^2$. What net force does that require, in newtons?',
+          unit: 'N',
+          correct: 3000,
+          tol: 20,
+          explain: 'F_net = ma = 1200 × 2.5 = 3000 N.',
+          hint: 'F = ma — watch that the mass is in kilograms already.'
+        },
+        {
+          kind: 'mcq',
+          difficulty: 'easy',
+          prompt: 'Two forces act on a box along one line: 30 N right and 12 N left. What is the net force?',
+          options: ['18 N right', '42 N right', '18 N left', 'Zero'],
+          correct: 0,
+          explain: 'Along one line, forces add as signed numbers: +30 − 12 = +18 N, so 18 N to the right. Only this *net* value goes into F = ma, never one force on its own.',
+          wrongExplain: { 1: 'Adding them as 30 + 12 treats both as pushing the same way. They oppose each other, so the leftward one subtracts.' }
+        },
+        {
+          kind: 'numeric',
+          difficulty: 'easy',
+          prompt: 'A 5 kg block sits on a 30° slope. What is the component of its weight along the slope, in newtons?',
+          unit: 'N',
+          correct: 24.5,
+          tol: 0.6,
+          decimals: 1,
+          explain: 'W∥ = mg sin θ = 5 × 9.81 × sin 30° = 49.05 × 0.5 ≈ 24.5 N. This along-slope component is the part of gravity actually trying to slide the block down.',
+          hint: 'W∥ = mg sin θ — sin, not cos, for the along-slope part.'
+        },
+        {
+          kind: 'mcq',
+          difficulty: 'easy',
+          prompt: 'An elevator moves upward at a constant speed. How does the normal force on a passenger compare with their weight?',
+          options: ['Equal to their weight', 'Greater than their weight', 'Less than their weight', 'Zero'],
+          correct: 0,
+          explain: 'Constant speed means zero acceleration, so the vertical forces must cancel exactly: N = mg. It\'s *accelerating* upward that would make N exceed the weight — moving upward on its own does nothing.',
+          wrongExplain: { 1: 'That happens while the elevator *accelerates* upward, not while it moves at a steady speed. At constant velocity there\'s no net force, so N and mg must be equal.' }
+        },
+        {
+          kind: 'numeric',
+          difficulty: 'easy',
+          prompt: 'A 2 kg object is in free fall with no air resistance. What is the net force on it, in newtons?',
+          unit: 'N',
+          correct: 19.6,
+          tol: 0.4,
+          decimals: 1,
+          explain: 'The only force is gravity, so F_net = W = mg = 2 × 9.81 ≈ 19.6 N downward. Check it against F = ma: 2 kg × 9.81 m/s² gives the same number, which is exactly why every object falls at g regardless of mass.',
+          hint: 'In free fall, the only force acting is the weight.'
+        },
+
+        /* ---- medium (6) ---- */
+        {
+          kind: 'numeric',
+          difficulty: 'medium',
+          prompt: 'A 10 kg crate is pushed with 60 N along level ground where $\\mu_k = 0.25$. What is its acceleration, in m/s²?',
+          unit: 'm/s²',
+          correct: 3.55,
+          tol: 0.15,
+          decimals: 2,
+          explain: 'Normal force N = mg = 98.1 N, so friction f_k = 0.25 × 98.1 ≈ 24.5 N opposing the push. Net force = 60 − 24.5 = 35.5 N, and a = 35.5/10 ≈ 3.55 m/s².',
+          hint: 'Find the normal force, then friction, then subtract it from the push before dividing by the mass.'
+        },
+        {
+          kind: 'numeric',
+          difficulty: 'medium',
+          prompt: 'A 4 kg block sits on a 20° slope. What is the normal force from the surface, in newtons?',
+          unit: 'N',
+          correct: 36.9,
+          tol: 0.8,
+          decimals: 1,
+          explain: 'N = mg cos θ = 4 × 9.81 × cos 20° ≈ 39.24 × 0.9397 ≈ 36.9 N — less than the full weight of 39.2 N, because on a slope only part of the weight presses into the surface.',
+          hint: 'On a slope the normal force uses cos, not sin.'
+        },
+        {
+          kind: 'numeric',
+          difficulty: 'medium',
+          prompt: 'A 6 kg block rests on flat ground with $\\mu_s = 0.4$. What is the maximum horizontal force it can take before it starts to slide, in newtons?',
+          unit: 'N',
+          correct: 23.5,
+          tol: 0.6,
+          decimals: 1,
+          explain: 'Maximum static friction is f_s,max = μ_s N = 0.4 × (6 × 9.81) = 0.4 × 58.86 ≈ 23.5 N. Push any harder than that and static friction can no longer match you, so the block breaks loose.',
+          hint: 'The threshold is the largest value static friction can reach: μ_s N.'
+        },
+        {
+          kind: 'mcq',
+          difficulty: 'medium',
+          prompt: 'An elevator accelerates *upward* at $2\\text{ m/s}^2$. How does the normal force on a passenger compare with their weight?',
+          options: [
+            'Greater than their weight',
+            'Less than their weight',
+            'Exactly equal to their weight',
+            'Zero'
+          ],
+          correct: 0,
+          explain: 'For a net upward force, the upward normal force must beat the downward weight: N − mg = ma, so N = m(g + a) — larger than mg. That extra push is exactly the heavy feeling in your feet as an elevator starts up.',
+          wrongExplain: { 1: 'That\'s the *downward*-acceleration case, where you feel lighter. Accelerating upward needs a net upward force, so N has to exceed mg.' }
+        },
+        {
+          kind: 'numeric',
+          difficulty: 'medium',
+          prompt: 'A block slides down a frictionless 25° incline. What is its acceleration, in m/s²?',
+          unit: 'm/s²',
+          correct: 4.15,
+          tol: 0.15,
+          decimals: 2,
+          explain: 'With no friction, a = g sin θ = 9.81 × sin 25° ≈ 9.81 × 0.4226 ≈ 4.15 m/s². The mass cancels out entirely — every block on that slope accelerates the same.',
+          hint: 'With μ_k = 0, the incline acceleration formula collapses to just g sin θ.'
+        },
+        {
+          kind: 'order',
+          difficulty: 'medium',
+          prompt: 'Four objects each feel the same 60 N net force. Rank them by the acceleration produced, from *smallest* to *largest*.',
+          items: [
+            'A 30 kg object',
+            'A 20 kg object',
+            'A 12 kg object',
+            'A 5 kg object'
+          ],
+          explain: 'From $a = F_{net}/m$, acceleration is inversely proportional to mass — the same force moves a heavier object less. So the heaviest accelerates least (60/30 = 2 m/s²) and the lightest most (60/5 = 12 m/s²).'
+        },
+
+        /* ---- hard (2) ---- */
+        {
+          kind: 'numeric',
+          difficulty: 'hard',
+          prompt: 'A block slides down a 30° incline with $\\mu_k = 0.2$. What is its acceleration down the slope, in m/s²?',
+          unit: 'm/s²',
+          correct: 3.21,
+          tol: 0.15,
+          decimals: 2,
+          explain: 'a = g(sin θ − μ_k cos θ) = 9.81 × (sin 30° − 0.2 × cos 30°) = 9.81 × (0.5 − 0.1732) ≈ 9.81 × 0.3268 ≈ 3.21 m/s² — well down from the frictionless 4.91 m/s².',
+          hint: 'a = g(sin θ − μ_k cos θ) — the friction term uses cos.'
+        },
+        {
+          kind: 'numeric',
+          difficulty: 'hard',
+          prompt: 'A 70 kg person stands in an elevator accelerating downward at $1.5\\text{ m/s}^2$. What is the normal force from the floor, in newtons?',
+          unit: 'N',
+          correct: 581.7,
+          tol: 6,
+          decimals: 1,
+          explain: 'Taking up as positive: N − mg = ma with a = −1.5, so N = m(g + a) = 70 × (9.81 − 1.5) = 70 × 8.31 ≈ 581.7 N — less than the 686.7 N weight, which is why you feel momentarily lighter as a lift starts down.',
+          hint: 'Write N − mg = ma with a negative (downward) acceleration, then solve for N.'
+        }
+      ]
     }
   );
 

@@ -270,7 +270,7 @@
 
       ch.lessons.forEach(function (lesson, i) {
         var done = store.isDone(lesson.id);
-        var authored = !!lesson.steps;
+        var authored = !!(lesson.steps || lesson.pool);
         var isNext = authored && nextLesson && nextLesson.id === lesson.id;
         var cls = 'node' + (done ? ' done' : '') + (isNext ? ' next' : '') + (!authored ? ' soon' : '');
 
